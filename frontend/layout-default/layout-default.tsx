@@ -1,104 +1,98 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
+
+import React, { useState, ReactNode } from 'react';
+import { View, StyleSheet, TouchableOpacity, Text, Platform } from 'react-native';
+import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
-import Sidebar from '../components/sider';
-import BottomMenuBar from '../components/bottom-menu-bar';
+import Sidebar from "../components/sider"
 
-interface LayoutDefaultProps {
-    children: React.ReactNode;
-}
-
-const LayoutDefault: React.FC<LayoutDefaultProps> = ({ children }) => {
-    const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(false);
-    const { width } = useWindowDimensions();
-    const isLargeScreen: boolean = width > 768;
-
-
-    const toggleSidebar = () => {
-        setIsSidebarVisible(!isSidebarVisible);
-    };
-
-    return (
-
-        <View style={styles.container} >
-            {isLargeScreen && (
-                <View style={styles.sidebarContainer}>
-                    <Sidebar isVisible={true} onClose={() => { }} />
-                </View>
-            )}
-
-            <View style={styles.contentAndHeader}>
-
-                {!isLargeScreen && (
-                    <View style={styles.header}>
-                        <TouchableOpacity onPress={toggleSidebar}>
-                            <Feather name="menu" size={24} color="black" />
-                        </TouchableOpacity>
-                    </View>
-                )}
-
-                <View style={styles.mainContent}>
-                    {children}
-                </View>
-
-                {!isLargeScreen && <BottomMenuBar />}
-            </View>
-
-            {!isLargeScreen && (
-                <>
-                    {isSidebarVisible && (
-                        <TouchableOpacity
-                            style={styles.overlay}
-                            onPress={toggleSidebar}
-                            activeOpacity={1}
-                        />
-                    )}
-                    <Sidebar isVisible={isSidebarVisible} onClose={toggleSidebar} />
-                </>
-            )}
-        </View>
-    );
+type Props = {
+  children: ReactNode;
+  title?: string;
 };
 
-const styles = StyleSheet.create({
-    safeAreaContainer: {
-        flex: 1,
-        backgroundColor: '#f5f5f5',
-    },
-    container: {
-        flex: 1,
-        backgroundColor: '#f5f5f5',
-    },
-    sidebarContainer: {
-        width: 250,
-        backgroundColor: '#fff',
-    },
-    contentAndHeader: {
-        flex: 1,
-        flexDirection: 'column',
-    },
-    header: {
-        padding: 20,
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        backgroundColor: '#fff',
-        elevation: 2,
-        zIndex: 1,
-    },
-    mainContent: {
-        flex: 1,
-        padding: 20,
-    },
-    overlay: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        zIndex: 9,
-    },
-});
+export default function LayoutDefault({ children, title = 'Admin' }: Props) {
+  const insets = useSafeAreaInsets();
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
 
-export default LayoutDefault;
+  const toggleSidebar = () => setIsSidebarVisible((s) => !s);
+  const closeSidebar = () => setIsSidebarVisible(false);
+
+  return (
+    <SafeAreaView style={styles.root} edges={['top', 'bottom']}>
+      <View style={[styles.header, { paddingTop: Math.max(insets.top, 8) }]}>
+        <TouchableOpacity
+          accessibilityRole="button"
+          accessibilityLabel="Open menu"
+          onPress={toggleSidebar}
+          style={styles.iconButton}
+        >
+          <Feather name="menu" size={24} />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>{title}</Text>
+        <View style={styles.headerRight}>
+          <Feather name="bell" size={20} />
+        </View>
+      </View>
+
+      <View style={[styles.body, { paddingBottom: insets.bottom }]}>
+        {children}
+      </View>
+
+      {isSidebarVisible && (
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={closeSidebar}
+          style={styles.backdrop}
+          accessibilityLabel="Close menu"
+        />
+      )}
+      <Sidebar isVisible={isSidebarVisible} onClose={closeSidebar} />
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: '#F6F7F9',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingBottom: 8,
+    gap: 12,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#e6e6e6',
+    ...Platform.select({
+      ios: { shadowColor: '#000', shadowOpacity: 0.05, shadowOffset: { width: 0, height: 2 }, shadowRadius: 6 },
+      android: { elevation: 2 },
+    }),
+  },
+  iconButton: {
+    padding: 8,
+    borderRadius: 8,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#222',
+  },
+  headerRight: {
+    marginLeft: 'auto',
+  },
+  body: {
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingTop: 12,
+  },
+  backdrop: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.25)',
+  },
+});

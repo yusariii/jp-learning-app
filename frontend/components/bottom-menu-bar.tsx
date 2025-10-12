@@ -7,22 +7,22 @@ const BottomMenuBar: React.FC = () => {
     const router = useRouter();
 
     const navigateTo = (path: string) => {
-        router.push(`/screens/admin?${path}`);
+        router.push(`/admin?${path}`);
     };
 
     return (
         <View style={styles.bottomBar}>
             <TouchableOpacity style={styles.tabItem} onPress={() => navigateTo('/')}>
                 <Feather name="home" size={24} color="#555" />
-                <Text style={styles.tabText}>Home</Text>
+                {/* <Text style={styles.tabText}>Home</Text> */}
             </TouchableOpacity>
             <TouchableOpacity style={styles.tabItem} onPress={() => navigateTo('/profile')}>
                 <Feather name="user" size={24} color="#555" />
-                <Text style={styles.tabText}>Profile</Text>
+                {/* <Text style={styles.tabText}>Profile</Text> */}
             </TouchableOpacity>
             <TouchableOpacity style={styles.tabItem} onPress={() => navigateTo('/settings')}>
                 <Feather name="settings" size={24} color="#555" />
-                <Text style={styles.tabText}>Settings</Text>
+                {/* <Text style={styles.tabText}>Settings</Text> */}
             </TouchableOpacity>
         </View>
     );

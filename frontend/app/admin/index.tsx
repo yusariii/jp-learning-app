@@ -2,12 +2,15 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import LayoutDefault from '../../layout-default/layout-default'
 import { Feather } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface MetricCardProps {
   title: string;
   value: number | string;
   iconName: keyof typeof Feather.glyphMap;
 }
+
+
 
 const MetricCard: React.FC<MetricCardProps> = ({ title, value, iconName }) => {
   return (
@@ -20,6 +23,9 @@ const MetricCard: React.FC<MetricCardProps> = ({ title, value, iconName }) => {
 };
 
 const DashboardScreen: React.FC = () => {
+
+  const insets = useSafeAreaInsets();
+
   const dashboardMetrics = [
     { title: 'Tài khoản Người dùng', value: 1250, iconName: 'users' as keyof typeof Feather.glyphMap },
     { title: 'Tài khoản Admin', value: 5, iconName: 'user-check' as keyof typeof Feather.glyphMap },
@@ -34,7 +40,7 @@ const DashboardScreen: React.FC = () => {
 
   return (
     <LayoutDefault>
-      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={[styles.container, { paddingBottom: insets.bottom }]} showsVerticalScrollIndicator={false}>
         <Text style={styles.headerTitle}>Admin Dashboard</Text>
         <Text style={styles.subtitle}>Tổng quan về dữ liệu ứng dụng</Text>
         <View style={styles.grid}>
