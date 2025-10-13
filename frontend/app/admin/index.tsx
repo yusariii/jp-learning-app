@@ -10,8 +10,6 @@ interface MetricCardProps {
   iconName: keyof typeof Feather.glyphMap;
 }
 
-
-
 const MetricCard: React.FC<MetricCardProps> = ({ title, value, iconName }) => {
   return (
     <View style={styles.card}>

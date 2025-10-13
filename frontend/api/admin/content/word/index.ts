@@ -1,4 +1,4 @@
-const BASE = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api';
+const BASE = process.env.EXPO_PUBLIC_API_URL;
 
 function authHeaders() {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };

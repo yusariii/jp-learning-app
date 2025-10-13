@@ -3,19 +3,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, Activity
 import { useRouter } from 'expo-router';
 import LayoutDefault from '../../../../layout-default/layout-default';
 
-type Word = {
-  _id: string;
-  termJP: string;
-  hiraKata?: string;
-  romaji?: string;
-  meaningVI?: string;
-  meaningEN?: string;
-  kanji?: string;
-  jlptLevel?: '' | 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
-  tags?: string[];
-  updatedAt?: string;
-  createdAt?: string;
-};
+import { listWords, type Word } from '../../../../api/admin/content/word/index'
 
 type ApiList = {
   data: Word[];
@@ -39,33 +27,27 @@ export default function VocabListScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const reachedEndRef = useRef(false);
 
-  const API_URL = process.env.EXPO_PUBLIC_API_URL;
-
   const fetchPage = useCallback(async (pageNum: number, append = false) => {
     setLoading(true);
     try {
-      const url = new URL(`${API_URL}/admin/words`);
-      url.searchParams.set('page', String(pageNum));
-      url.searchParams.set('limit', String(LIMIT));
-      if (query.trim()) url.searchParams.set('q', query.trim());
-      if (jlpt) url.searchParams.set('jlpt', jlpt);
-      if (sort) url.searchParams.set('sort', sort);
+      const result: ApiList = await listWords({
+        page: pageNum, limit: LIMIT,
+        q: query.trim() || undefined,
+        jlpt: jlpt || undefined,
+        sort,
+      }) as any;
 
-      const res = await fetch(url.toString());
-      if (!res.ok) throw new Error(await res.text());
-      const json: ApiList = await res.json();
-
-      append ? setData(prev => [...prev, ...json.data]) : setData(json.data);
-      setPage(json.page);
-      setTotal(json.total);
-      reachedEndRef.current = json.data.length < LIMIT || (json.page * LIMIT >= json.total);
+      append ? setData(prev => [...prev, ...result.data]) : setData(result.data);
+      setPage(result.page);
+      setTotal(result.total);
+      reachedEndRef.current = result.data.length < LIMIT || (result.page * LIMIT >= result.total);
     } catch (e) {
       console.error(e);
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [API_URL, query, jlpt, sort]);
+  }, [query, jlpt, sort]);
 
   useEffect(() => {
     fetchPage(1, false);

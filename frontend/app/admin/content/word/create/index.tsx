@@ -2,44 +2,27 @@ import React, { useMemo, useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import LayoutDefault from '../../../../../layout-default/layout-default';
 
-type Example = { sentenceJP: string; readingKana: string; meaningVI: string; };
+import { createWord, type Word } from '../../../../../api/admin/content/word/index';
+import { router } from 'expo-router';
 
-type WordInput = {
-    termJP: string;
-    hiraKata?: string;
-    romaji?: string;
-    meaningVI?: string;
-    meaningEN?: string;
-    kanji?: string;
-    examples: Example[];
-    audioUrl?: string;
-    tags: string[];
-    jlptLevel: '' | 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
-    createdBy?: { adminId?: string };
-    updatedBy?: { adminId?: string };
-};
+type Example = Word['examples'][number];
+type Form = Omit<Word, '_id' | 'createdAt' | 'updatedAt'>;
 
-const JLPT_LEVELS: Array<WordInput['jlptLevel']> = ['', 'N5', 'N4', 'N3', 'N2', 'N1'];
+const JLPT_LEVELS: Array<Form['jlptLevel']> = ['', 'N5', 'N4', 'N3', 'N2', 'N1'];
 const initialExample: Example = { sentenceJP: '', readingKana: '', meaningVI: '' };
 
 export default function CreateVocabScreen() {
-    const [form, setForm] = useState<WordInput>({
-        termJP: '',
-        hiraKata: '',
-        romaji: '',
-        meaningVI: '',
-        meaningEN: '',
-        kanji: '',
-        examples: [{ ...initialExample }],
-        audioUrl: '',
-        tags: [],
-        jlptLevel: '',
+    const [form, setForm] = useState<Form>({
+        termJP: '', hiraKata: '', romaji: '',
+        meaningVI: '', meaningEN: '', kanji: '',
+        examples: [{ ...initialExample }], audioUrl: '',
+        tags: [], jlptLevel: '',
     });
 
     const [tagDraft, setTagDraft] = useState('');
     const isValid = useMemo(() => form.termJP.trim().length > 0, [form.termJP]);
 
-    const setField = <K extends keyof WordInput>(key: K, value: WordInput[K]) => {
+    const setField = <K extends keyof Form>(key: K, value: Form[K]) => {
         setForm(prev => ({ ...prev, [key]: value }));
     };
 
@@ -68,7 +51,7 @@ export default function CreateVocabScreen() {
     };
 
     const removeTag = (value: string) => setForm(prev => ({ ...prev, tags: prev.tags.filter(t => t !== value) }));
-    const selectJLPT = (lv: WordInput['jlptLevel']) => setField('jlptLevel', lv);
+    const selectJLPT = (lv: Form['jlptLevel']) => setField('jlptLevel', lv);
 
     const submit = async () => {
         if (!isValid) {
@@ -76,29 +59,20 @@ export default function CreateVocabScreen() {
             return;
         }
         try {
-            const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api';
-            const res = await fetch(`${API_URL}/admin/words`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(form),
-            });
-            if (!res.ok) {
-                const msg = await res.text();
-                throw new Error(msg || `HTTP ${res.status}`);
-            }
+            await createWord(form as Word);
             Alert.alert('Thành công', 'Đã thêm từ vựng!');
-            setForm({
-                termJP: '',
-                hiraKata: '',
-                romaji: '',
-                meaningVI: '',
-                meaningEN: '',
-                kanji: '',
-                examples: [{ ...initialExample }],
-                audioUrl: '',
-                tags: [],
-                jlptLevel: '',
-            });
+            setForm({ 
+                termJP: '', 
+                hiraKata: '', 
+                romaji: '', 
+                meaningVI: '', 
+                meaningEN: '', 
+                kanji: '', 
+                examples: [{ ...initialExample }], 
+                audioUrl: '', 
+                tags: [], 
+                jlptLevel: '' });
+            router.back()
         } catch (err: any) {
             Alert.alert('Lỗi', String(err?.message || err));
         }

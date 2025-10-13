@@ -18,7 +18,7 @@ export default function LayoutDefault({ children, title = 'Admin' }: Props) {
   const closeSidebar = () => setIsSidebarVisible(false);
 
   return (
-    <SafeAreaView style={styles.root} edges={['top', 'bottom']}>
+    <SafeAreaView style={styles.root} edges={['bottom']}>
       <View style={[styles.header, { paddingTop: Math.max(insets.top, 8) }]}>
         <TouchableOpacity
           accessibilityRole="button"

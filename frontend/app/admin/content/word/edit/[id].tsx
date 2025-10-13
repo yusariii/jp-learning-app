@@ -3,43 +3,29 @@ import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Alert 
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import LayoutDefault from '../../../../../layout-default/layout-default';
 
-type Example = { sentenceJP: string; readingKana: string; meaningVI: string; };
-type WordInput = {
-  _id?: string;
-  termJP: string;
-  hiraKata?: string;
-  romaji?: string;
-  meaningVI?: string;
-  meaningEN?: string;
-  kanji?: string;
-  examples: Example[];
-  audioUrl?: string;
-  tags: string[];
-  jlptLevel: '' | 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
-};
+import { getWord, updateWord, deleteWord, type Word } from '../../../../../api/admin/content/word/index';
 
-const JLPT_LEVELS: Array<WordInput['jlptLevel']> = ['', 'N5', 'N4', 'N3', 'N2', 'N1'];
+type Example = Word['examples'][number];
+
+const JLPT_LEVELS: Array<Word['jlptLevel']> = ['', 'N5', 'N4', 'N3', 'N2', 'N1'];
 const initialExample: Example = { sentenceJP: '', readingKana: '', meaningVI: '' };
 
 export default function EditVocabScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ id: string }>();
   const [loading, setLoading] = useState(true);
-  const [form, setForm] = useState<WordInput | null>(null);
+  const [form, setForm] = useState<Word | null>(null);
   const [tagDraft, setTagDraft] = useState('');
 
   const isValid = useMemo(() => !!form?.termJP?.trim(), [form?.termJP]);
-  const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api';
 
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
         const id = String(params.id);
-        const res = await fetch(`${API_URL}/admin/words/${id}`);
-        if (!res.ok) throw new Error(await res.text());
-        const json: WordInput = await res.json();
-        if (mounted) setForm(json);
+        const w = await getWord(id);
+        if (mounted) setForm(w as Word);
       } catch (e: any) {
         Alert.alert('Lỗi', String(e?.message || e));
       } finally {
@@ -47,9 +33,9 @@ export default function EditVocabScreen() {
       }
     })();
     return () => { mounted = false; };
-  }, [API_URL, params.id]);
+  }, [params.id]);
 
-  const setField = <K extends keyof WordInput>(key: K, value: WordInput[K]) => {
+  const setField = <K extends keyof Word>(key: K, value: Word[K]) => {
     setForm(prev => prev ? ({ ...prev, [key]: value }) : prev);
   };
 
@@ -78,7 +64,7 @@ export default function EditVocabScreen() {
   };
 
   const removeTag = (value: string) => setForm(prev => prev ? ({ ...prev, tags: prev.tags.filter(t => t !== value) }) : prev);
-  const selectJLPT = (lv: WordInput['jlptLevel']) => setField('jlptLevel', lv);
+  const selectJLPT = (lv: Word['jlptLevel']) => setField('jlptLevel', lv);
 
   const save = async () => {
     if (!isValid || !form) {
@@ -86,12 +72,7 @@ export default function EditVocabScreen() {
       return;
     }
     try {
-      const res = await fetch(`${API_URL}/admin/words/${form._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
-      if (!res.ok) throw new Error(await res.text());
+      await updateWord(String(form._id), form);
       Alert.alert('Đã lưu', 'Cập nhật từ vựng thành công.');
     } catch (e: any) {
       Alert.alert('Lỗi', String(e?.message || e));
@@ -107,8 +88,7 @@ export default function EditVocabScreen() {
 
   const del = async () => {
     try {
-      const res = await fetch(`${API_URL}/admin/words/${form?._id}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error(await res.text());
+      await deleteWord(String(form?._id));
       Alert.alert('Đã xoá', 'Từ vựng đã được xoá.');
       router.back();
     } catch (e: any) {
