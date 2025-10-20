@@ -80,6 +80,7 @@ export default function EditVocabScreen() {
   };
 
   const confirmDelete = () => {
+    console.log("OK")
     Alert.alert('Xoá từ vựng', 'Bạn có chắc chắn muốn xoá?', [
       { text: 'Huỷ', style: 'cancel' },
       { text: 'Xoá', style: 'destructive', onPress: del },
