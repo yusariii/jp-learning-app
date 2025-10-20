@@ -17,7 +17,7 @@ app.use(cookieParser());
 app.use(morgan('dev'));
 
 const adminRoutes = require('./routes/admin/index.route');
-app.use('/api/admin', adminRoutes);
+adminRoutes(app)
 
 // 404 page
 app.use((req, res, next) => {
