@@ -4,6 +4,14 @@ import { useRouter } from 'expo-router';
 import LayoutDefault from '../../../../layout-default/layout-default';
 
 import { listWords, type Word } from '../../../../api/admin/content/word/index'
+import { getTheme, Theme } from '../../../../constants/theme';
+import { ThemeMode } from '../../../../tokens/tokens';
+
+
+function useTheme(): Theme {
+  return getTheme('light' as ThemeMode);
+}
+
 
 type ApiList = {
   data: Word[];
@@ -17,6 +25,7 @@ const LIMIT = 20;
 
 export default function VocabListScreen() {
   const router = useRouter();
+  const theme = useTheme(); // Lấy theme
   const [query, setQuery] = useState('');
   const [jlpt, setJlpt] = useState<Word['jlptLevel']>('');
   const [sort, setSort] = useState<'updatedAt' | 'createdAt' | 'termJP'>('updatedAt');
@@ -66,6 +75,9 @@ export default function VocabListScreen() {
     setPage(next);
   }, [page, loading, fetchPage]);
 
+
+  const { styles } = useVocabListStyles(theme);
+
   return (
     <LayoutDefault title="Từ vựng">
       <View style={styles.header}>
@@ -76,10 +88,11 @@ export default function VocabListScreen() {
             onChangeText={setQuery}
             onSubmitEditing={() => fetchPage(1, false)}
             style={styles.input}
+            placeholderTextColor={theme.color.textSub} 
             returnKeyType="search"
           />
           <TouchableOpacity onPress={() => fetchPage(1, false)} style={styles.searchBtn}>
-            <Text style={{ fontWeight: '700' }}>Tìm</Text>
+            <Text style={styles.searchBtnText}>Tìm</Text>
           </TouchableOpacity>
         </View>
 
@@ -89,21 +102,21 @@ export default function VocabListScreen() {
               <TouchableOpacity
                 key={lv || 'none'}
                 onPress={() => { setJlpt(lv || ''); fetchPage(1, false); }}
-                style={[styles.chip, jlpt === lv && styles.chipActive]}
+                style={[theme.chip.container, jlpt === lv && theme.chip.active.container]}
               >
-                <Text style={[styles.chipText, jlpt === lv && styles.chipTextActive]}>{lv || '—'}</Text>
+                <Text style={[theme.chip.label, jlpt === lv && theme.chip.active.label]}>{lv || '—'}</Text>
               </TouchableOpacity>
             ))}
           </View>
 
           <View style={[styles.rowWrap, { marginLeft: 'auto' }]}>
-            {(['updatedAt','createdAt','termJP'] as const).map(s => (
+            {(['updatedAt', 'createdAt', 'termJP'] as const).map(s => (
               <TouchableOpacity
                 key={s}
                 onPress={() => { setSort(s); fetchPage(1, false); }}
-                style={[styles.chip, sort === s && styles.chipActive]}
+                style={[theme.chip.container, sort === s && theme.chip.active.container]}
               >
-                <Text style={[styles.chipText, sort === s && styles.chipTextActive]}>
+                <Text style={[theme.chip.label, sort === s && theme.chip.active.label]}>
                   {s === 'updatedAt' ? 'Sửa gần nhất' : s === 'createdAt' ? 'Mới tạo' : 'A→Z'}
                 </Text>
               </TouchableOpacity>
@@ -114,10 +127,10 @@ export default function VocabListScreen() {
         <View style={styles.toolbar}>
           <TouchableOpacity
             onPress={() => router.push('/admin/content/word/create')}
-            style={styles.primaryBtn}
+            style={theme.button.primary.container}
             accessibilityLabel="Thêm từ vựng"
           >
-            <Text style={styles.primaryBtnText}>＋ Thêm từ vựng</Text>
+            <Text style={theme.button.primary.label}>＋ Thêm từ vựng</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -125,7 +138,7 @@ export default function VocabListScreen() {
       <FlatList
         data={data}
         keyExtractor={(item) => item._id || item.termJP}
-        contentContainerStyle={{ paddingHorizontal: 8, paddingBottom: 24 }}
+        contentContainerStyle={{ paddingHorizontal: theme.tokens.space.md, paddingBottom: theme.tokens.space.xl }}
         renderItem={({ item }) => (
           <WordItem
             item={item}
@@ -135,40 +148,47 @@ export default function VocabListScreen() {
         onEndReachedThreshold={0.2}
         onEndReached={onEndReached}
         ListEmptyComponent={!loading ? <EmptyState onCreate={() => router.push('/admin/content/word/create')} /> : null}
-        ListFooterComponent={loading ? <View style={{ paddingVertical: 16 }}><ActivityIndicator /></View> : null}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        ListFooterComponent={loading ? <View style={{ paddingVertical: theme.tokens.space.lg }}><ActivityIndicator color={theme.color.textSub} /></View> : null}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.color.textSub} />}
       />
     </LayoutDefault>
   );
 }
 
 function WordItem({ item, onPressEdit }: { item: Word; onPressEdit: () => void }) {
+  const theme = useTheme();
+  const { styles } = useWordItemStyles(theme);
+
   return (
-    <View style={styles.card}>
+    <View style={[theme.surface.card, styles.cardOverride]}>
       <View style={styles.cardHeader}>
-        <Text style={styles.term}>{item.termJP}</Text>
-        {!!item.jlptLevel && <Text style={styles.jlpt}>{item.jlptLevel}</Text>}
+        <Text style={theme.text.title}>{item.termJP}</Text>
+        {!!item.jlptLevel && <Text style={theme.badge.jlpt(item.jlptLevel)}>{item.jlptLevel}</Text>}
       </View>
       <View style={styles.rowGap4}>
-        {!!item.hiraKata && <Text style={styles.subtle}>{item.hiraKata}</Text>}
-        {!!item.romaji && <Text style={styles.subtle}>{item.romaji}</Text>}
+        {!!item.hiraKata && <Text style={theme.text.secondary}>{item.hiraKata}</Text>}
+        {!!item.romaji && <Text style={theme.text.secondary}>{item.romaji}</Text>}
       </View>
       <View style={styles.rowGap4}>
-        {!!item.meaningVI && <Text style={styles.meaning}>{item.meaningVI}</Text>}
-        {!!item.meaningEN && <Text style={styles.meaningEn}>{item.meaningEN}</Text>}
+        {!!item.meaningVI && <Text style={{ ...theme.text.body, fontWeight: '600' as const }}>{item.meaningVI}</Text>}
+        {!!item.meaningEN && <Text style={theme.text.secondary}>{item.meaningEN}</Text>}
       </View>
       {!!item.tags?.length && (
-        <View style={[styles.rowWrap, { marginTop: 6 }]}>
-          {item.tags!.map(t => <View key={t} style={[styles.chip, styles.tagChip]}><Text style={styles.chipText}>{t}</Text></View>)}
+        <View style={[styles.rowWrap, { marginTop: theme.tokens.space.sm }]}>
+          {item.tags!.map(t =>
+            <View key={t} style={[theme.chip.container, styles.tagChip]}>
+              <Text style={theme.chip.label}>{t}</Text>
+            </View>
+          )}
         </View>
       )}
-      <View style={[styles.rowBetween, { marginTop: 10 }]}>
-        <Text style={styles.meta}>
+      <View style={[styles.rowBetween, { marginTop: theme.tokens.space.sm }]}>
+        <Text style={theme.text.meta}>
           {item.updatedAt ? `Cập nhật: ${new Date(item.updatedAt).toLocaleString()}`
             : item.createdAt ? `Tạo: ${new Date(item.createdAt).toLocaleString()}` : ''}
         </Text>
         <TouchableOpacity onPress={onPressEdit}>
-          <Text style={styles.link}>Sửa</Text>
+          <Text style={theme.text.link}>Sửa</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -176,85 +196,72 @@ function WordItem({ item, onPressEdit }: { item: Word; onPressEdit: () => void }
 }
 
 function EmptyState({ onCreate }: { onCreate: () => void }) {
+  const theme = useTheme();
+  const { styles } = useEmptyStateStyles(theme);
+
   return (
-    <View style={{ padding: 16, alignItems: 'center' }}>
-      <Text style={{ fontSize: 16, marginBottom: 8 }}>Chưa có từ vựng</Text>
-      <TouchableOpacity onPress={onCreate} style={styles.primaryBtn}>
-        <Text style={styles.primaryBtnText}>＋ Thêm từ vựng đầu tiên</Text>
+    <View style={styles.container}>
+      <Text style={theme.text.body}>Chưa có từ vựng</Text>
+      <TouchableOpacity onPress={onCreate} style={theme.button.primary.container}>
+        <Text style={theme.button.primary.label}>＋ Thêm từ vựng đầu tiên</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  header: { padding: 12, gap: 8 },
-  toolbar: { flexDirection: 'row', justifyContent: 'flex-end' },
-  primaryBtn: {
-    backgroundColor: '#111',
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  primaryBtnText: { color: '#fff', fontWeight: '700' },
-  searchRow: { flexDirection: 'row', gap: 8 },
-  input: {
-    flex: 1,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: '#d9d9d9',
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 15,
-    backgroundColor: '#fafafa',
-  },
-  searchBtn: {
-    paddingHorizontal: 14,
-    borderRadius: 10,
-    backgroundColor: '#fff',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: '#d9d9d9',
-    justifyContent: 'center',
-  },
-  rowWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, alignItems: 'center' },
-  chip: {
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderRadius: 999,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: '#d9d9d9',
-    backgroundColor: '#fff',
-  },
-  chipActive: { backgroundColor: '#212121', borderColor: '#212121' },
-  chipText: { fontSize: 13 },
-  chipTextActive: { color: '#fff', fontWeight: '700' },
-  tagChip: { backgroundColor: '#f3f3f3' },
+function useVocabListStyles(theme: Theme) {
+  const styles = StyleSheet.create({
+    header: { padding: theme.tokens.space.md, gap: theme.tokens.space.sm },
+    toolbar: { flexDirection: 'row', justifyContent: 'flex-end' },
+    searchRow: { flexDirection: 'row', gap: theme.tokens.space.sm },
+    input: {
+      ...theme.surface.input,
+      flex: 1,
+      paddingVertical: theme.tokens.space.md - 2,
+      ...theme.text.body,
+      color: theme.color.text,
+      backgroundColor: theme.color.bgSubtle,
+    },
+    searchBtn: {
+      ...theme.button.ghost.container, 
+      minHeight: undefined,
+      paddingHorizontal: theme.tokens.space.md, 
+      paddingVertical: theme.tokens.space.sm, 
+      backgroundColor: theme.color.surface,
+      borderColor: theme.color.border,
+      borderWidth: 1,
+      borderRadius: theme.tokens.radius.md,
+    },
+    searchBtnText: { ...theme.text.body, fontWeight: '700' as const, color: theme.color.text },
+    rowWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.tokens.space.sm, alignItems: 'center' },
+    
+  });
+  return { styles };
+}
 
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 12,
-    marginVertical: 6,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: '#eee',
-  },
-  cardHeader: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  term: { fontSize: 18, fontWeight: '700' },
-  jlpt: {
-    marginLeft: 'auto',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 999,
-    backgroundColor: '#111',
-    color: '#fff',
-    fontWeight: '700',
-    overflow: 'hidden',
-  },
-  subtle: { color: '#666' },
-  meaning: { fontWeight: '600' },
-  meaningEn: { color: '#555' },
-  rowGap4: { flexDirection: 'row', gap: 8, marginTop: 4 },
-  rowBetween: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  meta: { color: '#888', fontSize: 12 },
-  link: { color: '#0a7', fontWeight: '700' },
-});
+function useWordItemStyles(theme: Theme) {
+  const styles = StyleSheet.create({
+    cardOverride: {
+      marginVertical: theme.list.itemSpacingY / 2,
+      borderWidth: theme.tokens.elevation.sm.elevation > 0 ? 0 : 1, 
+      borderColor: theme.color.border,
+      ...theme.tokens.elevation.sm,
+      padding: theme.tokens.space.md,
+      borderRadius: theme.tokens.radius.md,
+      backgroundColor: theme.color.surface,
+    },
+    cardHeader: { flexDirection: 'row', alignItems: 'center', gap: theme.tokens.space.sm },
+    rowGap4: { flexDirection: 'row', gap: theme.tokens.space.sm, marginTop: theme.tokens.space.xs }, // Gap 4, dùng token xs
+    rowBetween: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+    tagChip: { backgroundColor: theme.color.surfaceAlt, borderColor: theme.color.border }, // Nền phụ trợ
+    rowWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.tokens.space.sm, alignItems: 'center' },
+  });
+  return { styles };
+}
+
+function useEmptyStateStyles(theme: Theme) {
+  const styles = StyleSheet.create({
+    container: { padding: theme.tokens.space.lg, alignItems: 'center' },
+  });
+  return { styles };
+}
