@@ -73,6 +73,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isVisible, onClose }) => {
             <Text style={styles.menuText}>Danh sách tài khoản</Text>
           </TouchableOpacity>
         </MenuSection>
+
+        <MenuSection title="Cài đặt chung">
+          <TouchableOpacity style={styles.menuItem} onPress={() => go('/admin/setting')}>
+            <Text style={styles.menuText}>Giao diện</Text>
+          </TouchableOpacity>
+        </MenuSection>
       </ScrollView>
     </View>
   );
