@@ -8,7 +8,7 @@ router.get('/:id', wordController.detail);
 
 router.post('/', wordController.create);
 
-router.put('/:id', wordController.update);
+router.put('/:id', wordController.edit);
 
 router.delete('/:id', wordController.remove);
 

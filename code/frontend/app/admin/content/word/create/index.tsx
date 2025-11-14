@@ -1,9 +1,18 @@
 import React, { useMemo, useState } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import LayoutDefault from '../../../../../layout-default/layout-default';
-
 import { createWord, type Word } from '../../../../../api/admin/content/word/index';
 import { router } from 'expo-router';
+
+import { useAppTheme } from '../../../../../hooks/use-app-theme';
 
 type Example = Word['examples'][number];
 type Form = Omit<Word, '_id' | 'createdAt' | 'updatedAt'>;
@@ -12,175 +21,338 @@ const JLPT_LEVELS: Array<Form['jlptLevel']> = ['', 'N5', 'N4', 'N3', 'N2', 'N1']
 const initialExample: Example = { sentenceJP: '', readingKana: '', meaningVI: '' };
 
 export default function CreateVocabScreen() {
-    const [form, setForm] = useState<Form>({
-        termJP: '', hiraKata: '', romaji: '',
-        meaningVI: '', meaningEN: '', kanji: '',
-        examples: [{ ...initialExample }], audioUrl: '',
-        tags: [], jlptLevel: '',
+  const { theme } = useAppTheme();
+
+  const [form, setForm] = useState<Form>({
+    termJP: '', hiraKata: '', romaji: '',
+    meaningVI: '', meaningEN: '', kanji: '',
+    examples: [{ ...initialExample }], audioUrl: '',
+    tags: [], jlptLevel: '',
+  });
+
+  const [tagDraft, setTagDraft] = useState('');
+  const isValid = useMemo(() => form.termJP.trim().length > 0, [form.termJP]);
+
+  const setField = <K extends keyof Form>(key: K, value: Form[K]) => {
+    setForm(prev => ({ ...prev, [key]: value }));
+  };
+
+  const setExampleField = (index: number, key: keyof Example, value: string) => {
+    setForm(prev => {
+      const next = [...prev.examples];
+      next[index] = { ...next[index], [key]: value };
+      return { ...prev, examples: next };
     });
+  };
 
-    const [tagDraft, setTagDraft] = useState('');
-    const isValid = useMemo(() => form.termJP.trim().length > 0, [form.termJP]);
+  const addExample = () =>
+    setForm(prev => ({ ...prev, examples: [...prev.examples, { ...initialExample }] }));
 
-    const setField = <K extends keyof Form>(key: K, value: Form[K]) => {
-        setForm(prev => ({ ...prev, [key]: value }));
-    };
+  const removeExample = (index: number) => {
+    setForm(prev => {
+      const next = prev.examples.filter((_, i) => i !== index);
+      return { ...prev, examples: next.length ? next : [{ ...initialExample }] };
+    });
+  };
 
-    const setExampleField = (index: number, key: keyof Example, value: string) => {
-        setForm(prev => {
-            const next = [...prev.examples];
-            next[index] = { ...next[index], [key]: value };
-            return { ...prev, examples: next };
-        });
-    };
+  const addTag = () => {
+    const v = tagDraft.trim();
+    if (!v) return;
+    if (form.tags.includes(v)) { setTagDraft(''); return; }
+    setForm(prev => ({ ...prev, tags: [...prev.tags, v] }));
+    setTagDraft('');
+  };
 
-    const addExample = () => setForm(prev => ({ ...prev, examples: [...prev.examples, { ...initialExample }] }));
-    const removeExample = (index: number) => {
-        setForm(prev => {
-            const next = prev.examples.filter((_, i) => i !== index);
-            return { ...prev, examples: next.length ? next : [{ ...initialExample }] };
-        });
-    };
+  const removeTag = (value: string) =>
+    setForm(prev => ({ ...prev, tags: prev.tags.filter(t => t !== value) }));
 
-    const addTag = () => {
-        const v = tagDraft.trim();
-        if (!v) return;
-        if (form.tags.includes(v)) { setTagDraft(''); return; }
-        setForm(prev => ({ ...prev, tags: [...prev.tags, v] }));
-        setTagDraft('');
-    };
+  const selectJLPT = (lv: Form['jlptLevel']) => setField('jlptLevel', lv);
 
-    const removeTag = (value: string) => setForm(prev => ({ ...prev, tags: prev.tags.filter(t => t !== value) }));
-    const selectJLPT = (lv: Form['jlptLevel']) => setField('jlptLevel', lv);
+  const submit = async () => {
+    if (!isValid) {
+      Alert.alert('Thiếu dữ liệu', 'Trường "termJP" là bắt buộc.');
+      return;
+    }
+    try {
+      await createWord(form as Word);
+      Alert.alert('Thành công', 'Đã thêm từ vựng!');
+      setForm({
+        termJP: '',
+        hiraKata: '',
+        romaji: '',
+        meaningVI: '',
+        meaningEN: '',
+        kanji: '',
+        examples: [{ ...initialExample }],
+        audioUrl: '',
+        tags: [],
+        jlptLevel: '',
+      });
+      router.back();
+    } catch (err: any) {
+      Alert.alert('Lỗi', String(err?.message || err));
+    }
+  };
 
-    const submit = async () => {
-        if (!isValid) {
-            Alert.alert('Thiếu dữ liệu', 'Trường "termJP" là bắt buộc.');
-            return;
-        }
-        try {
-            await createWord(form as Word);
-            Alert.alert('Thành công', 'Đã thêm từ vựng!');
-            setForm({ 
-                termJP: '', 
-                hiraKata: '', 
-                romaji: '', 
-                meaningVI: '', 
-                meaningEN: '', 
-                kanji: '', 
-                examples: [{ ...initialExample }], 
-                audioUrl: '', 
-                tags: [], 
-                jlptLevel: '' });
-            router.back()
-        } catch (err: any) {
-            Alert.alert('Lỗi', String(err?.message || err));
-        }
-    };
+  const styles = useMemo(() => StyleSheet.create({
+    container: { padding: theme.tokens.space.md },
 
-    return (
-        <LayoutDefault title="Thêm từ vựng">
-            <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-                <Section title="Cơ bản">
-                    <Field label="Từ (JP) *">
-                        <TextInput placeholder="食べる" value={form.termJP} onChangeText={(t) => setField('termJP', t)} style={styles.input} />
-                    </Field>
-                    <Field label="Hiragana/Katakana">
-                        <TextInput placeholder="たべる" value={form.hiraKata} onChangeText={(t) => setField('hiraKata', t)} style={styles.input} />
-                    </Field>
-                    <Field label="Romaji">
-                        <TextInput placeholder="taberu" value={form.romaji} onChangeText={(t) => setField('romaji', t)} style={styles.input} autoCapitalize="none" />
-                    </Field>
-                    <Field label="Kanji chính">
-                        <TextInput placeholder="食/食べる" value={form.kanji} onChangeText={(t) => setField('kanji', t)} style={styles.input} />
-                    </Field>
-                    <Field label="Nghĩa (VI)">
-                        <TextInput placeholder="ăn" value={form.meaningVI} onChangeText={(t) => setField('meaningVI', t)} style={styles.input} />
-                    </Field>
-                    <Field label="Meaning (EN)">
-                        <TextInput placeholder="to eat" value={form.meaningEN} onChangeText={(t) => setField('meaningEN', t)} style={styles.input} />
-                    </Field>
-                    <Field label="Audio URL">
-                        <TextInput placeholder="https://.../audio.mp3" value={form.audioUrl} onChangeText={(t) => setField('audioUrl', t)} style={styles.input} autoCapitalize="none" />
-                    </Field>
-                </Section>
+    // Section/card theo theme: bg surface, radius 12, padding 12–16, border/elevation chuẩn
+    section: { ...theme.surface.card, padding: theme.tokens.space.md, marginBottom: theme.tokens.space.md },
+    sectionTitle: { ...theme.text.h2, marginBottom: theme.tokens.space.sm }, // 20/26, 700
+    label: { ...theme.text.secondary, marginBottom: 6 },                      // 14/20, textSub
 
-                <Section title="JLPT Level">
-                    <View style={styles.rowWrap}>
-                        {JLPT_LEVELS.map(lv => (
-                            <TouchableOpacity key={lv || 'none'} onPress={() => selectJLPT(lv)} style={[styles.chip, form.jlptLevel === lv && styles.chipActive]}>
-                                <Text style={[styles.chipText, form.jlptLevel === lv && styles.chipTextActive]}>{lv || '—'}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </View>
-                </Section>
+    // Input theo preset: bgSubtle, border hairline, radius 10, paddingV 12, paddingH 12
+    input: { ...theme.surface.input, ...theme.text.body, paddingVertical: 0 },
 
-                <Section title="Tags">
-                    <View style={styles.tagRow}>
-                        <TextInput placeholder="nhập tag rồi nhấn +" value={tagDraft} onChangeText={setTagDraft} style={[styles.input, { flex: 1 }]} />
-                        <TouchableOpacity style={styles.addBtn} onPress={addTag}><Text style={styles.addBtnText}>＋</Text></TouchableOpacity>
-                    </View>
-                    <View style={styles.rowWrap}>
-                        {form.tags.map(t => (
-                            <View key={t} style={[styles.chip, styles.tagChip]}>
-                                <Text style={styles.chipText}>{t}</Text>
-                                <TouchableOpacity onPress={() => removeTag(t)} style={{ marginLeft: 6 }}><Text style={styles.removeX}>×</Text></TouchableOpacity>
-                            </View>
-                        ))}
-                    </View>
-                </Section>
+    rowWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.tokens.space.sm },
+    tagRow: { flexDirection: 'row', alignItems: 'center', gap: theme.tokens.space.sm, marginBottom: theme.tokens.space.sm },
 
-                <Section title="Ví dụ minh hoạ">
-                    {form.examples.map((ex, i) => (
-                        <View key={i} style={styles.exampleCard}>
-                            <Field label={`Câu JP #${i + 1}`}><TextInput placeholder="私は寿司を食べる。" value={ex.sentenceJP} onChangeText={(t) => setExampleField(i, 'sentenceJP', t)} style={styles.input} /></Field>
-                            <Field label="Kana"><TextInput placeholder="わたしは すしを たべる。" value={ex.readingKana} onChangeText={(t) => setExampleField(i, 'readingKana', t)} style={styles.input} /></Field>
-                            <Field label="Nghĩa (VI)"><TextInput placeholder="Tôi ăn sushi." value={ex.meaningVI} onChangeText={(t) => setExampleField(i, 'meaningVI', t)} style={styles.input} /></Field>
-                            <View style={[styles.rowBetween, { marginTop: 6 }]}><TouchableOpacity onPress={() => removeExample(i)}><Text style={styles.linkDanger}>Xoá ví dụ</Text></TouchableOpacity></View>
-                        </View>
-                    ))}
-                    <TouchableOpacity style={styles.btnGhost} onPress={addExample}><Text style={styles.btnGhostText}>＋ Thêm ví dụ</Text></TouchableOpacity>
-                </Section>
+    // Chip/filter theo tokens
+    chip: { ...theme.chip.container, height: theme.chip.height, flexDirection: 'row', alignItems: 'center' },
+    chipActive: { ...(theme.chip.active.container as any) },
+    chipText: { ...theme.chip.label },
+    chipTextActive: { ...(theme.chip.active.label as any) },
 
-                <View style={{ height: 12 }} />
-                <TouchableOpacity style={[styles.submitBtn, !isValid && styles.submitBtnDisabled]} onPress={submit} disabled={!isValid}>
-                    <Text style={styles.submitBtnText}>Lưu từ vựng</Text>
-                </TouchableOpacity>
-                <View style={{ height: 40 }} />
-            </ScrollView>
-        </LayoutDefault>
-    );
-}
+    // Tag chip (màu nền nhẹ hơn)
+    tagChip: {
+      ...theme.chip.container,
+      height: theme.chip.height,
+      backgroundColor: theme.color.surfaceAlt,
+      borderColor: theme.color.border,
+      borderWidth: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    removeX: { ...theme.text.title, fontSize: 18, lineHeight: 18 },
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-    return (<View style={styles.section}><Text style={styles.sectionTitle}>{title}</Text>{children}</View>);
-}
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-    return (<View style={{ marginBottom: 12 }}><Text style={styles.label}>{label}</Text>{children}</View>);
-}
+    // Card nhỏ cho mỗi ví dụ
+    exampleCard: {
+      backgroundColor: theme.color.bgSubtle,
+      borderRadius: theme.tokens.radius.md,
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: theme.color.border,
+      padding: theme.tokens.space.md,
+      marginBottom: theme.tokens.space.sm,
+    },
 
-const styles = StyleSheet.create({
-    container: { padding: 12 },
-    section: { backgroundColor: '#fff', borderRadius: 12, padding: 12, marginBottom: 12 },
-    sectionTitle: { fontSize: 16, fontWeight: '700', marginBottom: 10 },
-    label: { fontSize: 13, color: '#444', marginBottom: 6 },
-    input: { borderWidth: StyleSheet.hairlineWidth, borderColor: '#d9d9d9', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, fontSize: 15, backgroundColor: '#fafafa' },
-    rowWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-    tagRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 },
-    chip: { paddingHorizontal: 12, paddingVertical: 8, borderRadius: 999, borderWidth: StyleSheet.hairlineWidth, borderColor: '#d9d9d9', backgroundColor: '#fff', flexDirection: 'row', alignItems: 'center' },
-    chipActive: { backgroundColor: '#212121', borderColor: '#212121' },
-    chipText: { fontSize: 14 },
-    chipTextActive: { color: '#fff', fontWeight: '700' },
-    tagChip: { backgroundColor: '#f3f3f3' },
-    removeX: { fontSize: 18, lineHeight: 18 },
-    exampleCard: { padding: 10, borderRadius: 10, backgroundColor: '#fafafa', borderWidth: StyleSheet.hairlineWidth, borderColor: '#eaeaea', marginBottom: 8 },
     rowBetween: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-    linkDanger: { color: '#c62828', fontWeight: '600' },
-    btnGhost: { alignSelf: 'flex-start', paddingVertical: 10, paddingHorizontal: 12 },
-    btnGhostText: { fontWeight: '700', fontSize: 15 },
-    addBtn: { paddingHorizontal: 12, paddingVertical: 10, borderRadius: 10, backgroundColor: '#111', justifyContent: 'center', alignItems: 'center' },
-    addBtnText: { color: '#fff', fontWeight: '700', fontSize: 16 },
-    submitBtn: { backgroundColor: '#111', paddingVertical: 14, borderRadius: 12, alignItems: 'center' },
+
+    // Link danger (xoá ví dụ)
+    linkDanger: { ...theme.text.link, color: theme.color.danger, fontWeight: '700' as const },
+
+    // Buttons
+    btnGhost: { alignSelf: 'flex-start', ...theme.button.ghost.container, paddingHorizontal: theme.tokens.space.md },
+    btnGhostText: { ...theme.button.ghost.label, fontWeight: '700' as const },
+
+    addBtn: { ...theme.button.primary.container, paddingHorizontal: theme.tokens.space.md, paddingVertical: 12, borderRadius: theme.tokens.radius.md },
+    addBtnText: { ...theme.button.primary.label },
+
+    submitBtn: { ...theme.button.primary.container, paddingVertical: 14, borderRadius: theme.tokens.radius.lg, alignItems: 'center' },
     submitBtnDisabled: { opacity: 0.5 },
-    submitBtnText: { color: '#fff', fontWeight: '700', fontSize: 16 },
-});
+    submitBtnText: { ...theme.button.primary.label },
+  }), [theme.mode]);
+
+  return (
+    <LayoutDefault title="Thêm từ vựng">
+      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+
+        <Section title="Cơ bản" styles={styles}>
+          <Field label="Từ (JP) *" styles={styles}>
+            <TextInput
+              placeholder="食べる"
+              value={form.termJP}
+              onChangeText={(t) => setField('termJP', t)}
+              style={styles.input}
+              placeholderTextColor={theme.color.textMeta}
+            />
+          </Field>
+
+          <Field label="Hiragana/Katakana" styles={styles}>
+            <TextInput
+              placeholder="たべる"
+              value={form.hiraKata}
+              onChangeText={(t) => setField('hiraKata', t)}
+              style={styles.input}
+              placeholderTextColor={theme.color.textMeta}
+            />
+          </Field>
+
+          <Field label="Romaji" styles={styles}>
+            <TextInput
+              placeholder="taberu"
+              value={form.romaji}
+              onChangeText={(t) => setField('romaji', t)}
+              style={styles.input}
+              placeholderTextColor={theme.color.textMeta}
+              autoCapitalize="none"
+            />
+          </Field>
+
+          <Field label="Kanji chính" styles={styles}>
+            <TextInput
+              placeholder="食/食べる"
+              value={form.kanji}
+              onChangeText={(t) => setField('kanji', t)}
+              style={styles.input}
+              placeholderTextColor={theme.color.textMeta}
+            />
+          </Field>
+
+          <Field label="Nghĩa (VI)" styles={styles}>
+            <TextInput
+              placeholder="ăn"
+              value={form.meaningVI}
+              onChangeText={(t) => setField('meaningVI', t)}
+              style={styles.input}
+              placeholderTextColor={theme.color.textMeta}
+            />
+          </Field>
+
+          <Field label="Meaning (EN)" styles={styles}>
+            <TextInput
+              placeholder="to eat"
+              value={form.meaningEN}
+              onChangeText={(t) => setField('meaningEN', t)}
+              style={styles.input}
+              placeholderTextColor={theme.color.textMeta}
+            />
+          </Field>
+
+          <Field label="Audio URL" styles={styles}>
+            <TextInput
+              placeholder="https://.../audio.mp3"
+              value={form.audioUrl}
+              onChangeText={(t) => setField('audioUrl', t)}
+              style={styles.input}
+              placeholderTextColor={theme.color.textMeta}
+              autoCapitalize="none"
+              keyboardType="url"
+            />
+          </Field>
+        </Section>
+
+        <Section title="JLPT Level" styles={styles}>
+          <View style={styles.rowWrap}>
+            {JLPT_LEVELS.map(lv => {
+              const active = form.jlptLevel === lv;
+              return (
+                <TouchableOpacity
+                  key={lv || 'none'}
+                  onPress={() => selectJLPT(lv)}
+                  style={[styles.chip, active && styles.chipActive]}
+                  hitSlop={theme.utils.hitSlop}
+                >
+                  <Text style={[styles.chipText, active && styles.chipTextActive]}>{lv || '—'}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </Section>
+
+        <Section title="Tags" styles={styles}>
+          <View style={styles.tagRow}>
+            <TextInput
+              placeholder="nhập tag rồi nhấn +"
+              value={tagDraft}
+              onChangeText={setTagDraft}
+              style={[styles.input, { flex: 1 }]}
+              placeholderTextColor={theme.color.textMeta}
+            />
+            <TouchableOpacity style={styles.addBtn} onPress={addTag} hitSlop={theme.utils.hitSlop}>
+              <Text style={styles.addBtnText}>＋</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.rowWrap}>
+            {form.tags.map(t => (
+              <View key={t} style={styles.tagChip}>
+                <Text style={styles.chipText}>{t}</Text>
+                <TouchableOpacity onPress={() => removeTag(t)} hitSlop={theme.utils.hitSlop}>
+                  <Text style={[styles.removeX, { marginLeft: 6 }]}>×</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
+        </Section>
+
+        <Section title="Ví dụ minh hoạ" styles={styles}>
+          {form.examples.map((ex, i) => (
+            <View key={i} style={styles.exampleCard}>
+              <Field label={`Câu JP #${i + 1}`} styles={styles}>
+                <TextInput
+                  placeholder="私は寿司を食べる。"
+                  value={ex.sentenceJP}
+                  onChangeText={(t) => setExampleField(i, 'sentenceJP', t)}
+                  style={styles.input}
+                  placeholderTextColor={theme.color.textMeta}
+                />
+              </Field>
+
+              <Field label="Kana" styles={styles}>
+                <TextInput
+                  placeholder="わたしは すしを たべる。"
+                  value={ex.readingKana}
+                  onChangeText={(t) => setExampleField(i, 'readingKana', t)}
+                  style={styles.input}
+                  placeholderTextColor={theme.color.textMeta}
+                />
+              </Field>
+
+              <Field label="Nghĩa (VI)" styles={styles}>
+                <TextInput
+                  placeholder="Tôi ăn sushi."
+                  value={ex.meaningVI}
+                  onChangeText={(t) => setExampleField(i, 'meaningVI', t)}
+                  style={styles.input}
+                  placeholderTextColor={theme.color.textMeta}
+                />
+              </Field>
+
+              <View style={[styles.rowBetween, { marginTop: 6 }]}>
+                <TouchableOpacity onPress={() => removeExample(i)} hitSlop={theme.utils.hitSlop}>
+                  <Text style={styles.linkDanger}>Xoá ví dụ</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ))}
+
+          <TouchableOpacity style={styles.btnGhost} onPress={addExample} hitSlop={theme.utils.hitSlop}>
+            <Text style={styles.btnGhostText}>＋ Thêm ví dụ</Text>
+          </TouchableOpacity>
+        </Section>
+
+        <View style={{ height: theme.tokens.space.md }} />
+
+        <TouchableOpacity
+          style={[styles.submitBtn, !isValid && styles.submitBtnDisabled]}
+          onPress={submit}
+          disabled={!isValid}
+          hitSlop={theme.utils.hitSlop}
+        >
+          <Text style={styles.submitBtnText}>Lưu từ vựng</Text>
+        </TouchableOpacity>
+
+        <View style={{ height: theme.tokens.space.xl }} />
+      </ScrollView>
+    </LayoutDefault>
+  );
+}
+
+// --- Subcomponents ---
+function Section({ title, styles, children }: { title: string; styles: any; children: React.ReactNode }) {
+  return (
+    <View style={styles.section}>
+      <Text style={styles.sectionTitle}>{title}</Text>
+      {children}
+    </View>
+  );
+}
+function Field({ label, styles, children }: { label: string; styles: any; children: React.ReactNode }) {
+  return (
+    <View style={{ marginBottom: 12 }}>
+      <Text style={styles.label}>{label}</Text>
+      {children}
+    </View>
+  );
+}

@@ -1,8 +1,17 @@
-
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ViewStyle, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+  ViewStyle,
+  ScrollView,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+
+import { useAppTheme } from '../hooks/use-app-theme'
 
 interface SidebarProps {
   isVisible: boolean;
@@ -11,122 +20,137 @@ interface SidebarProps {
 
 const { width } = Dimensions.get('window');
 
-const MenuSection: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
-  <>
-    <Text style={styles.sectionTitle}>{title}</Text>
-    <View style={{ marginBottom: 8 }}>{children}</View>
-  </>
-);
+const MenuSection: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => {
+  const { theme } = useAppTheme();
+  return (
+    <>
+      <Text style={[theme.text.h2, { marginBottom: 4, marginTop: 12 }]}>{title}</Text>
+      <View style={{ marginBottom: 8 }}>{children}</View>
+    </>
+  );
+};
 
 const Sidebar: React.FC<SidebarProps> = ({ isVisible, onClose }) => {
-  const sidebarStyle: ViewStyle = isVisible ? styles.sidebarVisible : styles.sidebarHidden;
+  const { theme } = useAppTheme();
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
-  const go = (href: String) => {
+  const sidebarStyle: ViewStyle = isVisible ? styles.sidebarVisible : styles.sidebarHidden;
+
+  const go = (href: string) => {
     onClose();
     router.push(href as Parameters<typeof router.push>[0]);
   };
 
   return (
-    <View style={[styles.sidebar, sidebarStyle, { paddingTop: insets.top }]}>
-      <ScrollView contentContainerStyle={styles.scrollViewContent} showsVerticalScrollIndicator={false}>
-        <TouchableOpacity onPress={onClose} style={styles.closeButton} accessibilityLabel="Close menu">
-          <Text style={styles.closeText}>×</Text>
-        </TouchableOpacity>
+    <>
+      {/* Backdrop tối – bấm để đóng */}
+      {isVisible && (
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={onClose}
+          style={[
+            StyleSheet.absoluteFillObject,
+            { backgroundColor: 'rgba(0,0,0,0.35)', zIndex: 9 },
+          ]}
+        />
+      )}
 
-        <MenuSection title="Quản lý nội dung">
-          <TouchableOpacity style={styles.menuItem} onPress={() => go('/admin/content/word')}>
-            <Text style={styles.menuText}>Từ vựng</Text>
+      <View
+        style={[
+          styles.sidebarBase,
+          sidebarStyle,
+          {
+            paddingTop: insets.top,
+            width: width * 0.82,
+            backgroundColor: theme.color.surface,   // nền theo theme
+            borderRightColor: theme.color.border,   // viền hairline Android
+            borderRightWidth: StyleSheet.hairlineWidth,
+            ...theme.tokens.elevation.md,          // đổ bóng/elevation nhẹ
+          },
+        ]}
+      >
+        <ScrollView
+          contentContainerStyle={{ padding: theme.tokens.space.lg, paddingTop: theme.tokens.space.md }}
+          showsVerticalScrollIndicator={false}
+        >
+          <TouchableOpacity
+            onPress={onClose}
+            style={{ alignSelf: 'flex-end', padding: 10 }}
+            accessibilityLabel="Close menu"
+            hitSlop={theme.utils.hitSlop}
+          >
+            <Text
+              style={{
+                ...theme.text.title,       // 18/24, 700
+                fontSize: 26,
+                lineHeight: 26,
+              }}
+            >
+              ×
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => go('/admin/content/grammar')}>
-            <Text style={styles.menuText}>Ngữ pháp</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => go('/admin/content/reading')}>
-            <Text style={styles.menuText}>Luyện đọc</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => go('/admin/content/speaking')}>
-            <Text style={styles.menuText}>Luyện nói</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => go('/admin/content/lesson')}>
-            <Text style={styles.menuText}>Bài học</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => go('/admin/content/exam')}>
-            <Text style={styles.menuText}>Kiểm tra</Text>
-          </TouchableOpacity>
-        </MenuSection>
 
-        <MenuSection title="Quản lý admin">
-          <TouchableOpacity style={styles.menuItem} onPress={() => go('/admin/admins')}>
-            <Text style={styles.menuText}>Danh sách tài khoản</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => go('/admin/admins/create')}>
-            <Text style={styles.menuText}>Tạo tài khoản</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => go('/admin/admins/roles')}>
-            <Text style={styles.menuText}>Phân quyền</Text>
-          </TouchableOpacity>
-        </MenuSection>
+          <MenuSection title="Quản lý nội dung">
+            <MenuItem label="Từ vựng" onPress={() => go('/admin/content/word')} />
+            <MenuItem label="Ngữ pháp" onPress={() => go('/admin/content/grammar')} />
+            <MenuItem label="Luyện đọc" onPress={() => go('/admin/content/reading')} />
+            <MenuItem label="Luyện nói" onPress={() => go('/admin/content/speaking')} />
+            <MenuItem label="Bài học" onPress={() => go('/admin/content/lesson')} />
+            <MenuItem label="Kiểm tra" onPress={() => go('/admin/content/exam')} />
+          </MenuSection>
 
-        <MenuSection title="Quản lý người dùng">
-          <TouchableOpacity style={styles.menuItem} onPress={() => go('/admin/users')}>
-            <Text style={styles.menuText}>Danh sách tài khoản</Text>
-          </TouchableOpacity>
-        </MenuSection>
+          <MenuSection title="Quản lý admin">
+            <MenuItem label="Danh sách tài khoản" onPress={() => go('/admin/admins')} />
+            <MenuItem label="Tạo tài khoản" onPress={() => go('/admin/admins/create')} />
+            <MenuItem label="Phân quyền" onPress={() => go('/admin/admins/roles')} />
+          </MenuSection>
 
-        <MenuSection title="Cài đặt chung">
-          <TouchableOpacity style={styles.menuItem} onPress={() => go('/admin/setting')}>
-            <Text style={styles.menuText}>Giao diện</Text>
-          </TouchableOpacity>
-        </MenuSection>
-      </ScrollView>
-    </View>
+          <MenuSection title="Quản lý người dùng">
+            <MenuItem label="Danh sách tài khoản" onPress={() => go('/admin/users')} />
+          </MenuSection>
+
+          <MenuSection title="Cài đặt chung">
+            <MenuItem label="Giao diện" onPress={() => go('/admin/setting')} />
+          </MenuSection>
+        </ScrollView>
+      </View>
+    </>
   );
 };
 
+function MenuItem({ label, onPress }: { label: string; onPress: () => void }) {
+  const { theme } = useAppTheme();
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      style={{
+        paddingVertical: 14,
+        paddingHorizontal: 10,
+        borderRadius: theme.tokens.radius.md,   // 10dp
+      }}
+      hitSlop={theme.utils.hitSlop}
+      activeOpacity={0.7}
+    >
+      <Text style={theme.text.body /* 16/22, màu theo light/dark */}>{label}</Text>
+    </TouchableOpacity>
+  );
+}
+
 const styles = StyleSheet.create({
-  sidebar: {
+  sidebarBase: {
     position: 'absolute',
     top: 0,
     left: 0,
     bottom: 0,
-    width: width * 0.82,
-    backgroundColor: '#fff',
     zIndex: 10,
-    elevation: 5,
-  },
-  scrollViewContent: {
-    padding: 20,
-    paddingTop: 12,
+    transform: [{ translateX: 0 }],
   },
   sidebarVisible: {
     transform: [{ translateX: 0 }],
   },
   sidebarHidden: {
     transform: [{ translateX: -width }],
-  },
-  closeButton: {
-    alignSelf: 'flex-end',
-    padding: 10,
-  },
-  closeText: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    lineHeight: 26,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    marginBottom: 4,
-    marginTop: 12,
-  },
-  menuItem: {
-    paddingVertical: 14,
-    paddingHorizontal: 10,
-    borderRadius: 8,
-  },
-  menuText: {
-    fontSize: 16,
   },
 });
 

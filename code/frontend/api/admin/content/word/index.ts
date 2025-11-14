@@ -45,7 +45,7 @@ export async function createWord(payload: Word) {
   return res.json();
 }
 
-export async function updateWord(id: string, payload: Partial<Word>) {
+export async function editWord(id: string, payload: Partial<Word>) {
   const res = await fetch(`${BASE}/words/${id}`, { method: 'PUT', headers: authHeaders(), body: JSON.stringify(payload) });
   if (!res.ok) throw new Error(await res.text());
   return res.json();
