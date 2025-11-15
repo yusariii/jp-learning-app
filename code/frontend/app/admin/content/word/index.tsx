@@ -9,6 +9,7 @@ import { listWords, type Word } from '../../../../api/admin/content/word';
 import SearchBar from '../../../../components/ui/SearchBar';
 import FilterBar, { type SortKey } from '../../../../components/list/FilterBar'
 import WordCard from '../../../../components/card/WordCard'
+import AddButton from '../../../../components/ui/AddButton';
 
 type ApiList = { data: Word[]; page: number; limit: number; total: number };
 
@@ -136,12 +137,9 @@ function CreateButton() {
         style={[theme.button.primary.container, { position: 'absolute', inset: 0 }]}
         pointerEvents="none"
       />
-      <Text
-        style={[theme.button.primary.label, { position: 'relative' }]}
-        onPress={() => router.push('/admin/content/word/create' as Href)}
-      >
-        ＋ Thêm từ vựng
-      </Text>
+      <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+        <AddButton to={'/admin/content/word/create'} label="Thêm từ vựng" />
+      </View>
     </View>
   );
 }

@@ -9,6 +9,7 @@ import { listGrammars, type Grammar } from '../../../../api/admin/content/gramma
 import SearchBar from '../../../../components/ui/SearchBar';
 import FilterBar, { type SortKey } from '../../../../components/list/FilterBar'
 import GrammarCard from '../../../../components/card/GrammarCard'
+import AddButton from '../../../../components/ui/AddButton';
 
 type ApiList = { data: Grammar[]; page: number; limit: number; total: number };
 
@@ -21,7 +22,7 @@ export default function ListGrammarScreen() {
 
   const [q, setQ] = useState('');
   const [jlpt, setJlpt] = useState<Grammar['jlptLevel']>('');
-  const [sort, setSort] = useState<SortKey>('updatedAt'); // 'title' thay cho 'termJP'
+  const [sort, setSort] = useState<SortKey>('updatedAt'); 
 
   const [data, setData] = useState<Grammar[]>([]);
   const [page, setPage] = useState(1);
@@ -38,7 +39,7 @@ export default function ListGrammarScreen() {
         limit: LIMIT,
         q: q.trim() || undefined,
         jlpt: jlpt || undefined,
-        sort: (sort as any) || 'updatedAt', // 'updatedAt' | 'createdAt' | 'title'
+        sort: (sort as any) || 'updatedAt', 
       }) as any;
 
       append ? setData(prev => [...prev, ...res.data]) : setData(res.data);
@@ -135,12 +136,9 @@ function CreateButton() {
         style={[theme.button.primary.container, { position: 'absolute', inset: 0 }]}
         pointerEvents="none"
       />
-      <Text
-        style={[theme.button.primary.label, { position: 'relative' }]}
-        onPress={() => router.push('/admin/content/grammar/create' as Href)}
-      >
-        ＋ Thêm ngữ pháp
-      </Text>
+      <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+        <AddButton to={'/admin/content/grammar/create'} label="Thêm ngữ pháp" />
+      </View>
     </View>
   );
 }
