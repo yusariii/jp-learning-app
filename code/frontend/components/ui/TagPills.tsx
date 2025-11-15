@@ -1,18 +1,27 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
+import { useAppTheme } from '../../hooks/use-app-theme';
 
 export default function TagPills({ tags }: { tags?: string[] }) {
+  const { theme } = useAppTheme();
   if (!tags?.length) return null;
+
   return (
-    <View style={styles.wrap}>
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.tokens.space.xs, marginTop: theme.tokens.space.xs }}>
       {tags.map(t => (
-        <View key={t} style={styles.pill}><Text style={styles.txt}>{t}</Text></View>
+        <View
+          key={t}
+          style={{
+            ...theme.chip.container,
+            height: theme.chip.height,
+            backgroundColor: theme.color.surfaceAlt,
+            borderColor: theme.color.border,
+            borderWidth: 1,
+          }}
+        >
+          <Text style={theme.chip.label}>{t}</Text>
+        </View>
       ))}
     </View>
   );
 }
-const styles = StyleSheet.create({
-  wrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 6 },
-  pill: { paddingHorizontal: 10, paddingVertical: 6, borderRadius: 999, backgroundColor: '#f3f3f3' },
-  txt: { fontSize: 12 },
-});

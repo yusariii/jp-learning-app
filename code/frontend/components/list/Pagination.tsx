@@ -1,6 +1,8 @@
 import { useCallback, useRef, useState } from 'react';
 
-type Fetcher<T, P extends object> = (params: P & { page: number; limit: number }) => Promise<{ data: T[]; page: number; limit: number; total: number }>;
+type Fetcher<T, P extends object> =
+  (params: P & { page: number; limit: number }) =>
+  Promise<{ data: T[]; page: number; limit: number; total: number }>;
 
 export default function usePaginatedList<T, P extends object>(
   fetcher: Fetcher<T, P>,

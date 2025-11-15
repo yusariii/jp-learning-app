@@ -1,9 +1,22 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
+import { useAppTheme } from '../../hooks/use-app-theme'
 
 export default function ContentCard({ children }: { children: React.ReactNode }) {
-  return <View style={styles.card}>{children}</View>;
+  const { theme } = useAppTheme();
+  return (
+    <View
+      style={{
+        ...theme.surface.card,
+        padding: theme.tokens.space.md,
+        marginVertical: theme.list.itemSpacingY / 2,
+        borderRadius: theme.tokens.radius.md,
+        backgroundColor: theme.color.surface,
+        borderWidth: 1,
+        borderColor: theme.color.border,
+      }}
+    >
+      {children}
+    </View>
+  );
 }
-const styles = StyleSheet.create({
-  card: { backgroundColor: '#fff', borderRadius: 12, padding: 12, marginVertical: 6, borderWidth: StyleSheet.hairlineWidth, borderColor: '#eee' },
-});

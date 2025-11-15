@@ -1,16 +1,23 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text } from 'react-native';
+import { useAppTheme } from '../../hooks/use-app-theme';
 
-export default function Chip({ label, active, onPress }: { label: string; active?: boolean; onPress?: () => void; }) {
+type Props = { label: string; active?: boolean; onPress?: () => void; };
+
+export default function Chip({ label, active, onPress }: Props) {
+  const { theme } = useAppTheme();
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.chip, active && styles.active]}>
-      <Text style={[styles.text, active && styles.textActive]}>{label}</Text>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[
+        theme.chip.container,
+        { height: theme.chip.height },
+        active && theme.chip.active.container,
+      ]}
+      hitSlop={theme.utils.hitSlop}
+      activeOpacity={0.7}
+    >
+      <Text style={[theme.chip.label, active && theme.chip.active.label]}>{label}</Text>
     </TouchableOpacity>
   );
 }
-const styles = StyleSheet.create({
-  chip: { paddingHorizontal: 10, paddingVertical: 8, borderRadius: 999, borderWidth: StyleSheet.hairlineWidth, borderColor: '#d9d9d9', backgroundColor: '#fff', marginRight: 8, marginBottom: 8 },
-  active: { backgroundColor: '#212121', borderColor: '#212121' },
-  text: { fontSize: 13 },
-  textActive: { color: '#fff', fontWeight: '700' },
-});

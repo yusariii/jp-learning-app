@@ -1,26 +1,51 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import Chip from '../ui/Chip';
+import { useAppTheme } from '../../hooks/use-app-theme'
+
+// Dùng cho cả Word & Grammar
+export type SortKey = 'updatedAt' | 'createdAt' | 'termJP' | 'title';
+
+type JLPT = '' | 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
 
 type Props = {
-  jlptLevels: Array<'' | 'N5' | 'N4' | 'N3' | 'N2' | 'N1'>;
-  selected: '' | 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
-  onSelect: (lv: Props['selected']) => void;
-  sorts?: Array<'updatedAt'|'createdAt'|'termJP'>;
-  sort?: 'updatedAt'|'createdAt'|'termJP';
-  onSort?: (s: Props['sort']) => void;
+  jlptLevels: JLPT[];
+  selected: JLPT;
+  onSelect: (lv: JLPT) => void;
+  sorts?: SortKey[];           // Word: ['updatedAt','createdAt','termJP']; Grammar: ['updatedAt','createdAt','title']
+  sort?: SortKey;
+  onSort?: (s: SortKey) => void;
 };
-export default function FilterBar({ jlptLevels, selected, onSelect, sorts=['updatedAt','createdAt','termJP'], sort='updatedAt', onSort }: Props) {
+
+export default function FilterBar({
+  jlptLevels,
+  selected,
+  onSelect,
+  sorts = ['updatedAt', 'createdAt', 'termJP'],
+  sort = 'updatedAt',
+  onSort,
+}: Props) {
+  const { theme } = useAppTheme();
+
   return (
-    <View style={styles.wrap}>
-      <View style={styles.row}>
-        {jlptLevels.map(lv => <Chip key={lv||'none'} label={lv || '—'} active={selected===lv} onPress={() => onSelect(lv)} />)}
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: theme.tokens.space.xs }}>
+        {jlptLevels.map(lv => (
+          <Chip
+            key={lv || 'none'}
+            label={lv || '—'}
+            active={selected === lv}
+            onPress={() => onSelect(lv)}
+          />
+        ))}
       </View>
-      <View style={[styles.row, { marginLeft: 'auto' }]}>
+
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: theme.tokens.space.xs, marginLeft: 'auto' }}>
         {sorts.map(s => (
-          <Chip key={s}
-            label={s==='updatedAt' ? 'Sửa gần nhất' : s==='createdAt' ? 'Mới tạo' : 'A→Z'}
-            active={sort===s}
+          <Chip
+            key={s}
+            label={s === 'updatedAt' ? 'Sửa gần nhất' : s === 'createdAt' ? 'Mới tạo' : s === 'termJP' ? 'A→Z' : 'A→Z'}
+            active={sort === s}
             onPress={() => onSort?.(s)}
           />
         ))}
@@ -28,7 +53,3 @@ export default function FilterBar({ jlptLevels, selected, onSelect, sorts=['upda
     </View>
   );
 }
-const styles = StyleSheet.create({
-  wrap: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' },
-  row: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' },
-});
