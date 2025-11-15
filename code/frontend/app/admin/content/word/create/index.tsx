@@ -97,24 +97,20 @@ export default function CreateVocabScreen() {
   const styles = useMemo(() => StyleSheet.create({
     container: { padding: theme.tokens.space.md },
 
-    // Section/card theo theme: bg surface, radius 12, padding 12–16, border/elevation chuẩn
     section: { ...theme.surface.card, padding: theme.tokens.space.md, marginBottom: theme.tokens.space.md },
-    sectionTitle: { ...theme.text.h2, marginBottom: theme.tokens.space.sm }, // 20/26, 700
-    label: { ...theme.text.secondary, marginBottom: 6 },                      // 14/20, textSub
+    sectionTitle: { ...theme.text.h2, marginBottom: theme.tokens.space.sm }, 
+    label: { ...theme.text.secondary, marginBottom: 6 },                     
 
-    // Input theo preset: bgSubtle, border hairline, radius 10, paddingV 12, paddingH 12
     input: { ...theme.surface.input, ...theme.text.body, paddingVertical: 0 },
 
     rowWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.tokens.space.sm },
     tagRow: { flexDirection: 'row', alignItems: 'center', gap: theme.tokens.space.sm, marginBottom: theme.tokens.space.sm },
 
-    // Chip/filter theo tokens
     chip: { ...theme.chip.container, height: theme.chip.height, flexDirection: 'row', alignItems: 'center' },
     chipActive: { ...(theme.chip.active.container as any) },
     chipText: { ...theme.chip.label },
     chipTextActive: { ...(theme.chip.active.label as any) },
 
-    // Tag chip (màu nền nhẹ hơn)
     tagChip: {
       ...theme.chip.container,
       height: theme.chip.height,
@@ -126,7 +122,6 @@ export default function CreateVocabScreen() {
     },
     removeX: { ...theme.text.title, fontSize: 18, lineHeight: 18 },
 
-    // Card nhỏ cho mỗi ví dụ
     exampleCard: {
       backgroundColor: theme.color.bgSubtle,
       borderRadius: theme.tokens.radius.md,
@@ -138,10 +133,8 @@ export default function CreateVocabScreen() {
 
     rowBetween: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
 
-    // Link danger (xoá ví dụ)
     linkDanger: { ...theme.text.link, color: theme.color.danger, fontWeight: '700' as const },
 
-    // Buttons
     btnGhost: { alignSelf: 'flex-start', ...theme.button.ghost.container, paddingHorizontal: theme.tokens.space.md },
     btnGhostText: { ...theme.button.ghost.label, fontWeight: '700' as const },
 

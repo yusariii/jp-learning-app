@@ -22,5 +22,5 @@ export async function listWords(params: WordListQuery) {
 }
 export const getWord = (id: string) => get<Word>(`${BASE}/${encodeURIComponent(id)}`);
 export const createWord = (payload: Word) => post<Word>(BASE, payload);
-export const updateWord = (id: string, payload: Partial<Word>) => put<Word>(`${BASE}/${encodeURIComponent(id)}`, payload);
+export const editWord = (id: string, payload: Partial<Word>) => put<Word>(`${BASE}/${encodeURIComponent(id)}`, payload);
 export const deleteWord = (id: string) => del<{ ok: true }>(`${BASE}/${encodeURIComponent(id)}`);

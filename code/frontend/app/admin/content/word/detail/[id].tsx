@@ -114,7 +114,6 @@ export default function WordDetailScreen() {
           </View>
         </View>
 
-        {/* Tags */}
         <View style={styles.section}>
           <Text style={theme.text.h2}>Tags</Text>
           <View style={[styles.row, { marginTop: theme.tokens.space.sm }]}>
@@ -128,7 +127,6 @@ export default function WordDetailScreen() {
           </View>
         </View>
 
-        {/* Ví dụ minh hoạ */}
         <View style={styles.section}>
           <Text style={theme.text.h2}>Ví dụ minh hoạ</Text>
           <View style={{ marginTop: theme.tokens.space.sm }}>
@@ -154,7 +152,6 @@ export default function WordDetailScreen() {
           </View>
         </View>
 
-        {/* Metadata */}
         <View style={styles.section}>
           <Text style={theme.text.h2}>Thông tin khác</Text>
           <Text style={[theme.text.meta, styles.line]}>
