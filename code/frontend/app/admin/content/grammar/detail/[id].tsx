@@ -1,9 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
+import { useLocalSearchParams, useRouter, Href } from 'expo-router';
 import LayoutDefault from '../../../../../layout-default/layout-default';
-import { useLocalSearchParams, useRouter } from 'expo-router';
 import { getGrammar, type Grammar } from '../../../../../api/admin/content/grammar';
 import { useAppTheme } from '../../../../../hooks/use-app-theme';
+import ContentCard from '../../../../../components/card/ContentCard';
+import ExampleBlock from '../../../../../components/ui/ExampleBlock';
 
 export default function GrammarDetailScreen() {
   const { theme } = useAppTheme();
@@ -14,20 +16,17 @@ export default function GrammarDetailScreen() {
   const [item, setItem] = useState<Grammar | null>(null);
 
   useEffect(() => {
-    let m = true;
+    let mounted = true;
     (async () => {
-      try { const w = await getGrammar(String(params.id)); if (m) setItem(w); }
-      finally { if (m) setLoading(false); }
+      try {
+        const g = await getGrammar(String(params.id));
+        if (mounted) setItem(g);
+      } finally {
+        if (mounted) setLoading(false);
+      }
     })();
-    return () => { m = false; };
+    return () => { mounted = false; };
   }, [params.id]);
-
-  const styles = useMemo(() => StyleSheet.create({
-    container: { padding: theme.tokens.space.md },
-    section: { ...theme.surface.card, padding: theme.tokens.space.md, marginBottom: theme.tokens.space.md },
-    headerRow: { flexDirection: 'row', alignItems: 'center', gap: theme.tokens.space.sm, flexWrap: 'wrap' },
-    line: { marginTop: theme.tokens.space.xs },
-  }), [theme.mode]);
 
   if (loading) {
     return (
@@ -56,25 +55,29 @@ export default function GrammarDetailScreen() {
 
   return (
     <LayoutDefault title="Chi tiết ngữ pháp">
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.section}>
-          <View style={styles.headerRow}>
+      <ScrollView contentContainerStyle={{ padding: theme.tokens.space.md }}>
+        <ContentCard>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.tokens.space.sm, flexWrap: 'wrap' }}>
             <Text style={theme.text.h1}>{item.title}</Text>
             {!!item.jlptLevel && <Text style={theme.badge.jlpt(item.jlptLevel)}>{item.jlptLevel}</Text>}
           </View>
-          {!!item.description && <Text style={[theme.text.secondary, styles.line]}>{item.description}</Text>}
+
+          {!!item.description && <Text style={[theme.text.secondary, { marginTop: theme.tokens.space.xs }]}>{item.description}</Text>}
+
           <Text style={[theme.text.h2, { marginTop: theme.tokens.space.md }]}>Giải thích (JP)</Text>
-          <Text style={[theme.text.body, styles.line]}>{item.explanationJP}</Text>
+          <Text style={[theme.text.body, { marginTop: theme.tokens.space.xs }]}>{item.explanationJP}</Text>
+
           {!!item.explanationEN && (
             <>
               <Text style={[theme.text.h2, { marginTop: theme.tokens.space.md }]}>Explanation (EN)</Text>
-              <Text style={[theme.text.body, styles.line]}>{item.explanationEN}</Text>
+              <Text style={[theme.text.body, { marginTop: theme.tokens.space.xs }]}>{item.explanationEN}</Text>
             </>
           )}
+
           <View style={{ flexDirection: 'row', gap: theme.tokens.space.sm, marginTop: theme.tokens.space.md }}>
             <TouchableOpacity
               style={[theme.button.primary.container, { flex: 1 }]}
-              onPress={() => router.push(`/admin/content/grammar/edit/${item._id}` as any)}
+              onPress={() => router.push(`/admin/content/grammar/edit/${item._id}` as Href)}
               hitSlop={theme.utils.hitSlop}
             >
               <Text style={theme.button.primary.label}>Sửa</Text>
@@ -83,34 +86,28 @@ export default function GrammarDetailScreen() {
               <Text style={theme.button.ghost.label}>Quay lại</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </ContentCard>
 
-        <View style={styles.section}>
+        <ContentCard>
           <Text style={theme.text.h2}>Ví dụ</Text>
           <View style={{ marginTop: theme.tokens.space.sm }}>
-            {item.examples?.length ? item.examples.map((ex, i) => (
-              <View key={i} style={{
-                backgroundColor: theme.color.bgSubtle,
-                borderRadius: theme.tokens.radius.md,
-                borderWidth: StyleSheet.hairlineWidth,
-                borderColor: theme.color.border,
-                padding: theme.tokens.space.md,
-                marginBottom: theme.tokens.space.sm,
-              }}>
-                {!!ex.sentenceJP && <Text style={theme.text.title}>{ex.sentenceJP}</Text>}
-                {!!ex.readingKana && <Text style={[theme.text.secondary, styles.line]}>{ex.readingKana}</Text>}
-                {!!ex.meaningVI && <Text style={[theme.text.body, styles.line]}>{ex.meaningVI}</Text>}
-                {!!ex.meaningEN && <Text style={[theme.text.secondary, styles.line]}>{ex.meaningEN}</Text>}
-              </View>
-            )) : <Text style={theme.text.secondary}>Chưa có ví dụ.</Text>}
+            {item.examples?.length ? (
+              item.examples.map((ex, i) => <ExampleBlock key={i} ex={ex} index={i} />)
+            ) : (
+              <Text style={theme.text.secondary}>Chưa có ví dụ.</Text>
+            )}
           </View>
-        </View>
+        </ContentCard>
 
-        <View style={styles.section}>
+        <ContentCard>
           <Text style={theme.text.h2}>Thông tin khác</Text>
-          <Text style={[theme.text.meta, styles.line]}>Tạo: {item.createdAt ? new Date(item.createdAt).toLocaleString() : '—'}</Text>
-          <Text style={[theme.text.meta, styles.line]}>Cập nhật: {item.updatedAt ? new Date(item.updatedAt).toLocaleString() : '—'}</Text>
-        </View>
+          <Text style={[theme.text.meta, { marginTop: theme.tokens.space.xs }]}>
+            Tạo: {item.createdAt ? new Date(item.createdAt).toLocaleString() : '—'}
+          </Text>
+          <Text style={[theme.text.meta, { marginTop: theme.tokens.space.xs }]}>
+            Cập nhật: {item.updatedAt ? new Date(item.updatedAt).toLocaleString() : '—'}
+          </Text>
+        </ContentCard>
 
         <View style={{ height: theme.tokens.space.xl }} />
       </ScrollView>

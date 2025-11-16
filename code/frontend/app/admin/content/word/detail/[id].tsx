@@ -1,10 +1,12 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
+import { useLocalSearchParams, useRouter, Href } from 'expo-router';
 import LayoutDefault from '../../../../../layout-default/layout-default';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-
 import { getWord, type Word } from '../../../../../api/admin/content/word';
-import { useAppTheme } from '../../../../../hooks/use-app-theme';
+import { useAppTheme } from '../../../../../hooks/use-app-theme'
+import ContentCard from '../../../../../components/card/ContentCard'
+import TagPills from '../../../../../components/ui/TagPills';
+import ExampleBlock from '../../../../../components/ui/ExampleBlock';
 
 export default function WordDetailScreen() {
   const { theme } = useAppTheme();
@@ -19,34 +21,13 @@ export default function WordDetailScreen() {
     (async () => {
       try {
         const w = await getWord(String(params.id));
-        if (mounted) setItem(w as Word);
-      } catch (e) {
-        console.error(e);
+        if (mounted) setItem(w);
       } finally {
         if (mounted) setLoading(false);
       }
     })();
     return () => { mounted = false; };
   }, [params.id]);
-
-  const styles = useMemo(() => StyleSheet.create({
-    container: { padding: theme.tokens.space.md },
-    section: { ...theme.surface.card, padding: theme.tokens.space.md, marginBottom: theme.tokens.space.md },
-
-    headerRow: { flexDirection: 'row', alignItems: 'center', gap: theme.tokens.space.sm, flexWrap: 'wrap' },
-    row: { flexDirection: 'row', gap: theme.tokens.space.sm, flexWrap: 'wrap' },
-    line: { marginTop: theme.tokens.space.xs },
-
-    tagChip: {
-      ...theme.chip.container,
-      height: theme.chip.height,
-      backgroundColor: theme.color.surfaceAlt,
-      borderColor: theme.color.border,
-      borderWidth: 1,
-    },
-
-    actions: { flexDirection: 'row', gap: theme.tokens.space.sm, marginTop: theme.tokens.space.md },
-  }), [theme.mode]);
 
   if (loading) {
     return (
@@ -75,92 +56,62 @@ export default function WordDetailScreen() {
 
   return (
     <LayoutDefault title="Chi tiết từ vựng">
-      <ScrollView contentContainerStyle={styles.container}>
-        {/* Thông tin chính */}
-        <View style={styles.section}>
-          <View style={styles.headerRow}>
+      <ScrollView contentContainerStyle={{ padding: theme.tokens.space.md }}>
+        <ContentCard>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.tokens.space.sm, flexWrap: 'wrap' }}>
             <Text style={theme.text.h1}>{item.termJP}</Text>
             {!!item.jlptLevel && <Text style={theme.badge.jlpt(item.jlptLevel)}>{item.jlptLevel}</Text>}
           </View>
 
-          {!!item.hiraKata && <Text style={[theme.text.secondary, styles.line]}>{item.hiraKata}</Text>}
-          {!!item.romaji && <Text style={[theme.text.secondary, styles.line]}>{item.romaji}</Text>}
+          {!!item.hiraKata && <Text style={[theme.text.secondary, { marginTop: theme.tokens.space.xs }]}>{item.hiraKata}</Text>}
+          {!!item.romaji && <Text style={[theme.text.secondary, { marginTop: theme.tokens.space.xs }]}>{item.romaji}</Text>}
 
-          {!!item.meaningVI && (
-            <Text style={[{ ...theme.text.body, fontWeight: '600' as const }, styles.line]}>
-              {item.meaningVI}
-            </Text>
-          )}
-          {!!item.meaningEN && <Text style={[theme.text.secondary, styles.line]}>{item.meaningEN}</Text>}
-          {!!item.kanji && <Text style={[theme.text.secondary, styles.line]}>Kanji: {item.kanji}</Text>}
-          {!!item.audioUrl && <Text style={[theme.text.link, styles.line]}>Audio: {item.audioUrl}</Text>}
+          {!!item.meaningVI && <Text style={[{ ...theme.text.body, fontWeight: '600' as const }, { marginTop: theme.tokens.space.xs }]}>{item.meaningVI}</Text>}
+          {!!item.meaningEN && <Text style={[theme.text.secondary, { marginTop: theme.tokens.space.xs }]}>{item.meaningEN}</Text>}
+          {!!item.kanji && <Text style={[theme.text.secondary, { marginTop: theme.tokens.space.xs }]}>Kanji: {item.kanji}</Text>}
+          {!!item.audioUrl && <Text style={[theme.text.link, { marginTop: theme.tokens.space.xs }]}>Audio: {item.audioUrl}</Text>}
 
-          <View style={styles.actions}>
+          <View style={{ flexDirection: 'row', gap: theme.tokens.space.sm, marginTop: theme.tokens.space.md }}>
             <TouchableOpacity
               style={[theme.button.primary.container, { flex: 1 }]}
-              onPress={() => router.push(`/admin/content/word/edit/${item._id}` as Parameters<typeof router.push>[0])}
+              onPress={() => router.push(`/admin/content/word/edit/${item._id}` as Href)}
               hitSlop={theme.utils.hitSlop}
             >
               <Text style={theme.button.primary.label}>Sửa</Text>
             </TouchableOpacity>
-
-            <TouchableOpacity
-              style={theme.button.ghost.container}
-              onPress={() => router.back()}
-              hitSlop={theme.utils.hitSlop}
-            >
+            <TouchableOpacity style={theme.button.ghost.container} onPress={() => router.back()} hitSlop={theme.utils.hitSlop}>
               <Text style={theme.button.ghost.label}>Quay lại</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </ContentCard>
 
-        <View style={styles.section}>
+        <ContentCard>
           <Text style={theme.text.h2}>Tags</Text>
-          <View style={[styles.row, { marginTop: theme.tokens.space.sm }]}>
-            {item.tags?.length
-              ? item.tags.map((t) => (
-                  <View key={t} style={styles.tagChip}>
-                    <Text style={theme.chip.label}>{t}</Text>
-                  </View>
-                ))
-              : <Text style={theme.text.secondary}>Không có tag</Text>}
+          <View style={{ marginTop: theme.tokens.space.sm }}>
+            {item.tags?.length ? <TagPills tags={item.tags} /> : <Text style={theme.text.secondary}>Không có tag</Text>}
           </View>
-        </View>
+        </ContentCard>
 
-        <View style={styles.section}>
+        <ContentCard>
           <Text style={theme.text.h2}>Ví dụ minh hoạ</Text>
           <View style={{ marginTop: theme.tokens.space.sm }}>
-            {item.examples?.length ? item.examples.map((ex, i) => (
-              <View
-                key={i}
-                style={{
-                  backgroundColor: theme.color.bgSubtle,
-                  borderRadius: theme.tokens.radius.md,
-                  borderWidth: StyleSheet.hairlineWidth,
-                  borderColor: theme.color.border,
-                  padding: theme.tokens.space.md,
-                  marginBottom: theme.tokens.space.sm,
-                }}
-              >
-                {!!ex.sentenceJP && <Text style={theme.text.title}>{ex.sentenceJP}</Text>}
-                {!!ex.readingKana && <Text style={[theme.text.secondary, styles.line]}>{ex.readingKana}</Text>}
-                {!!ex.meaningVI && <Text style={[theme.text.body, styles.line]}>{ex.meaningVI}</Text>}
-              </View>
-            )) : (
+            {item.examples?.length ? (
+              item.examples.map((ex, i) => <ExampleBlock key={i} ex={ex} index={i} />)
+            ) : (
               <Text style={theme.text.secondary}>Chưa có ví dụ.</Text>
             )}
           </View>
-        </View>
+        </ContentCard>
 
-        <View style={styles.section}>
+        <ContentCard>
           <Text style={theme.text.h2}>Thông tin khác</Text>
-          <Text style={[theme.text.meta, styles.line]}>
+          <Text style={[theme.text.meta, { marginTop: theme.tokens.space.xs }]}>
             Tạo: {item.createdAt ? new Date(item.createdAt).toLocaleString() : '—'}
           </Text>
-          <Text style={[theme.text.meta, styles.line]}>
+          <Text style={[theme.text.meta, { marginTop: theme.tokens.space.xs }]}>
             Cập nhật: {item.updatedAt ? new Date(item.updatedAt).toLocaleString() : '—'}
           </Text>
-        </View>
+        </ContentCard>
 
         <View style={{ height: theme.tokens.space.xl }} />
       </ScrollView>
