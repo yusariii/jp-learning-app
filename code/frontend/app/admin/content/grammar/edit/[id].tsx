@@ -2,34 +2,31 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import LayoutDefault from '../../../../../layout-default/layout-default';
-import { getWord, editWord, deleteWord, type Word } from '../../../../../api/admin/content/word';
+import { getGrammar, editGrammar, deleteGrammar, type Grammar } from '../../../../../api/admin/content/grammar';
 import { useAppTheme } from '../../../../../hooks/use-app-theme';
 import FormSection from '../../../../../components/ui/FormSection';
 import LabeledInput from '../../../../../components/ui/LabeledInput';
 import JLPTPicker from '../../../../../components/ui/JLPTPicker';
-import TagsEditor from '../../../../../components/ui/TagsEditor';
 import ExampleEditor from '../../../../../components/ui/ExampleEditor';
 
-type Example = Word['examples'][number];
-type Form = Word;
+type Example = Grammar['examples'][number];
+type Form = Grammar;
 
-export default function EditWordScreen() {
+export default function EditGrammarScreen() {
   const { theme } = useAppTheme();
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState<Form | null>(null);
-  const [tagDraft, setTagDraft] = useState('');
 
   useEffect(() => {
     let alive = true;
     (async () => {
       try {
-        const w = await getWord(String(id));
+        const g = await getGrammar(String(id));
         if (!alive) return;
-        // đảm bảo có mảng examples/tags
-        setForm({ ...w, tags: w.tags || [], examples: w.examples?.length ? w.examples : [{ sentenceJP: '', readingKana: '', meaningVI: '' }] });
+        setForm({ ...g, examples: g.examples?.length ? g.examples : [{ sentenceJP: '', readingKana: '', meaningVI: '', meaningEN: '' }] });
       } finally {
         if (alive) setLoading(false);
       }
@@ -38,21 +35,17 @@ export default function EditWordScreen() {
   }, [id]);
 
   const setField = <K extends keyof Form>(k: K, v: Form[K]) => setForm(p => (p ? { ...p, [k]: v } : p));
-  const isValid = !!form?.termJP?.trim();
+  const isValid = !!form?.title?.trim() && !!form?.explanationJP?.trim();
 
   const save = async () => {
-    if (!form || !isValid) return Alert.alert('Thiếu dữ liệu', 'Cần “Từ (JP)”.');
+    if (!form || !isValid) return Alert.alert('Thiếu dữ liệu', 'Cần “Tiêu đề” và “Giải thích (JP)”.');
     try {
-      await editWord(String(form._id), {
-        termJP: form.termJP,
-        hiraKata: form.hiraKata,
-        romaji: form.romaji,
-        meaningVI: form.meaningVI,
-        meaningEN: form.meaningEN,
-        kanji: form.kanji,
-        audioUrl: form.audioUrl,
+      await editGrammar(String(form._id), {
+        title: form.title,
+        description: form.description,
+        explanationJP: form.explanationJP,
+        explanationEN: form.explanationEN,
         jlptLevel: form.jlptLevel,
-        tags: form.tags || [],
         examples: form.examples || [],
       });
       Alert.alert('Đã lưu', 'Cập nhật thành công.');
@@ -62,19 +55,19 @@ export default function EditWordScreen() {
   };
 
   const confirmDelete = () =>
-    Alert.alert('Xoá từ vựng', 'Bạn chắc chắn muốn xoá?', [
+    Alert.alert('Xoá mục ngữ pháp', 'Bạn chắc chắn muốn xoá?', [
       { text: 'Huỷ', style: 'cancel' },
       { text: 'Xoá', style: 'destructive', onPress: del },
     ]);
 
   const del = async () => {
-    try { await deleteWord(String(form?._id)); Alert.alert('Đã xoá'); router.back(); }
-    catch (e: any) { Alert.alert('Lỗi', String(e?.message || e)); }
+    try { await deleteGrammar(String(form?._id)); Alert.alert('Đã xoá'); router.back(); }
+    catch (e:any) { Alert.alert('Lỗi', String(e?.message || e)); }
   };
 
   if (loading || !form) {
     return (
-      <LayoutDefault title="Sửa từ vựng">
+      <LayoutDefault title="Sửa ngữ pháp">
         <View style={{ padding: theme.tokens.space.md }}>
           <ActivityIndicator color={theme.color.textSub} />
           <Text style={[theme.text.secondary, { marginTop: theme.tokens.space.sm }]}>Đang tải…</Text>
@@ -84,49 +77,24 @@ export default function EditWordScreen() {
   }
 
   return (
-    <LayoutDefault title="Sửa từ vựng">
+    <LayoutDefault title="Sửa ngữ pháp">
       <ScrollView contentContainerStyle={{ padding: theme.tokens.space.md }} keyboardShouldPersistTaps="handled">
 
         <FormSection title="Cơ bản">
-          <LabeledInput label="Từ (JP) *" value={form.termJP} onChangeText={t=>setField('termJP', t)} />
+          <LabeledInput label="Tiêu đề *" value={form.title} onChangeText={t=>setField('title', t)} />
           <View style={{ height: theme.tokens.space.sm }} />
 
-          <LabeledInput label="Hiragana/Katakana" value={form.hiraKata || ''} onChangeText={t=>setField('hiraKata', t)} />
+          <LabeledInput label="Mô tả" value={form.description || ''} onChangeText={t=>setField('description', t)} />
           <View style={{ height: theme.tokens.space.sm }} />
 
-          <LabeledInput label="Romaji" value={form.romaji || ''} onChangeText={t=>setField('romaji', t)} autoCapitalize="none" />
+          <LabeledInput label="Giải thích (JP) *" value={form.explanationJP} onChangeText={t=>setField('explanationJP', t)} multiline />
           <View style={{ height: theme.tokens.space.sm }} />
 
-          <LabeledInput label="Kanji" value={form.kanji || ''} onChangeText={t=>setField('kanji', t)} />
-          <View style={{ height: theme.tokens.space.sm }} />
-
-          <LabeledInput label="Nghĩa (VI)" value={form.meaningVI || ''} onChangeText={t=>setField('meaningVI', t)} />
-          <View style={{ height: theme.tokens.space.sm }} />
-
-          <LabeledInput label="Meaning (EN)" value={form.meaningEN || ''} onChangeText={t=>setField('meaningEN', t)} />
-          <View style={{ height: theme.tokens.space.sm }} />
-
-          <LabeledInput label="Audio URL" value={form.audioUrl || ''} onChangeText={t=>setField('audioUrl', t)} autoCapitalize="none" keyboardType="url" />
+          <LabeledInput label="Explanation (EN)" value={form.explanationEN || ''} onChangeText={t=>setField('explanationEN', t)} multiline />
         </FormSection>
 
         <FormSection title="JLPT">
           <JLPTPicker value={form.jlptLevel || ''} onChange={v=>setField('jlptLevel', v)} />
-        </FormSection>
-
-        <FormSection title="Tags">
-          <TagsEditor
-            tags={form.tags || []}
-            draft={tagDraft}
-            onDraftChange={setTagDraft}
-            onAdd={() => {
-              const v = tagDraft.trim();
-              if (!v) return;
-              if ((form.tags || []).includes(v)) return setTagDraft('');
-              setForm(p => (p ? { ...p, tags: [...(p.tags || []), v] } : p));
-              setTagDraft('');
-            }}
-            onRemove={(t)=> setForm(p => (p ? { ...p, tags: (p.tags || []).filter(x => x !== t) } : p))}
-          />
         </FormSection>
 
         <FormSection title="Ví dụ">
@@ -137,6 +105,7 @@ export default function EditWordScreen() {
               { key: 'sentenceJP', label: 'Câu JP' },
               { key: 'readingKana', label: 'Kana' },
               { key: 'meaningVI', label: 'Nghĩa (VI)' },
+              { key: 'meaningEN', label: 'Meaning (EN)' },
             ]}
           />
         </FormSection>
