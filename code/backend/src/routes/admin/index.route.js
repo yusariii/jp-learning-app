@@ -1,13 +1,15 @@
 const express = require('express');
-const router = express.Router();
-const adminWordRouter = require('./word.route');
-const adminGrammarRouter = require('./grammar.route');
+const wordRouter = require('./word.route');
+const grammarRouter = require('./grammar.route');
+const readingRouter = require('./reading.route');
 const systemConfig = require('../../config/systemConfig'); 
 
 module.exports = (app) => {
     const path = systemConfig.prefixAdmin;
     
-    app.use(path + "/word", adminWordRouter)
+    app.use(path + "/word", wordRouter)
 
-    app.use(path + "/grammar", adminGrammarRouter);
+    app.use(path + "/grammar", grammarRouter);
+
+    app.use(path + "/reading", readingRouter);
 }
