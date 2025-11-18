@@ -10,6 +10,7 @@ import SearchBar from '../../../../components/ui/SearchBar';
 import FilterBar, { type SortKey } from '../../../../components/list/FilterBar'
 import GrammarCard from '../../../../components/card/GrammarCard'
 import AddButton from '../../../../components/ui/AddButton';
+import EmptyState from '../../../../components/ui/EmptyState';
 
 type ApiList = { data: Grammar[]; page: number; limit: number; total: number };
 
@@ -22,7 +23,7 @@ export default function ListGrammarScreen() {
 
   const [q, setQ] = useState('');
   const [jlpt, setJlpt] = useState<Grammar['jlptLevel']>('');
-  const [sort, setSort] = useState<SortKey>('updatedAt'); 
+  const [sort, setSort] = useState<SortKey>('updatedAt');
 
   const [data, setData] = useState<Grammar[]>([]);
   const [page, setPage] = useState(1);
@@ -39,7 +40,7 @@ export default function ListGrammarScreen() {
         limit: LIMIT,
         q: q.trim() || undefined,
         jlpt: jlpt || undefined,
-        sort: (sort as any) || 'updatedAt', 
+        sort: (sort as any) || 'updatedAt',
       }) as any;
 
       append ? setData(prev => [...prev, ...res.data]) : setData(res.data);
@@ -92,7 +93,7 @@ export default function ListGrammarScreen() {
         />
 
         <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-          <CreateButton />
+          <AddButton to={'/admin/content/grammar/create'} label="Thêm ngữ pháp" />
         </View>
       </View>
 
@@ -109,7 +110,7 @@ export default function ListGrammarScreen() {
         )}
         onEndReachedThreshold={0.2}
         onEndReached={onEndReached}
-        ListEmptyComponent={!loading ? <EmptyState /> : null}
+        ListEmptyComponent={!loading ? <EmptyState label="Chưa có ngữ pháp"/> : null}
         ListFooterComponent={loading ? (
           <View style={{ paddingVertical: theme.tokens.space.lg }}>
             <ActivityIndicator color={theme.color.textSub} />
@@ -120,34 +121,5 @@ export default function ListGrammarScreen() {
         }
       />
     </LayoutDefault>
-  );
-}
-
-function CreateButton() {
-  const { theme } = useAppTheme();
-  const router = useRouter();
-  return (
-    <View>
-      <Text
-        onPress={() => router.push('/admin/content/grammar/create' as Href)}
-        style={theme.button.primary.label}
-      />
-      <View
-        style={[theme.button.primary.container, { position: 'absolute', inset: 0 }]}
-        pointerEvents="none"
-      />
-      <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-        <AddButton to={'/admin/content/grammar/create'} label="Thêm ngữ pháp" />
-      </View>
-    </View>
-  );
-}
-
-function EmptyState() {
-  const { theme } = useAppTheme();
-  return (
-    <View style={{ padding: theme.tokens.space.lg, alignItems: 'center' }}>
-      <Text style={theme.text.body}>Chưa có mục ngữ pháp</Text>
-    </View>
   );
 }

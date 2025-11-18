@@ -10,6 +10,7 @@ import SearchBar from '../../../../components/ui/SearchBar';
 import FilterBar, { type SortKey } from '../../../../components/list/FilterBar'
 import WordCard from '../../../../components/card/WordCard'
 import AddButton from '../../../../components/ui/AddButton';
+import EmptyState from '../../../../components/ui/EmptyState';
 
 type ApiList = { data: Word[]; page: number; limit: number; total: number };
 
@@ -92,7 +93,7 @@ export default function ListWordScreen() {
         />
 
         <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-          <CreateButton />
+          <AddButton to={'/admin/content/word/create'} label="Thêm từ vựng" />
         </View>
       </View>
 
@@ -109,7 +110,7 @@ export default function ListWordScreen() {
         )}
         onEndReachedThreshold={0.2}
         onEndReached={onEndReached}
-        ListEmptyComponent={!loading ? <EmptyState /> : null}
+        ListEmptyComponent={!loading ? <EmptyState label="Chưa có từ vựng" /> : null}
         ListFooterComponent={loading ? (
           <View style={{ paddingVertical: theme.tokens.space.lg }}>
             <ActivityIndicator color={theme.color.textSub} />
@@ -123,32 +124,4 @@ export default function ListWordScreen() {
   );
 }
 
-function CreateButton() {
-  const { theme } = useAppTheme();
-  const router = useRouter();
-  return (
-    <View>
-      <Text
-        onPress={() => router.push('/admin/content/word/create' as Href)}
-        style={theme.button.primary.label}
-      >
-      </Text>
-      <View
-        style={[theme.button.primary.container, { position: 'absolute', inset: 0 }]}
-        pointerEvents="none"
-      />
-      <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-        <AddButton to={'/admin/content/word/create'} label="Thêm từ vựng" />
-      </View>
-    </View>
-  );
-}
 
-function EmptyState() {
-  const { theme } = useAppTheme();
-  return (
-    <View style={{ padding: theme.tokens.space.lg, alignItems: 'center' }}>
-      <Text style={theme.text.body}>Chưa có từ vựng</Text>
-    </View>
-  );
-}

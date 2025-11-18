@@ -10,6 +10,8 @@ import SearchBar from '../../../../components/ui/SearchBar';
 import FilterBar, { type SortKey } from '../../../../components/list/FilterBar';
 import ContentCard from '../../../../components/card/ContentCard';
 import Chip from '../../../../components/ui/Chip';
+import AddButton from '../../../../components/ui/AddButton';
+import EmptyState from '../../../../components/ui/EmptyState';
 
 type ApiList = { data: Reading[]; page: number; limit: number; total: number };
 const LIMIT = 20;
@@ -90,14 +92,7 @@ export default function ListReadingScreen() {
         />
 
         <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-          <TouchableOpacity
-            onPress={() => router.push('/admin/content/reading/create' as Href)}
-            style={[theme.button.primary.container, { alignSelf: 'flex-end' }]}
-            hitSlop={theme.utils.hitSlop}
-            activeOpacity={0.8}
-          >
-            <Text style={theme.button.primary.label}>＋ Thêm bài đọc</Text>
-          </TouchableOpacity>
+          <AddButton to={'/admin/content/reading/create'} label="Thêm ngữ pháp" />
         </View>
       </View>
 
@@ -117,10 +112,10 @@ export default function ListReadingScreen() {
                 {item.updatedAt ? `Cập nhật: ${new Date(item.updatedAt).toLocaleString()}` : item.createdAt ? `Tạo: ${new Date(item.createdAt).toLocaleString()}` : ''}
               </Text>
               <View style={{ flexDirection: 'row', gap: theme.tokens.space.sm }}>
-                <TouchableOpacity onPress={() => router.push(`/admin/content/reading/detail/${item._id}` as Href)} style={theme.button.ghost.container}>
+                <TouchableOpacity onPress={() => router.push(`/admin/content/reading/detail/${item._id}`)} style={theme.button.ghost.container}>
                   <Text style={theme.button.ghost.label}>Chi tiết</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => router.push(`/admin/content/reading/edit/${item._id}` as Href)} style={theme.button.primary.container}>
+                <TouchableOpacity onPress={() => router.push(`/admin/content/reading/edit/${item._id}`)} style={theme.button.primary.container}>
                   <Text style={theme.button.primary.label}>Sửa</Text>
                 </TouchableOpacity>
               </View>
@@ -129,7 +124,7 @@ export default function ListReadingScreen() {
         )}
         onEndReachedThreshold={0.2}
         onEndReached={onEndReached}
-        ListEmptyComponent={!loading ? <Text style={[theme.text.body, { padding: theme.tokens.space.md }]}>Chưa có bài đọc</Text> : null}
+        ListEmptyComponent={!loading ? <EmptyState label="Chưa có bài đọc" /> : null}
         ListFooterComponent={loading ? (
           <View style={{ paddingVertical: theme.tokens.space.lg }}>
             <ActivityIndicator color={theme.color.textSub} />
@@ -140,3 +135,4 @@ export default function ListReadingScreen() {
     </LayoutDefault>
   );
 }
+
