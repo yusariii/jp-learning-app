@@ -8,7 +8,7 @@ import FormSection from '../../../../../components/ui/FormSection';
 import LabeledInput from '../../../../../components/ui/LabeledInput';
 import JLPTPicker from '../../../../../components/ui/JLPTPicker';
 import TagsEditor from '../../../../../components/ui/TagsEditor';
-import ExampleEditor from '../../../../../components/ui/ExampleEditor';
+import ExampleEditor from '../../../../../components/block/ExampleEditor';
 
 type Example = Word['examples'][number];
 type Form = Word;

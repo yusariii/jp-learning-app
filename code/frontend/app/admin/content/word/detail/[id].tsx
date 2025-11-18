@@ -6,7 +6,7 @@ import { getWord, type Word } from '../../../../../api/admin/content/word';
 import { useAppTheme } from '../../../../../hooks/use-app-theme'
 import ContentCard from '../../../../../components/card/ContentCard'
 import TagPills from '../../../../../components/ui/TagPills';
-import ExampleBlock from '../../../../../components/ui/ExampleBlock';
+import ExampleBlock from '../../../../../components/block/ExampleBlock';
 
 export default function WordDetailScreen() {
   const { theme } = useAppTheme();

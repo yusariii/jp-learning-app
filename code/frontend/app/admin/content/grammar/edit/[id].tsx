@@ -7,7 +7,7 @@ import { useAppTheme } from '../../../../../hooks/use-app-theme';
 import FormSection from '../../../../../components/ui/FormSection';
 import LabeledInput from '../../../../../components/ui/LabeledInput';
 import JLPTPicker from '../../../../../components/ui/JLPTPicker';
-import ExampleEditor from '../../../../../components/ui/ExampleEditor';
+import ExampleEditor from '../../../../../components/block/ExampleEditor';
 
 type Example = Grammar['examples'][number];
 type Form = Grammar;

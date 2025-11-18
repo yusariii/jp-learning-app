@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import LabeledInput from './LabeledInput';
+import LabeledInput from '../ui/LabeledInput';
 import { useAppTheme } from '../../hooks/use-app-theme'
 
 export type FieldConfig<K extends string = string> = { key: K; label: string; multiline?: boolean };

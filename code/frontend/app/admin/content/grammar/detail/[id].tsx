@@ -5,7 +5,7 @@ import LayoutDefault from '../../../../../layout-default/layout-default';
 import { getGrammar, type Grammar } from '../../../../../api/admin/content/grammar';
 import { useAppTheme } from '../../../../../hooks/use-app-theme';
 import ContentCard from '../../../../../components/card/ContentCard';
-import ExampleBlock from '../../../../../components/ui/ExampleBlock';
+import ExampleBlock from '../../../../../components/block/ExampleBlock';
 
 export default function GrammarDetailScreen() {
   const { theme } = useAppTheme();
