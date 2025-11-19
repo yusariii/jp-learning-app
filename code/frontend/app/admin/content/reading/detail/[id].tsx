@@ -76,7 +76,7 @@ export default function ReadingDetailScreen() {
           <View style={{ flexDirection: 'row', gap: theme.tokens.space.sm, marginTop: theme.tokens.space.md }}>
             <TouchableOpacity
               style={[theme.button.primary.container, { flex: 1 }]}
-              onPress={() => router.push(`/admin/content/reading/edit/${item._id}` as Href)}
+              onPress={() => router.push(`/admin/content/reading/update/${item._id}` as Href)}
               hitSlop={theme.utils.hitSlop}
             >
               <Text style={theme.button.primary.label}>Sửa</Text>

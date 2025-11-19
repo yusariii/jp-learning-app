@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import LayoutDefault from '../../../../../layout-default/layout-default';
-import { getWord, editWord, deleteWord, type Word } from '../../../../../api/admin/content/word';
+import { getWord, updateWord, deleteWord, type Word } from '../../../../../api/admin/content/word';
 import { useAppTheme } from '../../../../../hooks/use-app-theme';
 import FormSection from '../../../../../components/ui/FormSection';
 import LabeledInput from '../../../../../components/ui/LabeledInput';
@@ -28,7 +28,6 @@ export default function EditWordScreen() {
       try {
         const w = await getWord(String(id));
         if (!alive) return;
-        // đảm bảo có mảng examples/tags
         setForm({ ...w, tags: w.tags || [], examples: w.examples?.length ? w.examples : [{ sentenceJP: '', readingKana: '', meaningVI: '' }] });
       } finally {
         if (alive) setLoading(false);
@@ -43,7 +42,7 @@ export default function EditWordScreen() {
   const save = async () => {
     if (!form || !isValid) return Alert.alert('Thiếu dữ liệu', 'Cần “Từ (JP)”.');
     try {
-      await editWord(String(form._id), {
+      await updateWord(String(form._id), {
         termJP: form.termJP,
         hiraKata: form.hiraKata,
         romaji: form.romaji,

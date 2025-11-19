@@ -105,7 +105,7 @@ export default function ListGrammarScreen() {
           <GrammarCard
             item={item}
             onDetail={() => router.push(`/admin/content/grammar/detail/${item._id}` as Href)}
-            onEdit={() => router.push(`/admin/content/grammar/edit/${item._id}` as Href)}
+            onEdit={() => router.push(`/admin/content/grammar/update/${item._id}` as Href)}
           />
         )}
         onEndReachedThreshold={0.2}

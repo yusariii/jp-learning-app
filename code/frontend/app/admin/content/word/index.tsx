@@ -105,7 +105,7 @@ export default function ListWordScreen() {
           <WordCard
             item={item}
             onDetail={() => router.push(`/admin/content/word/detail/${item._id}` as Href)}
-            onEdit={() => router.push(`/admin/content/word/edit/${item._id}` as Href)}
+            onEdit={() => router.push(`/admin/content/word/update/${item._id}` as Href)}
           />
         )}
         onEndReachedThreshold={0.2}

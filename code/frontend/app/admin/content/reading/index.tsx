@@ -92,7 +92,7 @@ export default function ListReadingScreen() {
         />
 
         <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-          <AddButton to={'/admin/content/reading/create'} label="Thêm ngữ pháp" />
+          <AddButton to={'/admin/content/reading/create'} label="Thêm bài đọc" />
         </View>
       </View>
 
@@ -112,10 +112,10 @@ export default function ListReadingScreen() {
                 {item.updatedAt ? `Cập nhật: ${new Date(item.updatedAt).toLocaleString()}` : item.createdAt ? `Tạo: ${new Date(item.createdAt).toLocaleString()}` : ''}
               </Text>
               <View style={{ flexDirection: 'row', gap: theme.tokens.space.sm }}>
-                <TouchableOpacity onPress={() => router.push(`/admin/content/reading/detail/${item._id}`)} style={theme.button.ghost.container}>
+                <TouchableOpacity onPress={() => router.push(`/admin/content/reading/detail/${item._id}` as Href)} style={theme.button.ghost.container}>
                   <Text style={theme.button.ghost.label}>Chi tiết</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => router.push(`/admin/content/reading/edit/${item._id}`)} style={theme.button.primary.container}>
+                <TouchableOpacity onPress={() => router.push(`/admin/content/reading/update/${item._id}` as Href)} style={theme.button.primary.container}>
                   <Text style={theme.button.primary.label}>Sửa</Text>
                 </TouchableOpacity>
               </View>

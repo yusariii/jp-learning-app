@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import LayoutDefault from '../../../../../layout-default/layout-default';
-import { getReading, editReading, deleteReading, type Reading } from '../../../../../api/admin/content/reading';
+import { getReading, updateReading, deleteReading, type Reading } from '../../../../../api/admin/content/reading';
 import { useAppTheme } from '../../../../../hooks/use-app-theme';
 import FormSection from '../../../../../components/ui/FormSection';
 import LabeledInput from '../../../../../components/ui/LabeledInput';
@@ -42,7 +42,7 @@ export default function EditReadingScreen() {
   const save = async () => {
     if (!form || !isValid) return Alert.alert('Thiếu dữ liệu', 'Cần “Tiêu đề” và “Nội dung JP”.');
     try {
-      await editReading(String(form._id), {
+      await updateReading(String(form._id), {
         title: form.title,
         textJP: form.textJP,
         textEN: form.textEN,

@@ -8,7 +8,7 @@ type Option = { text?: string; isCorrect?: boolean };
 export type Question = {
   questionJP: string;
   questionEN?: string;
-  type: 'mcq'|'short_answer';
+  type: 'mcq' | 'short_answer';
   options?: Option[];
   answer?: any;
 };
@@ -26,7 +26,7 @@ export default function QuestionEditor({
     a[i] = { ...a[i], ...patch };
     onChange(a);
   };
-  const add = () => onChange([ ...questions, { questionJP: '', questionEN: '', type: 'mcq', options: [{ text: '', isCorrect: true }], answer: '' } ]);
+  const add = () => onChange([...questions, { questionJP: '', questionEN: '', type: 'mcq', options: [{ text: '', isCorrect: true }], answer: '' }]);
   const remove = (i: number) => {
     const a = questions.filter((_, idx) => idx !== i);
     onChange(a.length ? a : [{ questionJP: '', questionEN: '', type: 'mcq', options: [{ text: '', isCorrect: true }], answer: '' }]);
@@ -64,10 +64,10 @@ export default function QuestionEditor({
           <Text style={theme.text.meta}>Câu hỏi #{i + 1}</Text>
 
           <View style={{ marginTop: theme.tokens.space.sm }}>
-            <LabeledInput label="Câu hỏi (JP) *" value={q.questionJP} onChangeText={t=>set(i, { questionJP: t })} />
+            <LabeledInput label="Câu hỏi (JP) *" value={q.questionJP} onChangeText={t => set(i, { questionJP: t })} />
           </View>
           <View style={{ marginTop: theme.tokens.space.sm }}>
-            <LabeledInput label="Question (EN)" value={q.questionEN || ''} onChangeText={t=>set(i, { questionEN: t })} />
+            <LabeledInput label="Question (EN)" value={q.questionEN || ''} onChangeText={t => set(i, { questionEN: t })} />
           </View>
 
           <View style={{ marginTop: theme.tokens.space.sm, flexDirection: 'row', gap: theme.tokens.space.xs }}>
@@ -82,13 +82,33 @@ export default function QuestionEditor({
                   <LabeledInput
                     label={`Phương án #${oi + 1}${op.isCorrect ? ' (Đúng)' : ''}`}
                     value={op.text || ''}
-                    onChangeText={t=>setOption(i, oi, { text: t })}
+                    onChangeText={t => setOption(i, oi, { text: t })}
                   />
                   <View style={{ flexDirection: 'row', gap: theme.tokens.space.xs, marginTop: 6 }}>
-                    <Chip label="Đặt là Đúng" active={op.isCorrect} onPress={() => setOption(i, oi, { isCorrect: true })} />
-                    <Chip label="Đặt là Sai" active={!op.isCorrect} onPress={() => setOption(i, oi, { isCorrect: false })} />
-                    <TouchableOpacity onPress={() => removeOption(i, oi)} hitSlop={theme.utils.hitSlop}>
-                      <Text style={{ ...theme.text.link, color: theme.color.danger, fontWeight: '700' as const }}>Xoá phương án</Text>
+                    <Chip label="Đúng" active={op.isCorrect} onPress={() => setOption(i, oi, { isCorrect: true })} />
+                    <Chip label="Sai" active={!op.isCorrect} onPress={() => setOption(i, oi, { isCorrect: false })} />
+                    <TouchableOpacity
+                      onPress={() => removeOption(i, oi)}
+                      style={[
+                        theme.chip.container,
+                        {
+                          height: theme.chip.height,
+                          backgroundColor: theme.color.surfaceAlt,
+                          borderColor: theme.color.danger,
+                          borderWidth: 1,
+                        },
+                      ]}
+                      hitSlop={theme.utils.hitSlop}
+                      activeOpacity={0.8}
+                    >
+                      <Text
+                        style={[
+                          theme.chip.label,
+                          { color: theme.color.danger, fontWeight: '700' },
+                        ]}
+                      >
+                        Xoá
+                      </Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -96,13 +116,13 @@ export default function QuestionEditor({
               <TouchableOpacity onPress={() => addOption(i)} style={{ ...theme.button.ghost.container, alignSelf: 'flex-start', paddingHorizontal: theme.tokens.space.md }}>
                 <Text style={theme.button.ghost.label}>＋ Thêm phương án</Text>
               </TouchableOpacity>
-              <View style={{ marginTop: theme.tokens.space.sm }}>
+              {/* <View style={{ marginTop: theme.tokens.space.sm }}>
                 <LabeledInput label="Đáp án (tuỳ chọn)" value={String(q.answer ?? '')} onChangeText={t=>set(i, { answer: t })} />
-              </View>
+              </View> */}
             </View>
           ) : (
             <View style={{ marginTop: theme.tokens.space.sm }}>
-              <LabeledInput label="Đáp án (tự luận)" value={String(q.answer ?? '')} onChangeText={t=>set(i, { answer: t })} multiline />
+              <LabeledInput label="Đáp án (tự luận)" value={String(q.answer ?? '')} onChangeText={t => set(i, { answer: t })} multiline />
             </View>
           )}
 

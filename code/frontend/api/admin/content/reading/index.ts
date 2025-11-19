@@ -39,5 +39,5 @@ export async function listReadings(params: ReadingListQuery) {
 
 export const getReading = (id: string) => get<Reading>(`${BASE}/${encodeURIComponent(id)}`);
 export const createReading = (payload: Reading) => post<Reading>(BASE, payload);
-export const editReading = (id: string, payload: Partial<Reading>) => put<Reading>(`${BASE}/${encodeURIComponent(id)}`, payload);
+export const updateReading = (id: string, payload: Partial<Reading>) => put<Reading>(`${BASE}/${encodeURIComponent(id)}`, payload);
 export const deleteReading = (id: string) => del<{ ok: true }>(`${BASE}/${encodeURIComponent(id)}`);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import LayoutDefault from '../../../../../layout-default/layout-default';
-import { getGrammar, editGrammar, deleteGrammar, type Grammar } from '../../../../../api/admin/content/grammar';
+import { getGrammar, updateGrammar, deleteGrammar, type Grammar } from '../../../../../api/admin/content/grammar';
 import { useAppTheme } from '../../../../../hooks/use-app-theme';
 import FormSection from '../../../../../components/ui/FormSection';
 import LabeledInput from '../../../../../components/ui/LabeledInput';
@@ -40,7 +40,7 @@ export default function EditGrammarScreen() {
   const save = async () => {
     if (!form || !isValid) return Alert.alert('Thiếu dữ liệu', 'Cần “Tiêu đề” và “Giải thích (JP)”.');
     try {
-      await editGrammar(String(form._id), {
+      await updateGrammar(String(form._id), {
         title: form.title,
         description: form.description,
         explanationJP: form.explanationJP,

@@ -22,5 +22,5 @@ export async function listGrammars(params: GrammarListQuery) {
 }
 export const getGrammar = (id: string) => get<Grammar>(`${BASE}/${encodeURIComponent(id)}`);
 export const createGrammar = (payload: Grammar) => post<Grammar>(BASE, payload);
-export const editGrammar = (id: string, payload: Partial<Grammar>) => put<Grammar>(`${BASE}/${encodeURIComponent(id)}`, payload);
+export const updateGrammar = (id: string, payload: Partial<Grammar>) => put<Grammar>(`${BASE}/${encodeURIComponent(id)}`, payload);
 export const deleteGrammar = (id: string) => del<{ ok: true }>(`${BASE}/${encodeURIComponent(id)}`);

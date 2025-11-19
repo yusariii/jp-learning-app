@@ -63,7 +63,7 @@ module.exports.create = async (req, res, next) => {
 };
 
 // PUT /admin/content/grammar/:id
-module.exports.edit = async (req, res, next) => {
+module.exports.update = async (req, res, next) => {
   try {
     const payload = req.body || {};
     if (req.user?.id) {

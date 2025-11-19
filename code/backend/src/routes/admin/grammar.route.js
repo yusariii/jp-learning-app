@@ -8,7 +8,7 @@ router.get('/:id', grammarController.detail);
 
 router.post('/', grammarController.create);
 
-router.put('/:id', grammarController.edit);
+router.put('/:id', grammarController.update);
 
 router.delete('/:id', grammarController.remove);
 
