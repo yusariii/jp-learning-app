@@ -1,6 +1,6 @@
 // routes/speaking.route.js
 const express = require('express');
-const speakingController = require('../controllers/speaking.controller');
+const speakingController = require('../../controllers/admin/speaking.controller');
 const router = express.Router();
 
 router.get('/', speakingController.list);

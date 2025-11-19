@@ -92,7 +92,7 @@ export default function ListReadingScreen() {
         />
 
         <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-          <AddButton to={'/admin/content/reading/create'} label="Thêm bài đọc" />
+          <AddButton to={'/admin/content/reading/create' as Href} label="Thêm bài đọc" />
         </View>
       </View>
 
