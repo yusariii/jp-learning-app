@@ -63,7 +63,7 @@ export default function SpeakingDetailScreen() {
           <View style={{ flexDirection: 'row', gap: theme.tokens.space.sm, marginTop: theme.tokens.space.md }}>
             <TouchableOpacity
               style={[theme.button.primary.container, { flex: 1 }]}
-              onPress={() => router.push(`/admin/content/speaking/edit/${item._id}` as Href)}
+              onPress={() => router.push(`/admin/content/speaking/update/${item._id}` as Href)}
               hitSlop={theme.utils.hitSlop}
             >
               <Text style={theme.button.primary.label}>Sửa</Text>

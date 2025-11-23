@@ -87,7 +87,7 @@ export default function ListSpeakingScreen() {
                 <TouchableOpacity onPress={() => router.push(`/admin/content/speaking/detail/${item._id}` as Href)} style={theme.button.ghost.container}>
                   <Text style={theme.button.ghost.label}>Chi tiết</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => router.push(`/admin/content/speaking/edit/${item._id}` as Href)} style={theme.button.primary.container}>
+                <TouchableOpacity onPress={() => router.push(`/admin/content/speaking/update/${item._id}` as Href)} style={theme.button.primary.container}>
                   <Text style={theme.button.primary.label}>Sửa</Text>
                 </TouchableOpacity>
               </View>

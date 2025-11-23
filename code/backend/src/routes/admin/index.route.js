@@ -3,6 +3,7 @@ const wordRouter = require('./word.route');
 const grammarRouter = require('./grammar.route');
 const readingRouter = require('./reading.route');
 const speakingRouter = require('./speaking.route');
+const listeningRouter = require('./listening.route');
 const systemConfig = require('../../config/systemConfig'); 
 
 module.exports = (app) => {
@@ -15,4 +16,6 @@ module.exports = (app) => {
     app.use(path + "/reading", readingRouter);
 
     app.use(path + "/speaking", speakingRouter);
+
+    app.use(path + "/listening", listeningRouter);
 }
