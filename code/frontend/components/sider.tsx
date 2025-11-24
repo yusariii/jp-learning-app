@@ -96,6 +96,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isVisible, onClose }) => {
             <MenuItem label="Ngữ pháp" onPress={() => go('/admin/content/grammar')} />
             <MenuItem label="Luyện đọc" onPress={() => go('/admin/content/reading')} />
             <MenuItem label="Luyện nói" onPress={() => go('/admin/content/speaking')} />
+            <MenuItem label="Luyện nghe" onPress={() => go('/admin/content/listening')} />
             <MenuItem label="Bài học" onPress={() => go('/admin/content/lesson')} />
             <MenuItem label="Kiểm tra" onPress={() => go('/admin/content/exam')} />
           </MenuSection>
