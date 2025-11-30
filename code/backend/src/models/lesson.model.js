@@ -6,6 +6,8 @@ const lessonSchema = new mongoose.Schema({
   slug: { type: String, index: true },
   description: String,
   wordIds: [{ wordId: String }],
+  grammarIds: [{ grammarId: String }],
+  listeningIds: [{ listeningId: String }],
   readingIds: [{ readingId: String }],
   speakingIds: [{ speakingId: String }],
   jlptLevel: { type: String, enum: ['N5', 'N4', 'N3', 'N2', 'N1', ''], default: '' },
