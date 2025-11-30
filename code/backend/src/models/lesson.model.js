@@ -8,6 +8,7 @@ const lessonSchema = new mongoose.Schema({
   wordIds: [{ wordId: String }],
   readingIds: [{ readingId: String }],
   speakingIds: [{ speakingId: String }],
+  jlptLevel: { type: String, enum: ['N5', 'N4', 'N3', 'N2', 'N1', ''], default: '' },
   durationMinutes: { type: Number, default: 10 },
   published: { type: Boolean, default: false },
   tags: { type: [String], default: [] },
