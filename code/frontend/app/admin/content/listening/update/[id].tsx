@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import LayoutDefault from '../../../../../layout-default/layout-default';
-import { getListening, updateListening, deleteListening, type Listening } from '../../../../../api/admin/content/listening';
-import { useAppTheme } from '../../../../../hooks/use-app-theme';
-import FormSection from '../../../../../components/ui/FormSection';
-import LabeledInput from '../../../../../components/ui/LabeledInput';
-import Chip from '../../../../../components/ui/Chip';
-import ListeningQuestionEditor from '../../../../../components/block/ListeningQuestionEditor';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { appAlert, appError, appConfirm } from '@/helpers/appAlert';
+import { Href, useLocalSearchParams, useRouter } from 'expo-router';
+import LayoutDefault from '@/layout-default/layout-default';
+import { getListening, updateListening, deleteListening, type Listening } from '@/api/admin/content/listening';
+import { useAppTheme } from '@/hooks/use-app-theme';
+import FormSection from '@/components/ui/FormSection';
+import LabeledInput from '@/components/ui/LabeledInput';
+import Chip from '@/components/ui/Chip';
+import ListeningQuestionEditor from '@/components/block/ListeningQuestionEditor';
+import BackButton from '@/components/ui/BackButton';
 
 type Form = Listening;
 
@@ -40,26 +42,35 @@ export default function EditListeningScreen() {
   const isValid = !!form?.title?.trim() && !!form?.audioUrl?.trim();
 
   const save = async () => {
-    if (!form || !isValid) return Alert.alert('Thiếu dữ liệu', 'Cần “Tiêu đề” và “Audio URL”.');
+    if (!form || !isValid) return appAlert('Thiếu dữ liệu', 'Cần “Tiêu đề” và “Audio URL”.');
     try {
       await updateListening(String(form._id), {
         title: form.title, audioUrl: form.audioUrl, transcriptJP: form.transcriptJP,
         transcriptEN: form.transcriptEN, difficulty: form.difficulty, questions: form.questions || [],
       });
-      Alert.alert('Đã lưu', 'Cập nhật thành công.');
-    } catch (e:any) { Alert.alert('Lỗi', String(e?.message || e)); }
+      appAlert('Đã lưu', 'Cập nhật thành công.');
+    } catch (e:any) { appError(String(e?.message || e)); }
   };
 
   const confirmDelete = () =>
-    Alert.alert('Xoá bài nghe', 'Bạn chắc chắn muốn xoá?', [
-      { text: 'Huỷ', style: 'cancel' },
-      { text: 'Xoá', style: 'destructive', onPress: del },
-    ]);
-
-  const del = async () => {
-    try { await deleteListening(String(form?._id)); Alert.alert('Đã xoá'); router.back(); }
-    catch (e:any) { Alert.alert('Lỗi', String(e?.message || e)); }
-  };
+    appConfirm('Xoá mục ngữ pháp', 'Bạn chắc chắn muốn xoá?', async () => {
+          appConfirm(
+            'Xoá lesson',
+            'Bạn chắc chắn muốn xoá?',
+            async () => {
+              try {
+                await deleteListening(String(form?._id));
+                appAlert('Đã xoá', 'Ngữ pháp đã được xoá.', () => {
+                  router.replace('/admin/content/listening' as Href);
+                });
+              } catch (e: any) {
+                appError(String(e?.message || e));
+              }
+            },
+            () => {
+            },
+          );
+        });
 
   if (loading || !form) {
     return (
@@ -75,6 +86,10 @@ export default function EditListeningScreen() {
   return (
     <LayoutDefault title="Sửa bài nghe">
       <ScrollView contentContainerStyle={{ padding: theme.tokens.space.md }} keyboardShouldPersistTaps="handled">
+        <BackButton
+          fallbackHref="/admin/content/listening"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <FormSection title="Cơ bản">
           <LabeledInput label="Tiêu đề *" value={form.title} onChangeText={t=>setField('title', t)} />
           <View style={{ height: theme.tokens.space.sm }} />

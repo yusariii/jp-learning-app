@@ -2,16 +2,17 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { View, FlatList, ActivityIndicator, RefreshControl, Text, TouchableOpacity } from 'react-native';
 import { useRouter, Href } from 'expo-router';
 
-import LayoutDefault from '../../../../layout-default/layout-default';
-import { useAppTheme } from '../../../../hooks/use-app-theme'
-import { listListenings, type Listening } from '../../../../api/admin/content/listening';
+import LayoutDefault from '@/layout-default/layout-default';
+import { useAppTheme } from '@/hooks/use-app-theme'
+import { listListenings, type Listening } from '@/api/admin/content/listening';
 
-import SearchBar from '../../../../components/ui/SearchBar';
-import FilterBar, { type SortKey } from '../../../../components/list/FilterBar';
-import ContentCard from '../../../../components/card/ContentCard';
-import Chip from '../../../../components/ui/Chip';
-import AddButton from '../../../../components/ui/AddButton';
-import EmptyState from '../../../../components/ui/EmptyState';
+import SearchBar from '@/components/ui/SearchBar';
+import FilterBar, { type SortKey } from '@/components/list/FilterBar';
+import ContentCard from '@/components/card/ContentCard';
+import Chip from '@/components/ui/Chip';
+import AddButton from '@/components/ui/AddButton';
+import EmptyState from '@/components/ui/EmptyState';
+import BackButton from '@/components/ui/BackButton';
 
 type ApiList = { data: Listening[]; page: number; limit: number; total: number };
 const LIMIT = 20;
@@ -54,6 +55,10 @@ export default function ListListeningScreen() {
     return (
         <LayoutDefault title="Nghe hiểu">
             <View style={styles.header}>
+                <BackButton
+                    fallbackHref="/admin"
+                    containerStyle={{ marginBottom: theme.tokens.space.sm }}
+                />
                 <SearchBar value={q} onChangeText={setQ} onSubmit={() => fetchPage(1)} placeholder="Tìm tiêu đề/bản ghi/câu hỏi…" />
                 <View style={{ flexDirection: 'row', gap: theme.tokens.space.xs, flexWrap: 'wrap' }}>
                     {DIFFS.map(d => <Chip key={d || 'all'} label={d || 'All'} active={(difficulty || '') === d} onPress={() => { setDifficulty(d as any); fetchPage(1); }} />)}

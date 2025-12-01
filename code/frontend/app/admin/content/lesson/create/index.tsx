@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { appAlert, appError } from '@/helpers/appAlert';
 import LayoutDefault from '@/layout-default/layout-default';
 import { createLesson, type Lesson } from '@/api/admin/content/lesson';
 import { useAppTheme } from '@/hooks/use-app-theme';
@@ -79,7 +80,7 @@ export default function CreateLessonScreen() {
 
     const submit = async () => {
         if (!isValid) {
-            return Alert.alert(
+            return appAlert(
                 'Thiếu dữ liệu',
                 'Cần nhập “Tiêu đề” và “Số bài (lessonNumber)”.',
             );
@@ -88,26 +89,19 @@ export default function CreateLessonScreen() {
         try {
             const payload = buildPayload(form);
             const created = await createLesson(payload);
-            Alert.alert('Thành công', 'Đã tạo lesson mới.', [
-                {
-                    text: 'OK',
-                    onPress: () =>
-                        router.replace(
-                            `/admin/content/lesson/detail/${created._id}` as Href,
-                        ),
-                },
-            ]);
+            appAlert('Thành công', 'Đã tạo lesson mới.', () => {
+                router.replace(`/admin/content/lesson/${created._id}` as Href);
+            });
         } catch (e: any) {
-            Alert.alert('Lỗi', String(e?.message || e));
+            appError(String(e?.message || e));
         }
     };
 
     return (
-        <LayoutDefault title="Thêm lesson">
+        <LayoutDefault title="Thêm bài học">
             <ScrollView
                 contentContainerStyle={{
                     padding: theme.tokens.space.md,
-                    paddingBottom: theme.tokens.space.xl,
                 }}
                 keyboardShouldPersistTaps="handled"
             >

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { appAlert, appError, appConfirm } from '@/helpers/appAlert';
+import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import LayoutDefault from '../../../../../layout-default/layout-default';
 import { getGrammar, updateGrammar, deleteGrammar, type Grammar } from '../../../../../api/admin/content/grammar';
 import { useAppTheme } from '../../../../../hooks/use-app-theme';
@@ -8,6 +9,7 @@ import FormSection from '../../../../../components/ui/FormSection';
 import LabeledInput from '../../../../../components/ui/LabeledInput';
 import JLPTPicker from '../../../../../components/ui/JLPTPicker';
 import ExampleEditor from '../../../../../components/block/ExampleEditor';
+import BackButton from '@/components/ui/BackButton';
 
 type Example = Grammar['examples'][number];
 type Form = Grammar;
@@ -38,7 +40,7 @@ export default function EditGrammarScreen() {
   const isValid = !!form?.title?.trim() && !!form?.explanationJP?.trim();
 
   const save = async () => {
-    if (!form || !isValid) return Alert.alert('Thiếu dữ liệu', 'Cần “Tiêu đề” và “Giải thích (JP)”.');
+    if (!form || !isValid) return appAlert('Thiếu dữ liệu', 'Cần “Tiêu đề” và “Giải thích (JP)”.');
     try {
       await updateGrammar(String(form._id), {
         title: form.title,
@@ -48,22 +50,31 @@ export default function EditGrammarScreen() {
         jlptLevel: form.jlptLevel,
         examples: form.examples || [],
       });
-      Alert.alert('Đã lưu', 'Cập nhật thành công.');
+      appAlert('Đã lưu', 'Cập nhật thành công.');
     } catch (e: any) {
-      Alert.alert('Lỗi', String(e?.message || e));
+      appError(String(e?.message || e));
     }
   };
 
   const confirmDelete = () =>
-    Alert.alert('Xoá mục ngữ pháp', 'Bạn chắc chắn muốn xoá?', [
-      { text: 'Huỷ', style: 'cancel' },
-      { text: 'Xoá', style: 'destructive', onPress: del },
-    ]);
-
-  const del = async () => {
-    try { await deleteGrammar(String(form?._id)); Alert.alert('Đã xoá'); router.back(); }
-    catch (e:any) { Alert.alert('Lỗi', String(e?.message || e)); }
-  };
+    appConfirm('Xoá mục ngữ pháp', 'Bạn chắc chắn muốn xoá?', async () => {
+      appConfirm(
+        'Xoá lesson',
+        'Bạn chắc chắn muốn xoá?',
+        async () => {
+          try {
+            await deleteGrammar(String(form?._id));
+            appAlert('Đã xoá', 'Ngữ pháp đã được xoá.', () => {
+              router.replace('/admin/content/grammar' as Href);
+            });
+          } catch (e: any) {
+            appError(String(e?.message || e));
+          }
+        },
+        () => {
+        },
+      );
+    });
 
   if (loading || !form) {
     return (
@@ -79,28 +90,31 @@ export default function EditGrammarScreen() {
   return (
     <LayoutDefault title="Sửa ngữ pháp">
       <ScrollView contentContainerStyle={{ padding: theme.tokens.space.md }} keyboardShouldPersistTaps="handled">
-
+        <BackButton
+          fallbackHref="/admin/content/grammar"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <FormSection title="Cơ bản">
-          <LabeledInput label="Tiêu đề *" value={form.title} onChangeText={t=>setField('title', t)} />
+          <LabeledInput label="Tiêu đề *" value={form.title} onChangeText={t => setField('title', t)} />
           <View style={{ height: theme.tokens.space.sm }} />
 
-          <LabeledInput label="Mô tả" value={form.description || ''} onChangeText={t=>setField('description', t)} />
+          <LabeledInput label="Mô tả" value={form.description || ''} onChangeText={t => setField('description', t)} />
           <View style={{ height: theme.tokens.space.sm }} />
 
-          <LabeledInput label="Giải thích (JP) *" value={form.explanationJP} onChangeText={t=>setField('explanationJP', t)} multiline />
+          <LabeledInput label="Giải thích (JP) *" value={form.explanationJP} onChangeText={t => setField('explanationJP', t)} multiline />
           <View style={{ height: theme.tokens.space.sm }} />
 
-          <LabeledInput label="Explanation (EN)" value={form.explanationEN || ''} onChangeText={t=>setField('explanationEN', t)} multiline />
+          <LabeledInput label="Explanation (EN)" value={form.explanationEN || ''} onChangeText={t => setField('explanationEN', t)} multiline />
         </FormSection>
 
         <FormSection title="JLPT">
-          <JLPTPicker value={form.jlptLevel || ''} onChange={v=>setField('jlptLevel', v)} />
+          <JLPTPicker value={form.jlptLevel || ''} onChange={v => setField('jlptLevel', v)} />
         </FormSection>
 
         <FormSection title="Ví dụ">
           <ExampleEditor
             examples={form.examples || []}
-            onChange={(next)=> setForm(p => (p ? { ...p, examples: next } : p))}
+            onChange={(next) => setForm(p => (p ? { ...p, examples: next } : p))}
             fields={[
               { key: 'sentenceJP', label: 'Câu JP' },
               { key: 'readingKana', label: 'Kana' },

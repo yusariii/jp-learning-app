@@ -7,9 +7,9 @@ import { get } from '../../helpers/http';
 export type LinkedItem = {
   _id: string;
   title?: string;
-  termJP?: string;      // word / grammar
-  textJP?: string;      // reading
-  questionJP?: string;  // speaking / listening
+  termJP?: string;      
+  textJP?: string;      
+  questionJP?: string; 
 };
 
 const labelOf = (it: LinkedItem) =>
@@ -17,7 +17,7 @@ const labelOf = (it: LinkedItem) =>
 
 type Props = {
   title: string;
-  apiPath: string;     // "word", "reading", "grammar", ...
+  apiPath: string;     
   ids: string[];
   emptyText: string;
 };
@@ -30,7 +30,6 @@ const LinkedContentList: React.FC<Props> = ({ title, apiPath, ids, emptyText }) 
   useEffect(() => {
     let alive = true;
 
-    // Không có id nào → không cần gọi API
     if (!ids.length) {
       setItems([]);
       return;
@@ -62,7 +61,7 @@ const LinkedContentList: React.FC<Props> = ({ title, apiPath, ids, emptyText }) 
     return () => {
       alive = false;
     };
-  }, [apiPath, ids.join(',')]); // join để deps đơn giản
+  }, [apiPath, ids.join(',')]); 
 
   return (
     <View style={{ marginTop: theme.tokens.space.md }}>

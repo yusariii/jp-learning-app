@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import LayoutDefault from '../../../../../layout-default/layout-default';
-import { createListening, type Listening } from '../../../../../api/admin/content/listening';
-import { useAppTheme } from '../../../../../hooks/use-app-theme'
-import FormSection from '../../../../../components/ui/FormSection';
-import LabeledInput from '../../../../../components/ui/LabeledInput';
-import Chip from '../../../../../components/ui/Chip';
-import ListeningQuestionEditor from '../../../../../components/block/ListeningQuestionEditor';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { appAlert, appError } from '@/helpers/appAlert';
+import LayoutDefault from '@/layout-default/layout-default';
+import { createListening, type Listening } from '@/api/admin/content/listening';
+import { useAppTheme } from '@/hooks/use-app-theme'
+import FormSection from '@/components/ui/FormSection';
+import LabeledInput from '@/components/ui/LabeledInput';
+import Chip from '@/components/ui/Chip';
+import ListeningQuestionEditor from '@/components/block/ListeningQuestionEditor';
+import BackButton from '@/components/ui/BackButton';
 import { router } from 'expo-router';
 
 type Form = Omit<Listening, '_id'|'createdAt'|'updatedAt'>;
@@ -23,14 +25,18 @@ export default function CreateListeningScreen() {
   const isValid = !!form.title.trim() && !!form.audioUrl.trim();
 
   const submit = async () => {
-    if (!isValid) return Alert.alert('Thiếu dữ liệu', 'Cần “Tiêu đề” và “Audio URL”.');
-    try { await createListening(form as any); Alert.alert('Đã tạo bài nghe'); router.back(); }
-    catch (e:any) { Alert.alert('Lỗi', String(e?.message || e)); }
+    if (!isValid) return appAlert('Thiếu dữ liệu', 'Cần “Tiêu đề” và “Audio URL”.');
+    try { await createListening(form as any); appAlert('Đã tạo bài nghe'); router.back(); }
+    catch (e:any) { appError(String(e?.message || e)); }
   };
 
   return (
     <LayoutDefault title="Thêm bài nghe">
       <ScrollView contentContainerStyle={{ padding: theme.tokens.space.md }} keyboardShouldPersistTaps="handled">
+        <BackButton
+          fallbackHref="/admin/content/listening"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <FormSection title="Cơ bản">
           <LabeledInput label="Tiêu đề *" value={form.title} onChangeText={t=>setField('title', t)} />
           <View style={{ height: theme.tokens.space.sm }} />

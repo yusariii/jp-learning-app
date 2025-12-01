@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import LayoutDefault from '../../../../../layout-default/layout-default';
-import { createGrammar, type Grammar } from '../../../../../api/admin/content/grammar';
-import { useAppTheme } from '../../../../../hooks/use-app-theme'
-import FormSection from '../../../../../components/ui/FormSection'
-import LabeledInput from '../../../../../components/ui/LabeledInput';
-import JLPTPicker from '../../../../../components/ui/JLPTPicker';
-import ExampleEditor from '../../../../../components/block/ExampleEditor';
+import { View, Text, ScrollView, TouchableOpacity} from 'react-native';
+import { appAlert, appError } from '@/helpers/appAlert';
+import LayoutDefault from '@/layout-default/layout-default';
+import { createGrammar, type Grammar } from '@/api/admin/content/grammar';
+import { useAppTheme } from '@/hooks/use-app-theme'
+import FormSection from '@/components/ui/FormSection'
+import LabeledInput from '@/components/ui/LabeledInput';
+import JLPTPicker from '@/components/ui/JLPTPicker';
+import ExampleEditor from '@/components/block/ExampleEditor';
+import BackButton from '@/components/ui/BackButton';
 import { router } from 'expo-router';
 
 type Example = Grammar['examples'][number];
@@ -26,15 +28,18 @@ export default function CreateGrammarScreen() {
   const isValid = !!form.title.trim() && !!form.explanationJP.trim();
 
   const submit = async () => {
-    if (!isValid) return Alert.alert('Thiếu dữ liệu', 'Cần “Tiêu đề” và “Giải thích (JP)”.');
-    try { await createGrammar(form as any); Alert.alert('Đã lưu'); router.back(); }
-    catch (e:any) { Alert.alert('Lỗi', String(e?.message || e)); }
+    if (!isValid) return appAlert('Thiếu dữ liệu', 'Cần “Tiêu đề” và “Giải thích (JP)”.');
+    try { await createGrammar(form as any); appAlert('Đã lưu'); router.back(); }
+    catch (e:any) { appError(String(e?.message || e)); }
   };
 
   return (
     <LayoutDefault title="Thêm ngữ pháp">
       <ScrollView contentContainerStyle={{ padding: theme.tokens.space.md }} keyboardShouldPersistTaps="handled">
-
+        <BackButton
+          fallbackHref="/admin/content/grammar"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <FormSection title="Cơ bản">
           <LabeledInput label="Tiêu đề *" value={form.title} onChangeText={t=>setField('title', t)} />
           <View style={{ height: theme.tokens.space.sm }} />

@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  ActivityIndicator,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity, } from 'react-native';
 import { useLocalSearchParams, useRouter, Href } from 'expo-router';
 
 import LayoutDefault from '@/layout-default/layout-default';
@@ -76,11 +70,10 @@ export default function LessonDetailScreen() {
       .filter(Boolean);
 
   return (
-    <LayoutDefault title="Chi tiết lesson">
+    <LayoutDefault title="Chi tiết bài học">
       <ScrollView
         contentContainerStyle={{
           padding: theme.tokens.space.md,
-          paddingBottom: theme.tokens.space.xl,
         }}
       >
         <BackButton

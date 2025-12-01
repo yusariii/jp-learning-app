@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter, Href } from 'expo-router';
-import LayoutDefault from '../../../../../layout-default/layout-default';
-import { getListening, type Listening } from '../../../../../api/admin/content/listening';
-import { useAppTheme } from '../../../../../hooks/use-app-theme';
-import ContentCard from '../../../../../components/card/ContentCard';
-import ListeningQuestionBlock from '../../../../../components/block/ListeningQuestionBlock';
+import LayoutDefault from '@/layout-default/layout-default';
+import { getListening, type Listening } from '@/api/admin/content/listening';
+import { useAppTheme } from '@/hooks/use-app-theme';
+import ContentCard from '@/components/card/ContentCard';
+import ListeningQuestionBlock from '@/components/block/ListeningQuestionBlock';
+import BackButton from '@/components/ui/BackButton';
 
 export default function ListeningDetailScreen() {
   const { theme } = useAppTheme();
@@ -52,6 +53,10 @@ export default function ListeningDetailScreen() {
   return (
     <LayoutDefault title="Chi tiết bài nghe">
       <ScrollView contentContainerStyle={{ padding: theme.tokens.space.md }}>
+        <BackButton
+          fallbackHref="/admin/content/listening"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <ContentCard>
           <Text style={theme.text.h1}>{item.title}</Text>
           <Text style={[theme.text.link, { marginTop: theme.tokens.space.xs }]}>Audio: {item.audioUrl}</Text>

@@ -2,15 +2,16 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { View, FlatList, ActivityIndicator, RefreshControl, Text } from 'react-native';
 import { useRouter, Href } from 'expo-router';
 
-import LayoutDefault from '../../../../layout-default/layout-default';
-import { useAppTheme } from '../../../../hooks/use-app-theme';
-import { listGrammars, type Grammar } from '../../../../api/admin/content/grammar';
+import LayoutDefault from '@/layout-default/layout-default';
+import { useAppTheme } from '@/hooks/use-app-theme';
+import { listGrammars, type Grammar } from '@/api/admin/content/grammar';
 
-import SearchBar from '../../../../components/ui/SearchBar';
-import FilterBar, { type SortKey } from '../../../../components/list/FilterBar'
-import GrammarCard from '../../../../components/card/GrammarCard'
-import AddButton from '../../../../components/ui/AddButton';
-import EmptyState from '../../../../components/ui/EmptyState';
+import SearchBar from '@/components/ui/SearchBar';
+import FilterBar, { type SortKey } from '@/components/list/FilterBar'
+import GrammarCard from '@/components/card/GrammarCard'
+import AddButton from '@/components/ui/AddButton';
+import EmptyState from '@/components/ui/EmptyState';
+import BackButton from '@/components/ui/BackButton';
 
 type ApiList = { data: Grammar[]; page: number; limit: number; total: number };
 
@@ -75,7 +76,12 @@ export default function ListGrammarScreen() {
 
   return (
     <LayoutDefault title="Ngữ pháp">
+      
       <View style={styles.header}>
+        <BackButton
+          fallbackHref="/admin"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <SearchBar
           value={q}
           onChangeText={setQ}

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
 import { useLocalSearchParams, useRouter, Href } from 'expo-router';
-import LayoutDefault from '../../../../../layout-default/layout-default';
-import { getGrammar, type Grammar } from '../../../../../api/admin/content/grammar';
-import { useAppTheme } from '../../../../../hooks/use-app-theme';
-import ContentCard from '../../../../../components/card/ContentCard';
-import ExampleBlock from '../../../../../components/block/ExampleBlock';
+import LayoutDefault from '@/layout-default/layout-default';
+import { getGrammar, type Grammar } from '@/api/admin/content/grammar';
+import { useAppTheme } from '@/hooks/use-app-theme';
+import ContentCard from '@/components/card/ContentCard';
+import ExampleBlock from '@/components/block/ExampleBlock';
+import BackButton from '@/components/ui/BackButton';
 
 export default function GrammarDetailScreen() {
   const { theme } = useAppTheme();
@@ -56,6 +57,10 @@ export default function GrammarDetailScreen() {
   return (
     <LayoutDefault title="Chi tiết ngữ pháp">
       <ScrollView contentContainerStyle={{ padding: theme.tokens.space.md }}>
+        <BackButton
+          fallbackHref="/admin/content/grammar"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <ContentCard>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.tokens.space.sm, flexWrap: 'wrap' }}>
             <Text style={theme.text.h1}>{item.title}</Text>

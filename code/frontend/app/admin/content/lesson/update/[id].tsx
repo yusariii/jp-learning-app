@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Alert, } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { appAlert, appConfirm, appError } from '@/helpers/appAlert';
 import { useLocalSearchParams, useRouter, Href } from 'expo-router';
 import LayoutDefault from '@/layout-default/layout-default';
 import { getLesson, updateLesson, deleteLesson, type Lesson, } from '@/api/admin/content/lesson';
@@ -101,7 +102,7 @@ export default function EditLessonScreen() {
                         (data.listeningIds || []).map((x: any) => x.listeningId) || [],
                 });
             } catch (e: any) {
-                Alert.alert('Lỗi', String(e?.message || e));
+                appError(String(e?.message || e));
             } finally {
                 if (alive) setLoading(false);
             }
@@ -114,7 +115,7 @@ export default function EditLessonScreen() {
     const save = async () => {
         if (!form || !lessonId) return;
         if (!isValid) {
-            return Alert.alert(
+            return appAlert(
                 'Thiếu dữ liệu',
                 'Cần nhập “Tiêu đề” và “Số bài (lessonNumber)”.',
             );
@@ -123,40 +124,31 @@ export default function EditLessonScreen() {
         try {
             const payload = buildPayload(form);
             await updateLesson(lessonId, payload);
-            Alert.alert('Đã lưu', 'Cập nhật lesson thành công.');
+            appAlert('Đã lưu', 'Cập nhật lesson thành công.');
         } catch (e: any) {
-            Alert.alert('Lỗi', String(e?.message || e));
+            appError(String(e?.message || e));
         }
     };
 
     const confirmDelete = () => {
         if (!lessonId) return;
-        Alert.alert('Xoá lesson', 'Bạn chắc chắn muốn xoá?', [
-            { text: 'Huỷ', style: 'cancel' },
-            {
-                text: 'Xoá',
-                style: 'destructive',
-                onPress: async () => {
-                    try {
-                        await deleteLesson(lessonId);
-                        Alert.alert('Đã xoá', 'Lesson đã được xoá.', [
-                            {
-                                text: 'OK',
-                                onPress: () =>
-                                    router.replace('/admin/content/lesson' as Href),
-                            },
-                        ]);
-                    } catch (e: any) {
-                        Alert.alert('Lỗi', String(e?.message || e));
-                    }
-                },
-            },
-        ]);
+        appConfirm('Xoá lesson', 'Bạn chắc chắn muốn xoá?', async () => {
+            try {
+                await deleteLesson(lessonId);
+                appAlert('Đã xoá', 'Lesson đã được xoá.', () => {
+                    router.replace('/admin/content/lesson' as Href)
+                }
+                );
+            } catch (e: any) {
+                appError(String(e?.message || e));
+            }
+        },
+        );
     };
 
     if (loading || !form) {
         return (
-            <LayoutDefault title="Sửa lesson">
+            <LayoutDefault title="Sửa bài học">
                 <View style={{ padding: theme.tokens.space.md }}>
                     <ActivityIndicator color={theme.color.textSub} />
                     <Text

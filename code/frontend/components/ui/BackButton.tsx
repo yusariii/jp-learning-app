@@ -41,7 +41,7 @@ const BackButton: React.FC<BackButtonProps> = ({
   };
 
   return (
-    <View style={containerStyle}>
+    <View style={[{ alignSelf: 'flex-start' }, containerStyle]}>
       <TouchableOpacity
         onPress={handlePress}
         style={[

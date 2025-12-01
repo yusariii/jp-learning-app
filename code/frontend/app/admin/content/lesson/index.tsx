@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, RefreshControl } from 'react-native';
 import { useRouter, Href } from 'expo-router';
 
@@ -88,6 +88,11 @@ export default function LessonListScreen() {
         const next = page + 1;
         fetchPage(next, true);
     };
+
+    const styles = useMemo(() => ({
+        header: { padding: theme.tokens.space.md, gap: theme.tokens.space.sm },
+        listContent: { paddingHorizontal: theme.tokens.space.md, paddingBottom: theme.tokens.space.xl },
+    }), [theme.mode]);
 
     const renderItem = ({ item }: { item: Lesson }) => {
         const counts = {
@@ -192,13 +197,9 @@ export default function LessonListScreen() {
     };
 
     return (
-        <LayoutDefault title="Bài học (Lesson)">
+        <LayoutDefault title="Bài học">
             <View
-                style={{
-                    padding: theme.tokens.space.md,
-                    paddingBottom: 0,
-                    gap: theme.tokens.space.sm,
-                }}
+                style={styles.header}
             >
                 <BackButton
                     fallbackHref="/admin"
