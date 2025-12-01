@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Alert, } from 'react-native';
 import { useLocalSearchParams, useRouter, Href } from 'expo-router';
-import LayoutDefault from '../../../../../layout-default/layout-default';
-import { getLesson, updateLesson, deleteLesson, type Lesson, } from '../../../../../api/admin/content/lesson';
-import { useAppTheme } from '../../../../../hooks/use-app-theme';
-import FormSection from '../../../../../components/ui/FormSection';
-import LabeledInput from '../../../../../components/ui/LabeledInput';
-import Chip from '../../../../../components/ui/Chip';
-import LinkedContentSelector from '../../../../../components/block/LinkedContentSelector';
+import LayoutDefault from '@/layout-default/layout-default';
+import { getLesson, updateLesson, deleteLesson, type Lesson, } from '@/api/admin/content/lesson';
+import { useAppTheme } from '@/hooks/use-app-theme';
+import FormSection from '@/components/ui/FormSection';
+import LabeledInput from '@/components/ui/LabeledInput';
+import Chip from '@/components/ui/Chip';
+import LinkedContentSelector from '@/components/block/LinkedContentSelector';
+import BackButton from '@/components/ui/BackButton';
 
 type JLPT = Lesson['jlptLevel'] | '';
 
@@ -180,6 +181,10 @@ export default function EditLessonScreen() {
                 }}
                 keyboardShouldPersistTaps="handled"
             >
+                <BackButton
+                    fallbackHref="/admin/content/lesson"
+                    containerStyle={{ marginBottom: theme.tokens.space.sm }}
+                />
                 {/* CƠ BẢN */}
                 <FormSection title="Cơ bản">
                     <LabeledInput

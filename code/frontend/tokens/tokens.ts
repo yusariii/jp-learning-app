@@ -57,6 +57,7 @@ export const t = {
   font: {
     h1: { fontSize: 24, lineHeight: 30, fontWeight: '700' } as FontToken, // Tiêu đề màn hình
     h2: { fontSize: 20, lineHeight: 26, fontWeight: '700' } as FontToken, // Tiêu đề khu/section
+    h3: { fontSize: 18, lineHeight: 24, fontWeight: '700' } as FontToken, // Tiêu đề phụ
     title: { fontSize: 18, lineHeight: 24, fontWeight: '700' } as FontToken, // Tiêu đề item/card
     body: { fontSize: 16, lineHeight: 22, fontWeight: '400' } as FontToken,  // Nội dung chính
     secondary: { fontSize: 14, lineHeight: 20, fontWeight: '400' } as FontToken, // Mô tả/nhãn

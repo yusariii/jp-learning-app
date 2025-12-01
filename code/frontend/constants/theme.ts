@@ -24,6 +24,7 @@ export function getTheme(mode: ThemeMode = 'light') {
     text: {
       h1: { ...fonts.h1, color: c.text },           // 24/30, 700 — tiêu đề màn hình
       h2: { ...fonts.h2, color: c.text },           // 20/26, 700 — tiêu đề section
+      h3: { ...fonts.h3, color: c.text },           // 18/24, 700 — tiêu đề phụ
       title: { ...fonts.title, color: c.text },     // 18/24, 700 — tiêu đề card/item
       body: { ...fonts.body, color: c.text },       // 16/22 — nội dung chính
       secondary: { ...fonts.secondary, color: c.textSub }, // 14/20 — nhãn/mô tả
