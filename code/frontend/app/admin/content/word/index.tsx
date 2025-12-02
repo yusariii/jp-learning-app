@@ -2,15 +2,16 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { View, FlatList, ActivityIndicator, RefreshControl, Text } from 'react-native';
 import { useRouter, Href } from 'expo-router';
 
-import LayoutDefault from '../../../../layout-default/layout-default';
-import { useAppTheme } from '../../../../hooks/use-app-theme';
-import { listWords, type Word } from '../../../../api/admin/content/word';
+import LayoutDefault from '@/layout-default/layout-default';
+import { useAppTheme } from '@/hooks/use-app-theme';
+import { listWords, type Word } from '@/api/admin/content/word';
 
-import SearchBar from '../../../../components/ui/SearchBar';
-import FilterBar, { type SortKey } from '../../../../components/list/FilterBar'
-import WordCard from '../../../../components/card/WordCard'
-import AddButton from '../../../../components/ui/AddButton';
-import EmptyState from '../../../../components/ui/EmptyState';
+import SearchBar from '@/components/ui/SearchBar';
+import FilterBar, { type SortKey } from '@/components/list/FilterBar'
+import WordCard from '@/components/card/WordCard'
+import AddButton from '@/components/ui/AddButton';
+import EmptyState from '@/components/ui/EmptyState';
+import BackButton from '@/components/ui/BackButton';
 
 type ApiList = { data: Word[]; page: number; limit: number; total: number };
 
@@ -76,6 +77,10 @@ export default function ListWordScreen() {
   return (
     <LayoutDefault title="Từ vựng">
       <View style={styles.header}>
+        <BackButton
+          fallbackHref="/admin"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <SearchBar
           value={q}
           onChangeText={setQ}

@@ -2,16 +2,17 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { View, FlatList, ActivityIndicator, RefreshControl, Text, TouchableOpacity } from 'react-native';
 import { useRouter, Href } from 'expo-router';
 
-import LayoutDefault from '../../../../layout-default/layout-default';
-import { useAppTheme } from '../../../../hooks/use-app-theme';
-import { listReadings, type Reading } from '../../../../api/admin/content/reading';
+import LayoutDefault from '@/layout-default/layout-default';
+import { useAppTheme } from '@/hooks/use-app-theme';
+import { listReadings, type Reading } from '@/api/admin/content/reading';
 
-import SearchBar from '../../../../components/ui/SearchBar';
-import FilterBar, { type SortKey } from '../../../../components/list/FilterBar';
-import ContentCard from '../../../../components/card/ContentCard';
-import Chip from '../../../../components/ui/Chip';
-import AddButton from '../../../../components/ui/AddButton';
-import EmptyState from '../../../../components/ui/EmptyState';
+import SearchBar from '@/components/ui/SearchBar';
+import FilterBar, { type SortKey } from '@/components/list/FilterBar';
+import ContentCard from '@/components/card/ContentCard';
+import Chip from '@/components/ui/Chip';
+import AddButton from '@/components/ui/AddButton';
+import EmptyState from '@/components/ui/EmptyState';
+import BackButton from '@/components/ui/BackButton';
 
 type ApiList = { data: Reading[]; page: number; limit: number; total: number };
 const LIMIT = 20;
@@ -76,6 +77,10 @@ export default function ListReadingScreen() {
   return (
     <LayoutDefault title="Bài đọc">
       <View style={styles.header}>
+        <BackButton
+          fallbackHref="/admin"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <SearchBar value={q} onChangeText={setQ} onSubmit={() => fetchPage(1)} placeholder="Tìm tiêu đề/nội dung/câu hỏi…" />
 
         <View style={{ flexDirection: 'row', gap: theme.tokens.space.xs, flexWrap: 'wrap' }}>

@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import LayoutDefault from '../../../../../layout-default/layout-default';
-import { createWord, type Word } from '../../../../../api/admin/content/word';
-import { useAppTheme } from '../../../../../hooks/use-app-theme'
-import FormSection from '../../../../../components/ui/FormSection'
-import LabeledInput from '../../../../../components/ui/LabeledInput';
-import JLPTPicker from '../../../../../components/ui/JLPTPicker';
-import TagsEditor from '../../../../../components/ui/TagsEditor';
-import ExampleEditor from '../../../../../components/block/ExampleEditor';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { appAlert, appError } from '@/helpers/appAlert';
+import LayoutDefault from '@/layout-default/layout-default';
+import { createWord, type Word } from '@/api/admin/content/word';
+import { useAppTheme } from '@/hooks/use-app-theme'
+import FormSection from '@/components/ui/FormSection'
+import LabeledInput from '@/components/ui/LabeledInput';
+import JLPTPicker from '@/components/ui/JLPTPicker';
+import TagsEditor from '@/components/ui/TagsEditor';
+import ExampleEditor from '@/components/block/ExampleEditor';
+import BackButton from '@/components/ui/BackButton';
 import { router } from 'expo-router';
 
 type Example = Word['examples'][number];
@@ -29,15 +31,18 @@ export default function CreateWordScreen() {
   const isValid = !!form.termJP.trim();
 
   const submit = async () => {
-    if (!isValid) return Alert.alert('Thiếu dữ liệu', 'Cần “Từ (JP)”.');
-    try { await createWord(form as any); Alert.alert('Đã lưu'); router.back(); }
-    catch (e:any) { Alert.alert('Lỗi', String(e?.message || e)); }
+    if (!isValid) return appAlert('Thiếu dữ liệu', 'Cần “Từ (JP)”.');
+    try { await createWord(form as any); appAlert('Đã lưu'); router.back(); }
+    catch (e:any) { appError(String(e?.message || e)); }
   };
 
   return (
     <LayoutDefault title="Thêm từ vựng">
       <ScrollView contentContainerStyle={{ padding: theme.tokens.space.md }} keyboardShouldPersistTaps="handled">
-
+        <BackButton
+          fallbackHref="/admin/content/word"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <FormSection title="Cơ bản">
           <LabeledInput label="Từ (JP) *" value={form.termJP} onChangeText={t=>setField('termJP', t)} />
           <View style={{ height: theme.tokens.space.sm }} />

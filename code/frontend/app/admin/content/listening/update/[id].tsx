@@ -53,14 +53,14 @@ export default function EditListeningScreen() {
   };
 
   const confirmDelete = () =>
-    appConfirm('Xoá mục ngữ pháp', 'Bạn chắc chắn muốn xoá?', async () => {
+    appConfirm('Xoá mục bài nghe', 'Bạn chắc chắn muốn xoá?', async () => {
           appConfirm(
-            'Xoá lesson',
+            'Xoá bài nghe',
             'Bạn chắc chắn muốn xoá?',
             async () => {
               try {
                 await deleteListening(String(form?._id));
-                appAlert('Đã xoá', 'Ngữ pháp đã được xoá.', () => {
+                appAlert('Đã xoá', 'Bài nghe đã được xoá.', () => {
                   router.replace('/admin/content/listening' as Href);
                 });
               } catch (e: any) {

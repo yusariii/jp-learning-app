@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import LayoutDefault from '../../../../../layout-default/layout-default';
-import { getSpeaking, updateSpeaking, deleteSpeaking, type Speaking } from '../../../../../api/admin/content/speaking';
-import { useAppTheme } from '../../../../../hooks/use-app-theme';
-import FormSection from '../../../../../components/ui/FormSection';
-import LabeledInput from '../../../../../components/ui/LabeledInput';
-import PromptsEditor from '../../../../../components/block/PromptsEditor';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { appAlert, appError, appConfirm } from '@/helpers/appAlert';
+import { Href, useLocalSearchParams, useRouter } from 'expo-router';
+import LayoutDefault from '@/layout-default/layout-default';
+import { getSpeaking, updateSpeaking, deleteSpeaking, type Speaking } from '@/api/admin/content/speaking';
+import { useAppTheme } from '@/hooks/use-app-theme';
+import FormSection from '@/components/ui/FormSection';
+import LabeledInput from '@/components/ui/LabeledInput';
+import PromptsEditor from '@/components/block/PromptsEditor';
+import BackButton from '@/components/ui/BackButton';
 
 type Form = Speaking;
 
@@ -37,7 +39,7 @@ export default function EditSpeakingScreen() {
   const isValid = !!form?.title?.trim() && (form?.prompts || []).some(p => p.promptJP?.trim());
 
   const save = async () => {
-    if (!form || !isValid) return Alert.alert('Thiếu dữ liệu', 'Cần “Tiêu đề” và ít nhất 1 Prompt (JP).');
+    if (!form || !isValid) return appAlert('Thiếu dữ liệu', 'Cần “Tiêu đề” và ít nhất 1 Prompt (JP).');
     try {
       await updateSpeaking(String(form._id), {
         title: form.title,
@@ -45,20 +47,29 @@ export default function EditSpeakingScreen() {
         sampleAudioUrl: form.sampleAudioUrl,
         prompts: form.prompts || [],
       });
-      Alert.alert('Đã lưu', 'Cập nhật thành công.');
-    } catch (e:any) { Alert.alert('Lỗi', String(e?.message || e)); }
+      appAlert('Đã lưu', 'Cập nhật thành công.');
+    } catch (e: any) { appError(String(e?.message || e)); }
   };
 
   const confirmDelete = () =>
-    Alert.alert('Xoá chủ đề', 'Bạn chắc chắn muốn xoá?', [
-      { text: 'Huỷ', style: 'cancel' },
-      { text: 'Xoá', style: 'destructive', onPress: del },
-    ]);
-
-  const del = async () => {
-    try { await deleteSpeaking(String(form?._id)); Alert.alert('Đã xoá'); router.back(); }
-    catch (e:any) { Alert.alert('Lỗi', String(e?.message || e)); }
-  };
+    appConfirm('Xoá mục bài nói', 'Bạn chắc chắn muốn xoá?', async () => {
+          appConfirm(
+            'Xoá bài nói',
+            'Bạn chắc chắn muốn xoá?',
+            async () => {
+              try {
+                await deleteSpeaking(String(form?._id));
+                appAlert('Đã xoá', 'Bài nói đã được xoá.', () => {
+                  router.replace('/admin/content/speaking' as Href);
+                });
+              } catch (e: any) {
+                appError(String(e?.message || e));
+              }
+            },
+            () => {
+            },
+          );
+        });
 
   if (loading || !form) {
     return (
@@ -75,17 +86,17 @@ export default function EditSpeakingScreen() {
     <LayoutDefault title="Sửa chủ đề nói">
       <ScrollView contentContainerStyle={{ padding: theme.tokens.space.md }} keyboardShouldPersistTaps="handled">
         <FormSection title="Cơ bản">
-          <LabeledInput label="Tiêu đề *" value={form.title} onChangeText={t=>setField('title', t)} />
+          <LabeledInput label="Tiêu đề *" value={form.title} onChangeText={t => setField('title', t)} />
           <View style={{ height: theme.tokens.space.sm }} />
-          <LabeledInput label="Hướng dẫn" value={form.guidance || ''} onChangeText={t=>setField('guidance', t)} multiline />
+          <LabeledInput label="Hướng dẫn" value={form.guidance || ''} onChangeText={t => setField('guidance', t)} multiline />
           <View style={{ height: theme.tokens.space.sm }} />
-          <LabeledInput label="Sample Audio URL" value={form.sampleAudioUrl || ''} onChangeText={t=>setField('sampleAudioUrl', t)} autoCapitalize="none" keyboardType="url" />
+          <LabeledInput label="Sample Audio URL" value={form.sampleAudioUrl || ''} onChangeText={t => setField('sampleAudioUrl', t)} autoCapitalize="none" keyboardType="url" />
         </FormSection>
 
         <FormSection title="Prompts">
           <PromptsEditor
             prompts={form.prompts || []}
-            onChange={(next)=> setForm(p => (p ? { ...p, prompts: next } : p))}
+            onChange={(next) => setForm(p => (p ? { ...p, prompts: next } : p))}
           />
         </FormSection>
 

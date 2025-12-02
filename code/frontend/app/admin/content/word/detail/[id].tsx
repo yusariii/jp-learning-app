@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter, Href } from 'expo-router';
-import LayoutDefault from '../../../../../layout-default/layout-default';
-import { getWord, type Word } from '../../../../../api/admin/content/word';
-import { useAppTheme } from '../../../../../hooks/use-app-theme'
-import ContentCard from '../../../../../components/card/ContentCard'
-import TagPills from '../../../../../components/ui/TagPills';
-import ExampleBlock from '../../../../../components/block/ExampleBlock';
+import LayoutDefault from '@/layout-default/layout-default';
+import { getWord, type Word } from '@/api/admin/content/word';
+import { useAppTheme } from '@/hooks/use-app-theme'
+import ContentCard from '@/components/card/ContentCard'
+import TagPills from '@/components/ui/TagPills';
+import ExampleBlock from '@/components/block/ExampleBlock';
+import BackButton from '@/components/ui/BackButton';
 
 export default function WordDetailScreen() {
   const { theme } = useAppTheme();
@@ -57,6 +58,10 @@ export default function WordDetailScreen() {
   return (
     <LayoutDefault title="Chi tiết từ vựng">
       <ScrollView contentContainerStyle={{ padding: theme.tokens.space.md }}>
+        <BackButton
+          fallbackHref="/admin/content/word"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <ContentCard>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.tokens.space.sm, flexWrap: 'wrap' }}>
             <Text style={theme.text.h1}>{item.termJP}</Text>

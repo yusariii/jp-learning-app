@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import LayoutDefault from '../../../../../layout-default/layout-default';
-import { createReading, type Reading } from '../../../../../api/admin/content/reading';
-import { useAppTheme } from '../../../../../hooks/use-app-theme'
-import FormSection from '../../../../../components/ui/FormSection'
-import LabeledInput from '../../../../../components/ui/LabeledInput';
-import Chip from '../../../../../components/ui/Chip';
-import QuestionEditor from '../../../../../components/block/QuestionEditor';
+import { View, Text, ScrollView, TouchableOpacity} from 'react-native';
+import { appAlert, appError } from '@/helpers/appAlert';
+import LayoutDefault from '@/layout-default/layout-default';
+import { createReading, type Reading } from '@/api/admin/content/reading';
+import { useAppTheme } from '@/hooks/use-app-theme'
+import FormSection from '@/components/ui/FormSection'
+import LabeledInput from '@/components/ui/LabeledInput';
+import Chip from '@/components/ui/Chip';
+import QuestionEditor from '@/components/block/QuestionEditor';
+import BackButton from '@/components/ui/BackButton';
 import { router } from 'expo-router';
 
 type Form = Omit<Reading, '_id'|'createdAt'|'updatedAt'>;
@@ -29,14 +31,18 @@ export default function CreateReadingScreen() {
   const isValid = !!form.title.trim() && !!form.textJP.trim();
 
   const submit = async () => {
-    if (!isValid) return Alert.alert('Thiếu dữ liệu', 'Cần “Tiêu đề” và “Nội dung JP”.');
-    try { await createReading(form as any); Alert.alert('Đã tạo bài đọc'); router.back(); }
-    catch (e:any) { Alert.alert('Lỗi', String(e?.message || e)); }
+    if (!isValid) return appAlert('Thiếu dữ liệu', 'Cần “Tiêu đề” và “Nội dung JP”.');
+    try { await createReading(form as any); appAlert('Đã tạo bài đọc'); router.back(); }
+    catch (e:any) { appError(String(e?.message || e)); }
   };
 
   return (
     <LayoutDefault title="Thêm bài đọc">
       <ScrollView contentContainerStyle={{ padding: theme.tokens.space.md }} keyboardShouldPersistTaps="handled">
+        <BackButton
+          fallbackHref="/admin/content/reading"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <FormSection title="Cơ bản">
           <LabeledInput label="Tiêu đề *" value={form.title} onChangeText={t=>setField('title', t)} />
           <View style={{ height: theme.tokens.space.sm }} />

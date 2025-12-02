@@ -59,7 +59,7 @@ export default function EditGrammarScreen() {
   const confirmDelete = () =>
     appConfirm('Xoá mục ngữ pháp', 'Bạn chắc chắn muốn xoá?', async () => {
       appConfirm(
-        'Xoá lesson',
+        'Xoá ngữ pháp',
         'Bạn chắc chắn muốn xoá?',
         async () => {
           try {

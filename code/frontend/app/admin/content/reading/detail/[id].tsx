@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter, Href } from 'expo-router';
-import LayoutDefault from '../../../../../layout-default/layout-default';
-import { getReading, type Reading } from '../../../../../api/admin/content/reading';
-import { useAppTheme } from '../../../../../hooks/use-app-theme';
-import ContentCard from '../../../../../components/card/ContentCard';
-import QuestionBlock from '../../../../../components/block/QuestionBlock';
+import LayoutDefault from '@/layout-default/layout-default';
+import { getReading, type Reading } from '@/api/admin/content/reading';
+import { useAppTheme } from '@/hooks/use-app-theme';
+import ContentCard from '@/components/card/ContentCard';
+import QuestionBlock from '@/components/block/QuestionBlock';
+import BackButton from '@/components/ui/BackButton';
 
 export default function ReadingDetailScreen() {
   const { theme } = useAppTheme();
@@ -54,6 +55,10 @@ export default function ReadingDetailScreen() {
   return (
     <LayoutDefault title="Chi tiết bài đọc">
       <ScrollView contentContainerStyle={{ padding: theme.tokens.space.md }}>
+        <BackButton
+          fallbackHref="/admin/content/reading"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <ContentCard>
           <Text style={theme.text.h1}>{item.title}</Text>
           <Text style={[theme.text.meta, { marginTop: theme.tokens.space.xs }]}>

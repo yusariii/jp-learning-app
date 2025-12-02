@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter, Href } from 'expo-router';
-import LayoutDefault from '../../../../../layout-default/layout-default';
-import { getSpeaking, type Speaking } from '../../../../../api/admin/content/speaking';
-import { useAppTheme } from '../../../../../hooks/use-app-theme';
-import ContentCard from '../../../../../components/card/ContentCard';
+import LayoutDefault from '@/layout-default/layout-default';
+import { getSpeaking, type Speaking } from '@/api/admin/content/speaking';
+import { useAppTheme } from '@/hooks/use-app-theme';
+import ContentCard from '@/components/card/ContentCard';
+import BackButton from '@/components/ui/BackButton';
 
 export default function SpeakingDetailScreen() {
   const { theme } = useAppTheme();
@@ -53,6 +54,10 @@ export default function SpeakingDetailScreen() {
   return (
     <LayoutDefault title="Chi tiết chủ đề nói">
       <ScrollView contentContainerStyle={{ padding: theme.tokens.space.md }}>
+        <BackButton
+          fallbackHref="/admin/content/speaking"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <ContentCard>
           <Text style={theme.text.h1}>{item.title}</Text>
           {!!item.guidance && <Text style={[theme.text.body, { marginTop: theme.tokens.space.sm }]}>{item.guidance}</Text>}

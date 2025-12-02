@@ -1,14 +1,15 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, FlatList, ActivityIndicator, RefreshControl, Text, TouchableOpacity } from 'react-native';
 import { useRouter, Href } from 'expo-router';
-import LayoutDefault from '../../../../layout-default/layout-default';
-import { useAppTheme } from './../../../../hooks/use-app-theme'
-import { listSpeakings, type Speaking } from '../../../../api/admin/content/speaking';
-import SearchBar from '../../../../components/ui/SearchBar';
-import FilterBar, { type SortKey } from '../../../../components/list/FilterBar';
-import ContentCard from '../../../../components/card/ContentCard';
-import AddButton from '../../../../components/ui/AddButton';
-import EmptyState from '../../../../components/ui/EmptyState';
+import LayoutDefault from '@/layout-default/layout-default';
+import { useAppTheme } from '@/hooks/use-app-theme'
+import { listSpeakings, type Speaking } from '@/api/admin/content/speaking';
+import SearchBar from '@/components/ui/SearchBar';
+import FilterBar, { type SortKey } from '@/components/list/FilterBar';
+import ContentCard from '@/components/card/ContentCard';
+import AddButton from '@/components/ui/AddButton';
+import EmptyState from '@/components/ui/EmptyState';
+import BackButton from '@/components/ui/BackButton';
 
 type ApiList = { data: Speaking[]; page: number; limit: number; total: number };
 const LIMIT = 20;
@@ -55,6 +56,10 @@ export default function ListSpeakingScreen() {
   return (
     <LayoutDefault title="Luyện nói">
       <View style={styles.header}>
+        <BackButton
+          fallbackHref="/admin"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <SearchBar value={q} onChangeText={setQ} onSubmit={() => fetchPage(1)} placeholder="Tìm tiêu đề/prompt/guidance…" />
         <FilterBar
           jlptLevels={['' as any]} selected={'' as any} onSelect={()=>{}}

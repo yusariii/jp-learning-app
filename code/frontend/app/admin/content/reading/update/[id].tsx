@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import LayoutDefault from '../../../../../layout-default/layout-default';
-import { getReading, updateReading, deleteReading, type Reading } from '../../../../../api/admin/content/reading';
-import { useAppTheme } from '../../../../../hooks/use-app-theme';
-import FormSection from '../../../../../components/ui/FormSection';
-import LabeledInput from '../../../../../components/ui/LabeledInput';
-import Chip from '../../../../../components/ui/Chip';
-import QuestionEditor from '../../../../../components/block/QuestionEditor';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { appAlert, appError, appConfirm } from '@/helpers/appAlert';
+import { Href, useLocalSearchParams, useRouter } from 'expo-router';
+import LayoutDefault from '@/layout-default/layout-default';
+import { getReading, updateReading, deleteReading, type Reading } from '@/api/admin/content/reading';
+import { useAppTheme } from '@/hooks/use-app-theme';
+import FormSection from '@/components/ui/FormSection';
+import LabeledInput from '@/components/ui/LabeledInput';
+import Chip from '@/components/ui/Chip';
+import QuestionEditor from '@/components/block/QuestionEditor';
+import BackButton from '@/components/ui/BackButton';
 
 type Form = Reading;
 
@@ -40,7 +42,7 @@ export default function EditReadingScreen() {
   const isValid = !!form?.title?.trim() && !!form?.textJP?.trim();
 
   const save = async () => {
-    if (!form || !isValid) return Alert.alert('Thiếu dữ liệu', 'Cần “Tiêu đề” và “Nội dung JP”.');
+    if (!form || !isValid) return appAlert('Thiếu dữ liệu', 'Cần “Tiêu đề” và “Nội dung JP”.');
     try {
       await updateReading(String(form._id), {
         title: form.title,
@@ -50,20 +52,29 @@ export default function EditReadingScreen() {
         difficulty: form.difficulty,
         comprehension: form.comprehension || [],
       });
-      Alert.alert('Đã lưu', 'Cập nhật thành công.');
-    } catch (e:any) { Alert.alert('Lỗi', String(e?.message || e)); }
+      appAlert('Đã lưu', 'Cập nhật thành công.');
+    } catch (e: any) { appError(String(e?.message || e)); }
   };
 
   const confirmDelete = () =>
-    Alert.alert('Xoá bài đọc', 'Bạn chắc chắn muốn xoá?', [
-      { text: 'Huỷ', style: 'cancel' },
-      { text: 'Xoá', style: 'destructive', onPress: del },
-    ]);
-
-  const del = async () => {
-    try { await deleteReading(String(form?._id)); Alert.alert('Đã xoá'); router.back(); }
-    catch (e:any) { Alert.alert('Lỗi', String(e?.message || e)); }
-  };
+    appConfirm('Xoá mục bài đọc', 'Bạn chắc chắn muốn xoá?', async () => {
+              appConfirm(
+                'Xoá bài đọc',
+                'Bạn chắc chắn muốn xoá?',
+                async () => {
+                  try {
+                    await deleteReading(String(form?._id));
+                    appAlert('Đã xoá', 'Bài đọc đã được xoá.', () => {
+                      router.replace('/admin/content/reading' as Href);
+                    });
+                  } catch (e: any) {
+                    appError(String(e?.message || e));
+                  }
+                },
+                () => {
+                },
+              );
+            });
 
   if (loading || !form) {
     return (
@@ -79,20 +90,24 @@ export default function EditReadingScreen() {
   return (
     <LayoutDefault title="Sửa bài đọc">
       <ScrollView contentContainerStyle={{ padding: theme.tokens.space.md }} keyboardShouldPersistTaps="handled">
+        <BackButton
+          fallbackHref="/admin/content/reading"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <FormSection title="Cơ bản">
-          <LabeledInput label="Tiêu đề *" value={form.title} onChangeText={t=>setField('title', t)} />
+          <LabeledInput label="Tiêu đề *" value={form.title} onChangeText={t => setField('title', t)} />
           <View style={{ height: theme.tokens.space.sm }} />
-          <LabeledInput label="Nội dung (JP) *" value={form.textJP} onChangeText={t=>setField('textJP', t)} multiline />
+          <LabeledInput label="Nội dung (JP) *" value={form.textJP} onChangeText={t => setField('textJP', t)} multiline />
           <View style={{ height: theme.tokens.space.sm }} />
-          <LabeledInput label="Nội dung (EN)" value={form.textEN || ''} onChangeText={t=>setField('textEN', t)} multiline />
+          <LabeledInput label="Nội dung (EN)" value={form.textEN || ''} onChangeText={t => setField('textEN', t)} multiline />
           <View style={{ height: theme.tokens.space.sm }} />
-          <LabeledInput label="Audio URL" value={form.audioUrl || ''} onChangeText={t=>setField('audioUrl', t)} autoCapitalize="none" keyboardType="url" />
+          <LabeledInput label="Audio URL" value={form.audioUrl || ''} onChangeText={t => setField('audioUrl', t)} autoCapitalize="none" keyboardType="url" />
         </FormSection>
 
         <FormSection title="Độ khó">
           <View style={{ flexDirection: 'row', gap: theme.tokens.space.xs, flexWrap: 'wrap' }}>
-            {(['easy','medium','hard'] as const).map(d => (
-              <Chip key={d} label={d} active={form.difficulty === d} onPress={()=>setField('difficulty', d)} />
+            {(['easy', 'medium', 'hard'] as const).map(d => (
+              <Chip key={d} label={d} active={form.difficulty === d} onPress={() => setField('difficulty', d)} />
             ))}
           </View>
         </FormSection>
@@ -100,7 +115,7 @@ export default function EditReadingScreen() {
         <FormSection title="Câu hỏi hiểu bài">
           <QuestionEditor
             questions={form.comprehension || []}
-            onChange={(next)=> setForm(p => (p ? { ...p, comprehension: next } : p))}
+            onChange={(next) => setForm(p => (p ? { ...p, comprehension: next } : p))}
           />
         </FormSection>
 

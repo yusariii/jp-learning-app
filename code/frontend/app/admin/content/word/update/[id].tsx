@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import LayoutDefault from '../../../../../layout-default/layout-default';
-import { getWord, updateWord, deleteWord, type Word } from '../../../../../api/admin/content/word';
-import { useAppTheme } from '../../../../../hooks/use-app-theme';
-import FormSection from '../../../../../components/ui/FormSection';
-import LabeledInput from '../../../../../components/ui/LabeledInput';
-import JLPTPicker from '../../../../../components/ui/JLPTPicker';
-import TagsEditor from '../../../../../components/ui/TagsEditor';
-import ExampleEditor from '../../../../../components/block/ExampleEditor';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { appAlert, appError, appConfirm } from '@/helpers/appAlert';
+import { Href, useLocalSearchParams, useRouter } from 'expo-router';
+import LayoutDefault from '@/layout-default/layout-default';
+import { getWord, updateWord, deleteWord, type Word } from '@/api/admin/content/word';
+import { useAppTheme } from '@/hooks/use-app-theme';
+import FormSection from '@/components/ui/FormSection';
+import LabeledInput from '@/components/ui/LabeledInput';
+import JLPTPicker from '@/components/ui/JLPTPicker';
+import TagsEditor from '@/components/ui/TagsEditor';
+import ExampleEditor from '@/components/block/ExampleEditor';
+import BackButton from '@/components/ui/BackButton';
 
 type Example = Word['examples'][number];
 type Form = Word;
@@ -40,7 +42,7 @@ export default function EditWordScreen() {
   const isValid = !!form?.termJP?.trim();
 
   const save = async () => {
-    if (!form || !isValid) return Alert.alert('Thiếu dữ liệu', 'Cần “Từ (JP)”.');
+    if (!form || !isValid) return appAlert('Thiếu dữ liệu', 'Cần “Từ (JP)”.');
     try {
       await updateWord(String(form._id), {
         termJP: form.termJP,
@@ -54,22 +56,31 @@ export default function EditWordScreen() {
         tags: form.tags || [],
         examples: form.examples || [],
       });
-      Alert.alert('Đã lưu', 'Cập nhật thành công.');
+      appAlert('Đã lưu', 'Cập nhật thành công.');
     } catch (e: any) {
-      Alert.alert('Lỗi', String(e?.message || e));
+      appError(String(e?.message || e));
     }
   };
 
   const confirmDelete = () =>
-    Alert.alert('Xoá từ vựng', 'Bạn chắc chắn muốn xoá?', [
-      { text: 'Huỷ', style: 'cancel' },
-      { text: 'Xoá', style: 'destructive', onPress: del },
-    ]);
-
-  const del = async () => {
-    try { await deleteWord(String(form?._id)); Alert.alert('Đã xoá'); router.back(); }
-    catch (e: any) { Alert.alert('Lỗi', String(e?.message || e)); }
-  };
+  appConfirm('Xoá từ vựng', 'Bạn chắc chắn muốn xoá?', async () => {
+          appConfirm(
+            'Xoá từ vựng',
+            'Bạn chắc chắn muốn xoá?',
+            async () => {
+              try {
+                await deleteWord(String(form?._id));
+                appAlert('Đã xoá', 'Từ vựng đã được xoá.', () => {
+                  router.replace('/admin/content/word' as Href);
+                });
+              } catch (e: any) {
+                appError(String(e?.message || e));
+              }
+            },
+            () => {
+            },
+          );
+        });
 
   if (loading || !form) {
     return (
@@ -85,7 +96,10 @@ export default function EditWordScreen() {
   return (
     <LayoutDefault title="Sửa từ vựng">
       <ScrollView contentContainerStyle={{ padding: theme.tokens.space.md }} keyboardShouldPersistTaps="handled">
-
+        <BackButton
+          fallbackHref="/admin/content/word"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <FormSection title="Cơ bản">
           <LabeledInput label="Từ (JP) *" value={form.termJP} onChangeText={t=>setField('termJP', t)} />
           <View style={{ height: theme.tokens.space.sm }} />

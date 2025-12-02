@@ -132,10 +132,10 @@ export default function EditLessonScreen() {
 
     const confirmDelete = () => {
         if (!lessonId) return;
-        appConfirm('Xoá lesson', 'Bạn chắc chắn muốn xoá?', async () => {
+        appConfirm('Xoá bài học', 'Bạn chắc chắn muốn xoá?', async () => {
             try {
                 await deleteLesson(lessonId);
-                appAlert('Đã xoá', 'Lesson đã được xoá.', () => {
+                appAlert('Đã xoá', 'Bài học đã được xoá.', () => {
                     router.replace('/admin/content/lesson' as Href)
                 }
                 );
