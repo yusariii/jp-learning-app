@@ -21,7 +21,6 @@ export type Lesson = {
   listeningIds: LessonListeningRef[];
 
   jlptLevel: 'N5' | 'N4' | 'N3' | 'N2' | 'N1' | '';
-  durationMinutes: number;
   published: boolean;
   tags: string[];
 

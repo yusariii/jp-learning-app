@@ -10,6 +10,7 @@ import Chip from '@/components/ui/Chip';
 import LinkedContentSelector from '@/components/block/LinkedContentSelector';
 import BackButton from '@/components/ui/BackButton';
 import { router, Href } from 'expo-router';
+import JLPTPicker from '@/components/ui/JLPTPicker';
 
 type JLPT = Lesson['jlptLevel'] | '';
 
@@ -18,7 +19,6 @@ type Form = {
     lessonNumber: string;
     description: string;
     jlptLevel: JLPT;
-    durationMinutes: string;
     published: boolean;
     tags: string;
     wordIds: string[];
@@ -36,7 +36,6 @@ const parseTags = (raw: string) =>
 
 const buildPayload = (form: Form): Lesson => {
     const lessonNumber = Number(form.lessonNumber);
-    const duration = Number(form.durationMinutes);
 
     return {
         title: form.title.trim(),
@@ -44,7 +43,6 @@ const buildPayload = (form: Form): Lesson => {
         slug: undefined,
         description: form.description.trim() || undefined,
         jlptLevel: form.jlptLevel || '',
-        durationMinutes: Number.isNaN(duration) ? 0 : duration,
         published: form.published,
         tags: parseTags(form.tags),
         wordIds: form.wordIds.map((id) => ({ wordId: id })),
@@ -63,7 +61,6 @@ export default function CreateLessonScreen() {
         lessonNumber: '',
         description: '',
         jlptLevel: '',
-        durationMinutes: '10',
         published: false,
         tags: '',
         wordIds: [],
@@ -132,36 +129,12 @@ export default function CreateLessonScreen() {
                     />
                 </FormSection>
 
+                <FormSection title="JLPT">
+                    <JLPTPicker value={form.jlptLevel} onChange={(v) => setField('jlptLevel', v)} />
+                </FormSection>
+
                 {/* THIẾT LẬP */}
-                <FormSection title="Thiết lập">
-                    <Text style={theme.text.body}>Cấp JLPT</Text>
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            flexWrap: 'wrap',
-                            gap: theme.tokens.space.xs,
-                            marginTop: theme.tokens.space.xs,
-                        }}
-                    >
-                        {(['', 'N5', 'N4', 'N3', 'N2', 'N1'] as JLPT[]).map((lv) => (
-                            <Chip
-                                key={lv || 'none'}
-                                label={lv || '—'}
-                                active={(form.jlptLevel || '') === lv}
-                                onPress={() => setField('jlptLevel', lv)}
-                            />
-                        ))}
-                    </View>
-
-                    <View style={{ height: theme.tokens.space.sm }} />
-                    <LabeledInput
-                        label="Thời lượng (phút)"
-                        value={form.durationMinutes}
-                        keyboardType="numeric"
-                        onChangeText={(t) => setField('durationMinutes', t)}
-                    />
-
-                    <View style={{ height: theme.tokens.space.sm }} />
+                <FormSection title="Hiển thị">
                     <View
                         style={{
                             flexDirection: 'row',

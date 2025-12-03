@@ -1,15 +1,16 @@
 // components/lesson/LinkedContentList.tsx
 import React, { useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
+import { View, Text, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useAppTheme } from '../../hooks/use-app-theme';
 import { get } from '../../helpers/http';
+import { Href, router } from 'expo-router';
 
 export type LinkedItem = {
   _id: string;
   title?: string;
-  termJP?: string;      
-  textJP?: string;      
-  questionJP?: string; 
+  termJP?: string;
+  textJP?: string;
+  questionJP?: string;
 };
 
 const labelOf = (it: LinkedItem) =>
@@ -17,7 +18,7 @@ const labelOf = (it: LinkedItem) =>
 
 type Props = {
   title: string;
-  apiPath: string;     
+  apiPath: string;
   ids: string[];
   emptyText: string;
 };
@@ -61,7 +62,7 @@ const LinkedContentList: React.FC<Props> = ({ title, apiPath, ids, emptyText }) 
     return () => {
       alive = false;
     };
-  }, [apiPath, ids.join(',')]); 
+  }, [apiPath, ids.join(',')]);
 
   return (
     <View style={{ marginTop: theme.tokens.space.md }}>
@@ -83,9 +84,14 @@ const LinkedContentList: React.FC<Props> = ({ title, apiPath, ids, emptyText }) 
         <View style={{ marginTop: theme.tokens.space.xs }}>
           {items.length ? (
             items.map((it) => (
-              <Text key={it._id} style={theme.text.body}>
-                • {labelOf(it)}
-              </Text>
+              <TouchableOpacity onPress={() => {
+                router.push(`/admin/content/${apiPath.split('/').pop()}/detail/${it._id}` as Href);
+              }} key={it._id}>
+                <Text key={it._id} style={theme.text.body}>
+                  • {labelOf(it)}
+                </Text>
+              </TouchableOpacity>
+
             ))
           ) : (
             <Text style={theme.text.secondary}>{emptyText}</Text>

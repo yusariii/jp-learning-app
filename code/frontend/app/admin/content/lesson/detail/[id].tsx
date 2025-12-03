@@ -92,9 +92,6 @@ export default function LessonDetailScreen() {
             JLPT: {lesson.jlptLevel || '—'}
           </Text>
           <Text style={[theme.text.meta, { marginTop: theme.tokens.space.xs }]}>
-            Thời lượng: {lesson.durationMinutes ?? 0} phút
-          </Text>
-          <Text style={[theme.text.meta, { marginTop: theme.tokens.space.xs }]}>
             Trạng thái: {lesson.published ? 'Đã publish' : 'Nháp'}
           </Text>
 
