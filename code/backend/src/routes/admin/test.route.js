@@ -1,7 +1,6 @@
 // routes/test.route.js
 const express = require('express');
 const router = express.Router();
-
 const testController = require('../../controllers/admin/test.controller');
 
 router.get('/', testController.list);

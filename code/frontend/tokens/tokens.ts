@@ -34,6 +34,7 @@ export const t = {
       success: '#1B9E77',      // Trạng thái thành công
       warning: '#B8860B',      // Cảnh báo
       danger: '#C62828',       // Lỗi/nguy hiểm
+      onDanger: '#FFFFFF',     // Màu chữ trên nền danger
     },
     dark: {
       bg: '#0B0B0B',           // Nền tối
@@ -50,6 +51,7 @@ export const t = {
       success: '#69D6B6',
       warning: '#E5C07B',
       danger: '#EF5350',
+      onDanger: '#FFFFFF',
     },
   },
 

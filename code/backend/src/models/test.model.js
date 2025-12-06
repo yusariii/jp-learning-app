@@ -1,310 +1,104 @@
-// models/test.model.js
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+const { Schema, model } = mongoose;
 
-/**
- * Cấu hình thời gian chuẩn JLPT cho từng level
- * - total: thời gian tổng đề
- * - sections: thời gian cho từng phần (đơn vị: phút)
- */
-const JLPT_TIME_CONFIG = {
-  N5: {
-    total: 90,
-    sections: {
-      vocab:    { minutes: 20, title: "文字・語彙" },
-      grammar:  { minutes: 40, title: "文法・読解" }, // grammar + reading
-      listening:{ minutes: 30, title: "聴解" }
-    }
-  },
-  N4: {
-    total: 115,
-    sections: {
-      vocab:    { minutes: 25, title: "文字・語彙" },
-      grammar:  { minutes: 55, title: "文法・読解" },
-      listening:{ minutes: 35, title: "聴解" }
-    }
-  },
-  N3: {
-    total: 140,
-    sections: {
-      vocab:    { minutes: 30, title: "文字・語彙" },
-      grammar:  { minutes: 70, title: "文法・読解" },
-      listening:{ minutes: 40, title: "聴解" }
-    }
-  },
-  N2: {
-    total: 155,
-    sections: {
-      // 3 phần đầu thi chung 105 phút, ở đây chia để luyện tập
-      vocab:    { minutes: 30, title: "文字・語彙" },
-      grammar:  { minutes: 35, title: "文法" },
-      reading:  { minutes: 40, title: "読解" },
-      listening:{ minutes: 50, title: "聴解" }
-    }
-  },
-  N1: {
-    total: 165,
-    sections: {
-      vocab:    { minutes: 30, title: "文字・語彙" },
-      grammar:  { minutes: 35, title: "文法" },
-      reading:  { minutes: 45, title: "読解" },
-      listening:{ minutes: 55, title: "聴解" }
-    }
-  }
+/* ===== Common ===== */
+const OptionSchema = new Schema({
+  label: String,
+  text: String,
+}, { _id: false });
+
+const BaseQuestionSchema = new Schema({
+  questionText: { type: String, required: true },
+  options: { type: [OptionSchema], default: [] },
+  correctIndex: { type: Number, default: 0 },
+  points: { type: Number, default: 1 },
+  contextJP: String,   // dùng khi cần 1-2 câu ngữ cảnh
+  mediaUrl: String,    // có thể dùng riêng từng câu nếu cần
+}, { _id: false });
+
+/* ===== Vocab / Grammar unit: Đề bài -> Câu hỏi ===== */
+const SimpleUnitSchema = new Schema({
+  title: String,                 // “Bài 1”, “Bài 2”… (tuỳ)
+  instructionsJP: String,        // ĐỀ BÀI của “bài”
+  instructionsEN: String,
+  questions: { type: [BaseQuestionSchema], default: [] },
+}, { _id: true });
+
+/* ===== Reading: Đề bài -> Đoạn văn -> Câu hỏi ===== */
+const ReadingPassageSchema = new Schema({
+  title: String,
+  passageJP: { type: String, required: true },
+  passageEN: String,
+  questions: { type: [BaseQuestionSchema], default: [] },
+}, { _id: true });
+
+const ReadingUnitSchema = new Schema({
+  title: String,                 // “Bài 1”, “Bài 2”… (tuỳ)
+  instructionsJP: String,        // ĐỀ BÀI của “bài” đọc hiểu
+  instructionsEN: String,
+  passages: { type: [ReadingPassageSchema], default: [] },
+}, { _id: true });
+
+/* ===== Listening: Đề bài -> URL -> Câu hỏi ===== */
+const ListeningUnitSchema = new Schema({
+  title: String,                 // “Bài 1”, …
+  instructionsJP: String,        // ĐỀ BÀI nghe
+  instructionsEN: String,
+  mediaUrl: String,              // URL audio/video chính của “bài”
+  questions: { type: [BaseQuestionSchema], default: [] },
+}, { _id: true });
+
+/* ===== Sections ===== */
+const VocabSectionSchema = new Schema({
+  totalTime: Number,                 // auto theo level
+  vocabUnits: { type: [SimpleUnitSchema], default: [] },
+}, { _id: false });
+
+const GrammarReadingSectionSchema = new Schema({
+  totalTime: Number,                 // auto theo level
+  grammarUnits: { type: [SimpleUnitSchema], default: [] },
+  readingUnits: { type: [ReadingUnitSchema], default: [] },
+}, { _id: false });
+
+const ListeningSectionSchema = new Schema({
+  totalTime: Number,                 // auto theo level
+  listeningUnits: { type: [ListeningUnitSchema], default: [] },
+}, { _id: false });
+
+/* ===== Test ===== */
+const TestSchema = new Schema({
+  title: { type: String, required: true },
+  jlptLevel: { type: String, enum: ['N5','N4','N3','N2','N1'], required: true },
+  description: String,
+
+  vocabSection: { type: VocabSectionSchema, required: true },
+  grammarReadingSection: { type: GrammarReadingSectionSchema, required: true },
+  listeningSection: { type: ListeningSectionSchema, required: true },
+
+  totalTime: Number,
+  passingScorePercent: { type: Number, default: 70 },
+  published: { type: Boolean, default: false },
+}, { timestamps: true });
+
+/* ===== Auto thời gian theo JLPT ===== */
+const LEVEL_TIME = {
+  N5: { vocab: 20, gramRead: 40, listen: 30 },
+  N4: { vocab: 25, gramRead: 45, listen: 35 },
+  N3: { vocab: 30, gramRead: 60, listen: 40 },
+  N2: { vocab: 35, gramRead: 70, listen: 40 },
+  N1: { vocab: 35, gramRead: 75, listen: 45 },
 };
 
-/**
- * Question Schema – bám sát cấu trúc đề thi Nhật:
- * - section: vocab / kanji / grammar / reading / listening
- * - subtype: phân nhỏ dạng câu hỏi
- * - group/context: gom nhiều câu chung 1 đoạn đọc / 1 file audio
- */
-const questionSchema = new mongoose.Schema(
-  {
-    // Dạng hiển thị / input
-    type: {
-      type: String,
-      enum: [
-        "mcq",          // chọn 1 đáp án
-        "fill_blank",   // điền vào chỗ trống
-        "reorder",      // 並び替え
-        "true_false",
-        "short_answer", // trả lời ngắn
-      ],
-      default: "mcq",
-    },
-
-    // Phần của đề
-    section: {
-      type: String,
-      enum: ["vocab", "kanji", "grammar", "reading", "listening", "mixed", "other"],
-      required: true,
-    },
-
-    // Dạng câu chi tiết
-    subtype: {
-      type: String,
-      enum: [
-        // Vocab & Kanji
-        "kanji_reading",
-        "kanji_writing",
-        "word_meaning",
-        "word_usage",
-        "collocation",
-
-        // Grammar
-        "grammar_pattern",
-        "sentence_completion",
-        "reordering",
-
-        // Reading
-        "short_reading",
-        "medium_reading",
-        "long_reading",
-        "info_reading",
-
-        // Listening
-        "short_listening",
-        "dialog_listening",
-        "long_listening",
-        "announcement_listening",
-
-        // Khác
-        "generic",
-      ],
-      default: "generic",
-    },
-
-    // Câu hỏi chính
-    promptJP: { type: String, required: true }, // câu hỏi tiếng Nhật
-    promptEN: { type: String },                 // dịch / giải thích
-
-    /**
-     * Group & Context – đọc hiểu / nghe hiểu:
-     * - groupId: id group (READ_N4_01, LIS_N5_03,...)
-     * - groupOrder: thứ tự câu trong group
-     * - contextJP/EN: đoạn văn / mô tả tình huống
-     * - contextRef: liên kết sang collection readings/listenings (nếu dùng)
-     */
-    groupId: { type: String },
-    groupOrder: { type: Number },
-
-    contextJP: { type: String },
-    contextEN: { type: String },
-
-    contextRef: {
-      readingId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Reading",
-      },
-      listeningId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Listening",
-      },
-    },
-
-    /**
-     * Media cho listening / hình ảnh:
-     */
-    mediaUrl: { type: String },
-    mediaScriptJP: { type: String },
-    mediaScriptEN: { type: String },
-
-    /**
-     * Options cho mcq / true_false / multi-select
-     */
-    options: [
-      {
-        label: { type: String }, // A / B / C / D (optional)
-        text: { type: String },
-        isCorrect: { type: Boolean, default: false },
-      },
-    ],
-
-    /**
-     * orderItems: dùng cho dạng reorder (並び替え)
-     * answer: có thể là array index correct, ví dụ [2,0,1,3]
-     */
-    orderItems: [{ type: String }],
-
-    /**
-     * answer:
-     * - mcq: index / value / id
-     * - fill_blank: string hoặc array string
-     * - reorder: array index
-     * - true_false: true/false
-     * - short_answer: string
-     */
-    answer: { type: mongoose.Schema.Types.Mixed },
-
-    // Giải thích đáp án
-    explanationJP: { type: String },
-    explanationVI: { type: String },
-
-    // Điểm số
-    points: { type: Number, default: 1 },
-
-    // Tag linh hoạt
-    tags: [{ type: String }],
-  },
-  { _id: false }
-);
-
-/**
- * Section Schema – mô tả từng phần của đề (文字・語彙, 文法・読解, 聴解,...)
- */
-const sectionSchema = new mongoose.Schema(
-  {
-    section: {
-      type: String,
-      enum: ["vocab", "kanji", "grammar", "reading", "listening", "mixed"],
-      required: true,
-    },
-    title: { type: String },          // 文字・語彙, 文法・読解, ...
-    instructionsJP: { type: String }, // hướng dẫn tiếng Nhật
-    instructionsEN: { type: String }, // dịch nếu cần
-    order: { type: Number, default: 1 },
-    questionCount: { type: Number },
-    timeLimitMinutes: { type: Number, default: 0 }, // thời gian phần này
-  },
-  { _id: false }
-);
-
-/**
- * Test Schema – 1 đề thi JLPT giả lập / đề kiểm tra
- */
-const testSchema = new mongoose.Schema(
-  {
-    title: { type: String, required: true },
-
-    // N5–N1
-    level: {
-      type: String,
-      enum: ["N5", "N4", "N3", "N2", "N1"],
-      required: true,
-    },
-
-    /**
-     * type:
-     * - vocab / grammar / reading / listening / mixed
-     */
-    type: {
-      type: String,
-      enum: ["listening", "reading", "vocab", "grammar", "mixed"],
-      default: "mixed",
-    },
-
-    description: { type: String, default: "" },
-
-    // Các phần của đề
-    sections: [sectionSchema],
-
-    // Danh sách câu hỏi
-    questions: [questionSchema],
-
-    // Thời gian tổng cho toàn đề (phút)
-    timeLimitMinutes: { type: Number, default: 0 },
-
-    // % để đậu
-    passingScorePercent: { type: Number, default: 70 },
-
-    published: { type: Boolean, default: false },
-
-    // Ai tạo / sửa
-    createdBy: { adminId: String },
-    updatedBy: { adminId: String },
-  },
-  { timestamps: true }
-);
-
-/**
- * Middleware: tự fix cứng thời gian theo level (N5–N1)
- * - Nếu không truyền timeLimitMinutes ⇒ tự set total theo JLPT_TIME_CONFIG
- * - Nếu không truyền sections ⇒ tự generate sections chuẩn
- * - Nếu đã có sections nhưng thiếu title / timeLimitMinutes ⇒ auto fill
- */
-testSchema.pre("validate", function (next) {
-  const cfg = JLPT_TIME_CONFIG[this.level];
-  if (!cfg) return next();
-
-  // Thời gian tổng đề
-  if (!this.timeLimitMinutes || this.timeLimitMinutes <= 0) {
-    this.timeLimitMinutes = cfg.total;
-  }
-
-  // Nếu đã có sections: chỉ fill chỗ còn thiếu
-  if (Array.isArray(this.sections) && this.sections.length > 0) {
-    this.sections.forEach((sec, idx) => {
-      const secCfg = cfg.sections[sec.section];
-      if (!secCfg) return;
-
-      if (!sec.title) {
-        sec.title = secCfg.title;
-      }
-      if (!sec.timeLimitMinutes || sec.timeLimitMinutes <= 0) {
-        sec.timeLimitMinutes = secCfg.minutes;
-      }
-      if (!sec.order) {
-        sec.order = idx + 1;
-      }
-    });
-  } else {
-    // Không truyền sections → auto tạo sections chuẩn JLPT
-    this.sections = [];
-    let order = 1;
-    Object.keys(cfg.sections).forEach((key) => {
-      const info = cfg.sections[key];
-      this.sections.push({
-        section: key,              // vocab / grammar / reading / listening
-        title: info.title,
-        order,
-        timeLimitMinutes: info.minutes,
-      });
-      order += 1;
-    });
-  }
-
-  next();
+TestSchema.pre('validate', function () {
+  const cfg = LEVEL_TIME[this.jlptLevel];
+  if (!cfg) return;
+  this.vocabSection ||= {};
+  this.grammarReadingSection ||= {};
+  this.listeningSection ||= {};
+  this.vocabSection.totalTime ??= cfg.vocab;
+  this.grammarReadingSection.totalTime ??= cfg.gramRead;
+  this.listeningSection.totalTime ??= cfg.listen;
+  this.totalTime = cfg.vocab + cfg.gramRead + cfg.listen;
 });
 
-const Test = mongoose.model("Test", testSchema, "tests");
-module.exports = Test;
+module.exports = model('Test', TestSchema);

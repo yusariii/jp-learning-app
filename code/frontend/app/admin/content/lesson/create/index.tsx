@@ -20,7 +20,6 @@ type Form = {
     description: string;
     jlptLevel: JLPT;
     published: boolean;
-    tags: string;
     wordIds: string[];
     readingIds: string[];
     speakingIds: string[];
@@ -44,7 +43,6 @@ const buildPayload = (form: Form): Lesson => {
         description: form.description.trim() || undefined,
         jlptLevel: form.jlptLevel || '',
         published: form.published,
-        tags: parseTags(form.tags),
         wordIds: form.wordIds.map((id) => ({ wordId: id })),
         readingIds: form.readingIds.map((id) => ({ readingId: id })),
         speakingIds: form.speakingIds.map((id) => ({ speakingId: id })),
@@ -62,7 +60,6 @@ export default function CreateLessonScreen() {
         description: '',
         jlptLevel: '',
         published: false,
-        tags: '',
         wordIds: [],
         readingIds: [],
         speakingIds: [],
@@ -86,7 +83,7 @@ export default function CreateLessonScreen() {
         try {
             const payload = buildPayload(form);
             const created = await createLesson(payload);
-            appAlert('Thành công', 'Đã tạo lesson mới.', () => {
+            appAlert('Thành công', 'Đã tạo bài học mới.', () => {
                 router.replace(`/admin/content/lesson/${created._id}` as Href);
             });
         } catch (e: any) {
@@ -143,7 +140,7 @@ export default function CreateLessonScreen() {
                         }}
                     >
                         <Chip
-                            label={form.published ? 'Đã publish' : 'Nháp'}
+                            label={form.published ? 'Publish' : 'Nháp'}
                             active={form.published}
                             onPress={() => setField('published', !form.published)}
                         />
@@ -151,15 +148,6 @@ export default function CreateLessonScreen() {
                             {form.published ? 'Hiển thị với user' : 'Chỉ lưu ở admin'}
                         </Text>
                     </View>
-                </FormSection>
-
-                {/* TAGS */}
-                <FormSection title="Tags">
-                    <LabeledInput
-                        label="Tags (cách nhau bởi dấu phẩy)"
-                        value={form.tags}
-                        onChangeText={(t) => setField('tags', t)}
-                    />
                 </FormSection>
 
                 {/* LIÊN KẾT NỘI DUNG */}

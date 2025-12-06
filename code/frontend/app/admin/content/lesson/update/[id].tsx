@@ -20,7 +20,6 @@ type Form = {
     description: string;
     jlptLevel: JLPT;
     published: boolean;
-    tags: string;
     wordIds: string[];
     readingIds: string[];
     speakingIds: string[];
@@ -43,7 +42,6 @@ const buildPayload = (form: Form): Partial<Lesson> => {
         description: form.description.trim() || undefined,
         jlptLevel: form.jlptLevel || '',
         published: form.published,
-        tags: parseTags(form.tags),
         wordIds: form.wordIds.map((id) => ({ wordId: id })) as any,
         readingIds: form.readingIds.map((id) => ({ readingId: id })) as any,
         speakingIds: form.speakingIds.map((id) => ({ speakingId: id })) as any,
@@ -86,7 +84,6 @@ export default function EditLessonScreen() {
                     description: data.description || '',
                     jlptLevel: (data.jlptLevel || '') as JLPT,
                     published: !!data.published,
-                    tags: (data.tags || []).join(', '),
                     wordIds: (data.wordIds || []).map((x: any) => x.wordId),
                     readingIds: (data.readingIds || []).map((x: any) => x.readingId),
                     speakingIds: (data.speakingIds || []).map((x: any) => x.speakingId),
@@ -216,15 +213,6 @@ export default function EditLessonScreen() {
                             {form.published ? 'Hiển thị với user' : 'Chỉ lưu ở admin'}
                         </Text>
                     </View>
-                </FormSection>
-
-                {/* TAGS */}
-                <FormSection title="Tags">
-                    <LabeledInput
-                        label="Tags (cách nhau bởi dấu phẩy)"
-                        value={form.tags}
-                        onChangeText={(t) => setField('tags', t)}
-                    />
                 </FormSection>
 
                 {/* LIÊN KẾT NỘI DUNG */}

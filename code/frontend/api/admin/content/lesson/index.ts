@@ -22,7 +22,6 @@ export type Lesson = {
 
   jlptLevel: 'N5' | 'N4' | 'N3' | 'N2' | 'N1' | '';
   published: boolean;
-  tags: string[];
 
   createdAt?: string;
   updatedAt?: string;

@@ -95,14 +95,6 @@ export default function LessonDetailScreen() {
             Trạng thái: {lesson.published ? 'Đã publish' : 'Nháp'}
           </Text>
 
-          {!!lesson.tags?.length && (
-            <Text
-              style={[theme.text.meta, { marginTop: theme.tokens.space.xs }]}
-            >
-              Tags: {lesson.tags.join(', ')}
-            </Text>
-          )}
-
           <View
             style={{
               flexDirection: 'row',
