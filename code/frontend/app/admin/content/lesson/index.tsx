@@ -144,22 +144,7 @@ export default function LessonListScreen() {
                     G:{counts.grammar} · L:{counts.listening}
                 </Text>
 
-                <Text
-                    style={[
-                        theme.text.meta,
-                        { marginTop: theme.tokens.space.xs },
-                    ]}
-                >
-                    {item.updatedAt
-                        ? `Sửa: ${new Date(
-                            item.updatedAt,
-                        ).toLocaleString()}`
-                        : item.createdAt
-                            ? `Tạo: ${new Date(
-                                item.createdAt,
-                            ).toLocaleString()}`
-                            : ''}
-                </Text>
+
 
                 <View
                     style={{
@@ -169,6 +154,22 @@ export default function LessonListScreen() {
                         marginTop: theme.tokens.space.sm,
                     }}
                 >
+                    <Text
+                        style={[
+                            theme.text.meta,
+                            { marginTop: theme.tokens.space.xs },
+                        ]}
+                    >
+                        {item.updatedAt
+                            ? `Cập nhật: ${new Date(
+                                item.updatedAt,
+                            ).toLocaleString()}`
+                            : item.createdAt
+                                ? `Tạo: ${new Date(
+                                    item.createdAt,
+                                ).toLocaleString()}`
+                                : ''}
+                    </Text>
                     <TouchableOpacity
                         onPress={() =>
                             router.push(

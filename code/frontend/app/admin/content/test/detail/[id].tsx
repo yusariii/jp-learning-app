@@ -104,7 +104,7 @@ export default function TestDetailScreen() {
           </View>
 
           <View style={{ flexDirection: 'row', gap: theme.tokens.space.sm, marginTop: theme.tokens.space.md }}>
-            <TouchableOpacity style={[theme.button.primary.container, { flex: 1 }]} onPress={() => router.push(`/admin/content/test/edit/${item._id}` as Href)} hitSlop={theme.utils.hitSlop}>
+            <TouchableOpacity style={[theme.button.primary.container, { flex: 1 }]} onPress={() => router.push(`/admin/content/test/update/${item._id}` as Href)} hitSlop={theme.utils.hitSlop}>
               <Text style={theme.button.primary.label}>Sửa</Text>
             </TouchableOpacity>
             <TouchableOpacity style={theme.button.ghost.container} onPress={() => router.back()} hitSlop={theme.utils.hitSlop}>

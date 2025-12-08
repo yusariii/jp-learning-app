@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
 import { useLocalSearchParams, useRouter, Href } from 'expo-router';
 import LayoutDefault from '@/layout-default/layout-default';
-import { getGrammar, type Grammar } from '@/api/admin/content/grammar';
+import { getGrammar, deleteGrammar, type Grammar } from '@/api/admin/content/grammar';
 import { useAppTheme } from '@/hooks/use-app-theme';
 import ContentCard from '@/components/card/ContentCard';
 import ExampleBlock from '@/components/block/ExampleBlock';
 import BackButton from '@/components/ui/BackButton';
+import DeleteButton from '@/components/ui/DeleteButton';
+import { appAlert } from '@/helpers/appAlert';
 
 export default function GrammarDetailScreen() {
   const { theme } = useAppTheme();
@@ -87,9 +89,16 @@ export default function GrammarDetailScreen() {
             >
               <Text style={theme.button.primary.label}>Sửa</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={theme.button.ghost.container} onPress={() => router.back()} hitSlop={theme.utils.hitSlop}>
-              <Text style={theme.button.ghost.label}>Quay lại</Text>
-            </TouchableOpacity>
+            <DeleteButton
+              variant="solid"
+              label="Xoá"
+              onConfirm={async () => {
+                await deleteGrammar(item._id!);
+                appAlert('Đã xoá');
+                router.back();
+              }}
+            />
+
           </View>
         </ContentCard>
 

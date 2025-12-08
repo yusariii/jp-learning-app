@@ -99,9 +99,11 @@ export default function TestListScreen() {
               <Text style={theme.text.meta} numberOfLines={1}>Tổng thời gian: {item.totalTime ?? '—'} phút</Text>
               {!!item.description && <Text style={[theme.text.secondary, { marginTop: theme.tokens.space.xs }]} numberOfLines={2}>{item.description}</Text>}
 
+              <View style={{ flexDirection: 'row', gap: theme.tokens.space.sm, marginTop: theme.tokens.space.md }}>
+                <Text style={theme.text.meta}>Trạng thái: {item.published ? 'Published' : 'Draft'}</Text>
+              </View>
               <View style={{ marginTop: theme.tokens.space.sm, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Text style={theme.text.meta}>
-                  {item.published ? 'Trạng thái: Published' : 'Trạng thái: Draft'} ・
                   {item.updatedAt ? ` Cập nhật: ${new Date(item.updatedAt).toLocaleString()}` : ''}
                 </Text>
                 <View style={{ flexDirection: 'row', gap: theme.tokens.space.sm }}>
