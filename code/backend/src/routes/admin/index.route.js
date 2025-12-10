@@ -7,6 +7,7 @@ const listeningRouter = require('./listening.route');
 const lessonRouter = require('./lesson.route');
 const testRouter = require('./test.route');
 const adminRouter = require('./admin.route');
+const roleRouter = require('./role.route');
 const systemConfig = require('../../config/systemConfig'); 
 
 module.exports = (app) => {
@@ -27,4 +28,6 @@ module.exports = (app) => {
     app.use(path + "/test", testRouter);
 
     app.use(path + "/admins", adminRouter);
+
+    app.use(path + "/roles", roleRouter);
 }
