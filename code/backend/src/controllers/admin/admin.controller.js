@@ -5,7 +5,7 @@ const bcrypt = require("bcryptjs");
 // helper
 const pick = (obj, keys) => Object.fromEntries(keys.map(k => [k, obj[k]]).filter(([_,v]) => v !== undefined));
 
-module.module.exports.list = async (req, res, next) => {
+module.exports.list = async (req, res, next) => {
   try {
     const { page = 1, limit = 20, q = "" } = req.query;
     const filter = q ? { $or: [
