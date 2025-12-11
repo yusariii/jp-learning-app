@@ -4,6 +4,7 @@ import { useLocalSearchParams, useRouter, Href } from "expo-router";
 import LayoutDefault from "@/layout-default/layout-default";
 import { useAppTheme } from "@/hooks/use-app-theme";
 import ContentCard from "@/components/card/ContentCard";
+import BackButton from "@/components/ui/BackButton";
 import { getAdmin, type AdminDoc } from "@/api/admin/admins";
 
 export default function AdminDetailScreen() {
@@ -44,6 +45,10 @@ export default function AdminDetailScreen() {
   return (
     <LayoutDefault title="Chi tiết quản trị viên">
       <ScrollView contentContainerStyle={{ padding: theme.tokens.space.md }}>
+        <BackButton
+          fallbackHref="/admin/system/admins"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <ContentCard>
           <Text style={theme.text.h1}>{item.fullName || "(Chưa đặt tên)"}</Text>
           <Text style={[theme.text.secondary, { marginTop: theme.tokens.space.xs }]}>{item.email}</Text>

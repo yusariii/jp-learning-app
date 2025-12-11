@@ -6,6 +6,7 @@ import { useAppTheme } from "@/hooks/use-app-theme";
 import ContentCard from "@/components/card/ContentCard";
 import LabeledInput from "@/components/ui/LabeledInput";
 import { createRole, type RoleDoc } from "@/api/admin/roles";
+import BackButton from "@/components/ui/BackButton";
 
 export default function RoleCreateScreen() {
   const { theme } = useAppTheme();
@@ -20,6 +21,10 @@ export default function RoleCreateScreen() {
   return (
     <LayoutDefault title="Thêm role">
       <ScrollView contentContainerStyle={{ padding: theme.tokens.space.md }}>
+        <BackButton
+          fallbackHref="/admin/system/roles"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <ContentCard>
           <LabeledInput label="Tiêu đề *" value={form.title} onChangeText={(t)=>setForm(p=>({ ...p, title: t }))} />
           <View style={{ height: theme.tokens.space.sm }} />

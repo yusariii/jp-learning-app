@@ -6,6 +6,7 @@ import { useAppTheme } from "@/hooks/use-app-theme";
 import SearchBar from "@/components/ui/SearchBar";
 import ContentCard from "@/components/card/ContentCard";
 import { listRoles, type RoleDoc } from "@/api/admin/roles";
+import BackButton from "@/components/ui/BackButton";
 
 export default function RoleListScreen() {
   const { theme } = useAppTheme();
@@ -28,6 +29,10 @@ export default function RoleListScreen() {
   return (
     <LayoutDefault title="Role (vai trò)">
       <View style={{ padding: theme.tokens.space.md, gap: theme.tokens.space.sm }}>
+        <BackButton
+          fallbackHref="/admin"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <SearchBar value={q} onChangeText={setQ} onSubmit={reload} placeholder="Tìm theo tiêu đề/mô tả…" />
         <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
           <TouchableOpacity onPress={() => router.push("/admin/system/roles/create" as Href)} style={theme.button.primary.container}>

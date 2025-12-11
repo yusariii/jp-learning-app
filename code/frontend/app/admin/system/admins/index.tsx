@@ -7,6 +7,7 @@ import SearchBar from "@/components/ui/SearchBar";
 import ContentCard from "@/components/card/ContentCard";
 import Chip from "@/components/ui/Chip";
 import { listAdmins, type AdminDoc } from "@/api/admin/admins";
+import BackButton from "@/components/ui/BackButton";
 
 export default function AdminListScreen() {
   const { theme } = useAppTheme();
@@ -26,6 +27,10 @@ export default function AdminListScreen() {
   return (
     <LayoutDefault title="Quản trị viên">
       <View style={{ padding: theme.tokens.space.md, gap: theme.tokens.space.sm }}>
+        <BackButton
+          fallbackHref="/admin"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <SearchBar value={q} onChangeText={setQ} onSubmit={reload} placeholder="Tìm email / họ tên…" />
         <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
           <TouchableOpacity onPress={() => router.push("/admin/system/admins/create" as Href)} style={theme.button.primary.container}>

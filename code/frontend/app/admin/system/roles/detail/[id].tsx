@@ -5,6 +5,7 @@ import LayoutDefault from "@/layout-default/layout-default";
 import { useAppTheme } from "@/hooks/use-app-theme";
 import ContentCard from "@/components/card/ContentCard";
 import { getRole, type RoleDoc } from "@/api/admin/roles";
+import BackButton from "@/components/ui/BackButton";
 
 export default function RoleDetailScreen() {
   const { theme } = useAppTheme();
@@ -40,6 +41,10 @@ export default function RoleDetailScreen() {
   return (
     <LayoutDefault title="Chi tiết role">
       <ScrollView contentContainerStyle={{ padding: theme.tokens.space.md }}>
+        <BackButton
+          fallbackHref="/admin/system/roles"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <ContentCard>
           <Text style={theme.text.h1}>{item.title}</Text>
           {!!item.description && <Text style={[theme.text.secondary, { marginTop: theme.tokens.space.xs }]}>{item.description}</Text>}
@@ -49,7 +54,7 @@ export default function RoleDetailScreen() {
             <Text style={theme.button.ghost.label}>Quản lý phân quyền (màn riêng)</Text>
           </TouchableOpacity>
           <View style={{ height: theme.tokens.space.sm }} />
-          <TouchableOpacity onPress={() => router.push(`/admin/system/roles/edit/${item._id}` as Href)} style={theme.button.primary.container}>
+          <TouchableOpacity onPress={() => router.push(`/admin/system/roles/update/${item._id}` as Href)} style={theme.button.primary.container}>
             <Text style={theme.button.primary.label}>Sửa</Text>
           </TouchableOpacity>
         </ContentCard>

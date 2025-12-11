@@ -8,6 +8,7 @@ import LabeledInput from "@/components/ui/LabeledInput";
 import RolePicker from "@/components/ui/RolePicker";
 import { getAdmin, updateAdmin, deleteAdmin, type AdminDoc } from "@/api/admin/admins";
 import DeleteButton from "@/components/ui/DeleteButton";
+import BackButton from "@/components/ui/BackButton";
 
 export default function AdminEditScreen() {
   const { theme } = useAppTheme();
@@ -44,6 +45,10 @@ export default function AdminEditScreen() {
   return (
     <LayoutDefault title="Sửa quản trị viên">
       <ScrollView contentContainerStyle={{ padding: theme.tokens.space.md }}>
+        <BackButton
+          fallbackHref="/admin/system/admins"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <ContentCard>
           <LabeledInput label="Email *" value={form.email} onChangeText={(t)=>setForm(p=>p?{...p, email:t}:p)} />
           <View style={{ height: theme.tokens.space.sm }} />

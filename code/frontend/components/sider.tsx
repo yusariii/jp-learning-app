@@ -104,7 +104,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isVisible, onClose }) => {
           <MenuSection title="Quản lý admin">
             <MenuItem label="Danh sách tài khoản" onPress={() => go('/admin/system/admins')} />
             <MenuItem label="Danh sách nhóm quyền" onPress={() => go('/admin/system/roles')} />
-            <MenuItem label="Phân quyền" onPress={() => go('/admin/admins/roles')} />
+            <MenuItem label="Phân quyền" onPress={() => go('/admin/system/permissons')} />
           </MenuSection>
 
           <MenuSection title="Quản lý người dùng">

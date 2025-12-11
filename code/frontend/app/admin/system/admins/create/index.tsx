@@ -6,6 +6,7 @@ import { useAppTheme } from "@/hooks/use-app-theme";
 import ContentCard from "@/components/card/ContentCard";
 import LabeledInput from "@/components/ui/LabeledInput";
 import RolePicker from "@/components/ui/RolePicker";
+import BackButton from "@/components/ui/BackButton";
 import { createAdmin, type AdminDoc } from "@/api/admin/admins";
 
 export default function AdminCreateScreen() {
@@ -23,6 +24,10 @@ export default function AdminCreateScreen() {
   return (
     <LayoutDefault title="Thêm quản trị viên">
       <ScrollView contentContainerStyle={{ padding: theme.tokens.space.md }}>
+        <BackButton
+          fallbackHref="/admin/system/admins"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <ContentCard>
           <LabeledInput label="Email *" value={form.email} onChangeText={(t)=>setForm(p=>({...p, email:t}))} />
           <View style={{ height: theme.tokens.space.sm }} />

@@ -7,6 +7,7 @@ import ContentCard from "@/components/card/ContentCard";
 import LabeledInput from "@/components/ui/LabeledInput";
 import DeleteButton from "@/components/ui/DeleteButton";
 import { getRole, updateRole, deleteRole, type RoleDoc } from "@/api/admin/roles";
+import BackButton from "@/components/ui/BackButton";
 
 export default function RoleEditScreen() {
   const { theme } = useAppTheme();
@@ -42,6 +43,10 @@ export default function RoleEditScreen() {
   return (
     <LayoutDefault title="Sửa role">
       <ScrollView contentContainerStyle={{ padding: theme.tokens.space.md }}>
+        <BackButton
+          fallbackHref="/admin/system/admins"
+          containerStyle={{ marginBottom: theme.tokens.space.sm }}
+        />
         <ContentCard>
           <LabeledInput label="Tiêu đề *" value={form.title} onChangeText={(t)=>setForm(p=>p?{...p, title:t}:p)} />
           <View style={{ height: theme.tokens.space.sm }} />
