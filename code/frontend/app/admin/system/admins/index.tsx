@@ -28,7 +28,7 @@ export default function AdminListScreen() {
       <View style={{ padding: theme.tokens.space.md, gap: theme.tokens.space.sm }}>
         <SearchBar value={q} onChangeText={setQ} onSubmit={reload} placeholder="Tìm email / họ tên…" />
         <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-          <TouchableOpacity onPress={() => router.push("/admin/admins/create" as Href)} style={theme.button.primary.container}>
+          <TouchableOpacity onPress={() => router.push("/admin/system/admins/create" as Href)} style={theme.button.primary.container}>
             <Text style={theme.button.primary.label}>＋ Thêm admin</Text>
           </TouchableOpacity>
         </View>
@@ -50,10 +50,10 @@ export default function AdminListScreen() {
                 <Chip label={(item.roleId as any)?.title || "—"} active />
               </View>
               <View style={{ marginTop: theme.tokens.space.sm, flexDirection: "row", gap: theme.tokens.space.sm }}>
-                <TouchableOpacity onPress={() => router.push(`/admin/admins/detail/${item._id}` as Href)} style={theme.button.ghost.container}>
+                <TouchableOpacity onPress={() => router.push(`/admin/system/admins/detail/${item._id}` as Href)} style={theme.button.ghost.container}>
                   <Text style={theme.button.ghost.label}>Chi tiết</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => router.push(`/admin/admins/update/${item._id}` as Href)} style={theme.button.primary.container}>
+                <TouchableOpacity onPress={() => router.push(`/admin/system/admins/update/${item._id}` as Href)} style={theme.button.primary.container}>
                   <Text style={theme.button.primary.label}>Sửa</Text>
                 </TouchableOpacity>
               </View>

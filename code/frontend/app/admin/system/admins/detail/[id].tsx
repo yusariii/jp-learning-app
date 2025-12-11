@@ -50,7 +50,7 @@ export default function AdminDetailScreen() {
           <View style={{ height: theme.tokens.space.sm }} />
           <Text style={theme.text.meta}>Role: {(item.roleId as any)?.title || "—"}</Text>
           <View style={{ flexDirection: "row", gap: theme.tokens.space.sm, marginTop: theme.tokens.space.sm }}>
-            <TouchableOpacity onPress={() => router.push(`/admin/admins/edit/${item._id}` as Href)} style={theme.button.primary.container}>
+            <TouchableOpacity onPress={() => router.push(`/admin/system/admins/edit/${item._id}` as Href)} style={theme.button.primary.container}>
               <Text style={theme.button.primary.label}>Sửa</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => router.back()} style={theme.button.ghost.container}>
