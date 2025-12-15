@@ -8,6 +8,7 @@ const lessonRouter = require('./lesson.route');
 const testRouter = require('./test.route');
 const adminRouter = require('./admin.route');
 const roleRouter = require('./role.route');
+const rolePermissionRouter = require('./role-permission.route');
 const systemConfig = require('../../config/systemConfig'); 
 
 module.exports = (app) => {
@@ -30,4 +31,6 @@ module.exports = (app) => {
     app.use(path + "/admins", adminRouter);
 
     app.use(path + "/roles", roleRouter);
+
+    app.use(path + "/roles", rolePermissionRouter);
 }
