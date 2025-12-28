@@ -30,11 +30,13 @@ export const t = {
       border: '#EAEAEA',       // Viền hairline (Android cần rõ hơn iOS)
       primary: '#111111',      // Màu CTA chính (nút Primary)
       primaryOn: '#FFFFFF',    // Màu chữ khi đặt trên primary
+      primarySoft: '#F0F0F0',  // Nền phụ cho button/element primary
       link: '#007A6A',         // Link/CTA phụ (xanh teal đậm)
       success: '#1B9E77',      // Trạng thái thành công
       warning: '#B8860B',      // Cảnh báo
       danger: '#C62828',       // Lỗi/nguy hiểm
       onDanger: '#FFFFFF',     // Màu chữ trên nền danger
+      bgBase: '#FFFFFF',      // Nền cơ bản cho các thành phần
     },
     dark: {
       bg: '#0B0B0B',           // Nền tối
@@ -47,11 +49,13 @@ export const t = {
       border: '#2A2A2A',       // Viền trong dark (đậm hơn để nhìn thấy)
       primary: '#EDEDED',      // CTA sáng trên nền tối
       primaryOn: '#111111',    // Chữ trên primary (tối để tương phản)
+      primarySoft: '#333333',  // Nền phụ cho button/element primary
       link: '#7AD9CB',         // Link trong dark
       success: '#69D6B6',
       warning: '#E5C07B',
       danger: '#EF5350',
       onDanger: '#FFFFFF',
+      bgBase: '#121212',      // Nền cơ bản cho các thành phần
     },
   },
 
