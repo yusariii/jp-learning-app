@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter, Href } from 'expo-router';
 import LayoutDefault from '@/layout-default/layout-default';
-import { getListening, type Listening } from '@/api/admin/content/listening';
+import { getListening, deleteListening, type Listening } from '@/api/admin/content/listening';
 import { useAppTheme } from '@/hooks/use-app-theme';
+import { appAlert } from '@/helpers/appAlert';
 import ContentCard from '@/components/admin/card/ContentCard';
 import ListeningQuestionBlock from '@/components/admin/block/ListeningQuestionBlock';
 import BackButton from '@/components/admin/ui/BackButton';
+import DeleteButton from '@/components/admin/ui/DeleteButton';
 
 export default function ListeningDetailScreen() {
   const { theme } = useAppTheme();
@@ -69,12 +71,18 @@ export default function ListeningDetailScreen() {
             <Text style={[theme.text.body, { marginTop: theme.tokens.space.xs }]}>{item.transcriptEN}</Text>
           </>)}
           <View style={{ flexDirection: 'row', gap: theme.tokens.space.sm, marginTop: theme.tokens.space.md }}>
-            <TouchableOpacity style={[theme.button.primary.container, { flex: 1 }]} onPress={() => router.push(`/admin/content/listening/edit/${item._id}` as Href)} hitSlop={theme.utils.hitSlop}>
+            <TouchableOpacity style={[theme.button.primary.container, { flex: 1 }]} onPress={() => router.push(`/admin/content/listening/update/${item._id}` as Href)} hitSlop={theme.utils.hitSlop}>
               <Text style={theme.button.primary.label}>Sửa</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={theme.button.ghost.container} onPress={() => router.back()} hitSlop={theme.utils.hitSlop}>
-              <Text style={theme.button.ghost.label}>Quay lại</Text>
-            </TouchableOpacity>
+            <DeleteButton
+              variant="solid"
+              label="Xoá"
+              onConfirm={async () => {
+                await deleteListening(item._id!);
+                appAlert('Đã xoá');
+                router.back();
+              }}
+            />
           </View>
         </ContentCard>
 

@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter, Href } from 'expo-router';
 import LayoutDefault from '@/layout-default/layout-default';
-import { getSpeaking, type Speaking } from '@/api/admin/content/speaking';
+import { getSpeaking, deleteSpeaking, type Speaking } from '@/api/admin/content/speaking';
 import { useAppTheme } from '@/hooks/use-app-theme';
+import { appAlert } from '@/helpers/appAlert';
 import ContentCard from '@/components/admin/card/ContentCard';
 import BackButton from '@/components/admin/ui/BackButton';
+import DeleteButton from '@/components/admin/ui/DeleteButton';
 
 export default function SpeakingDetailScreen() {
   const { theme } = useAppTheme();
@@ -73,9 +75,15 @@ export default function SpeakingDetailScreen() {
             >
               <Text style={theme.button.primary.label}>Sửa</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={theme.button.ghost.container} onPress={() => router.back()} hitSlop={theme.utils.hitSlop}>
-              <Text style={theme.button.ghost.label}>Quay lại</Text>
-            </TouchableOpacity>
+            <DeleteButton
+              variant="solid"
+              label="Xoá"
+              onConfirm={async () => {
+                await deleteSpeaking(item._id!);
+                appAlert('Đã xoá');
+                router.back();
+              }}
+            />
           </View>
         </ContentCard>
 

@@ -148,17 +148,14 @@ export default function LessonListScreen() {
 
                 <View
                     style={{
-                        flexDirection: 'row',
-                        justifyContent: 'flex-end',
-                        gap: theme.tokens.space.sm,
                         marginTop: theme.tokens.space.sm,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
                     }}
                 >
                     <Text
-                        style={[
-                            theme.text.meta,
-                            { marginTop: theme.tokens.space.xs },
-                        ]}
+                        style={theme.text.meta}
                     >
                         {item.updatedAt
                             ? `Cập nhật: ${new Date(
@@ -170,28 +167,30 @@ export default function LessonListScreen() {
                                 ).toLocaleString()}`
                                 : ''}
                     </Text>
-                    <TouchableOpacity
-                        onPress={() =>
-                            router.push(
-                                `/admin/content/lesson/detail/${item._id}` as Href,
-                            )
-                        }
-                        style={theme.button.ghost.container}
-                        hitSlop={theme.utils.hitSlop}
-                    >
-                        <Text style={theme.button.ghost.label}>Chi tiết</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() =>
-                            router.push(
-                                `/admin/content/lesson/update/${item._id}` as Href,
-                            )
-                        }
-                        style={theme.button.primary.container}
-                        hitSlop={theme.utils.hitSlop}
-                    >
-                        <Text style={theme.button.primary.label}>Sửa</Text>
-                    </TouchableOpacity>
+                    <View style={{ flexDirection: 'row', gap: theme.tokens.space.sm }}>
+                        <TouchableOpacity
+                            onPress={() =>
+                                router.push(
+                                    `/admin/content/lesson/detail/${item._id}` as Href,
+                                )
+                            }
+                            style={theme.button.ghost.container}
+                            hitSlop={theme.utils.hitSlop}
+                        >
+                            <Text style={theme.button.ghost.label}>Chi tiết</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() =>
+                                router.push(
+                                    `/admin/content/lesson/update/${item._id}` as Href,
+                                )
+                            }
+                            style={theme.button.primary.container}
+                            hitSlop={theme.utils.hitSlop}
+                        >
+                            <Text style={theme.button.primary.label}>Sửa</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </ContentCard>
         );

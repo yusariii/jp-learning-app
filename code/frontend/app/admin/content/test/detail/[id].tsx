@@ -6,8 +6,10 @@ import { useLocalSearchParams, useRouter, Href } from 'expo-router';
 import LayoutDefault from '@/layout-default/layout-default';
 import { useAppTheme } from '@/hooks/use-app-theme';
 import ContentCard from '@/components/admin/card/ContentCard';
-import { getTest, type TestDoc } from '@/api/admin/content/test';
+import { getTest, deleteTest, type TestDoc } from '@/api/admin/content/test';
+import { appAlert } from '@/helpers/appAlert';
 import BackButton from '@/components/admin/ui/BackButton';
+import DeleteButton from '@/components/admin/ui/DeleteButton';
 
 function QAList({ qs }: { qs: any[] }) {
   const { theme } = useAppTheme();
@@ -107,9 +109,15 @@ export default function TestDetailScreen() {
             <TouchableOpacity style={[theme.button.primary.container, { flex: 1 }]} onPress={() => router.push(`/admin/content/test/update/${item._id}` as Href)} hitSlop={theme.utils.hitSlop}>
               <Text style={theme.button.primary.label}>Sửa</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={theme.button.ghost.container} onPress={() => router.back()} hitSlop={theme.utils.hitSlop}>
-              <Text style={theme.button.ghost.label}>Quay lại</Text>
-            </TouchableOpacity>
+            <DeleteButton
+              variant="solid"
+              label="Xoá"
+              onConfirm={async () => {
+                await deleteTest(item._id!);
+                appAlert('Đã xoá');
+                router.back();
+              }}
+            />
           </View>
         </ContentCard>
 

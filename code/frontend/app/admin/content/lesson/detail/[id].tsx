@@ -3,10 +3,12 @@ import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity, } from 're
 import { useLocalSearchParams, useRouter, Href } from 'expo-router';
 
 import LayoutDefault from '@/layout-default/layout-default';
-import { getLesson, type Lesson } from '@/api/admin/content/lesson';
+import { getLesson, deleteLesson, type Lesson } from '@/api/admin/content/lesson';
 import { useAppTheme } from '@/hooks/use-app-theme';
+import { appAlert } from '@/helpers/appAlert';
 import ContentCard from '@/components/admin/card/ContentCard';
 import BackButton from '@/components/admin/ui/BackButton';
+import DeleteButton from '@/components/admin/ui/DeleteButton';
 import LinkedContentList from '@/components/admin/block/LinkedContentList';
 
 export default function LessonDetailScreen() {
@@ -103,7 +105,7 @@ export default function LessonDetailScreen() {
             }}
           >
             <TouchableOpacity
-              style={theme.button.primary.container}
+              style={[theme.button.primary.container, { flex: 1 }]}
               onPress={() =>
                 router.push(
                   `/admin/content/lesson/update/${lesson._id}` as Href,
@@ -113,6 +115,15 @@ export default function LessonDetailScreen() {
             >
               <Text style={theme.button.primary.label}>Sửa</Text>
             </TouchableOpacity>
+            <DeleteButton
+              variant="solid"
+              label="Xoá"
+              onConfirm={async () => {
+                await deleteLesson(lesson._id!);
+                appAlert('Đã xoá');
+                router.back();
+              }}
+            />
           </View>
         </ContentCard>
 

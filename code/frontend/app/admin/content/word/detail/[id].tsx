@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter, Href } from 'expo-router';
 import LayoutDefault from '@/layout-default/layout-default';
-import { getWord, type Word } from '@/api/admin/content/word';
+import { getWord, deleteWord, type Word } from '@/api/admin/content/word';
 import { useAppTheme } from '@/hooks/use-app-theme'
+import { appAlert } from '@/helpers/appAlert';
+import DeleteButton from '@/components/admin/ui/DeleteButton';
 import ContentCard from '@/components/admin/card/ContentCard'
 import TagPills from '@/components/admin/ui/TagPills';
 import ExampleBlock from '@/components/admin/block/ExampleBlock';
@@ -84,9 +86,15 @@ export default function WordDetailScreen() {
             >
               <Text style={theme.button.primary.label}>Sửa</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={theme.button.ghost.container} onPress={() => router.back()} hitSlop={theme.utils.hitSlop}>
-              <Text style={theme.button.ghost.label}>Quay lại</Text>
-            </TouchableOpacity>
+            <DeleteButton
+              variant="solid"
+              label="Xoá"
+              onConfirm={async () => {
+                await deleteWord(item._id!);
+                appAlert('Đã xoá');
+                router.back();
+              }}
+            />
           </View>
         </ContentCard>
 
