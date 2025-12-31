@@ -5,9 +5,9 @@ import { useLocalSearchParams, useRouter, Href } from 'expo-router';
 
 import LayoutDefault from '@/layout-default/layout-default';
 import { useAppTheme } from '@/hooks/use-app-theme';
-import ContentCard from '@/components/card/ContentCard';
+import ContentCard from '@/components/admin/card/ContentCard';
 import { getTest, type TestDoc } from '@/api/admin/content/test';
-import BackButton from '@/components/ui/BackButton';
+import BackButton from '@/components/admin/ui/BackButton';
 
 function QAList({ qs }: { qs: any[] }) {
   const { theme } = useAppTheme();

@@ -3,10 +3,10 @@ import { ActivityIndicator, FlatList, Text, TouchableOpacity, View } from "react
 import { useRouter, Href } from "expo-router";
 import LayoutDefault from "@/layout-default/layout-default";
 import { useAppTheme } from "@/hooks/use-app-theme";
-import SearchBar from "@/components/ui/SearchBar";
-import ContentCard from "@/components/card/ContentCard";
+import SearchBar from "@/components/admin/ui/SearchBar";
+import ContentCard from "@/components/admin/card/ContentCard";
 import { listRoles, type RoleDoc } from "@/api/admin/roles";
-import BackButton from "@/components/ui/BackButton";
+import BackButton from "@/components/admin/ui/BackButton";
 
 export default function RoleListScreen() {
   const { theme } = useAppTheme();

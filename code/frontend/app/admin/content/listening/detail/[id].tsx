@@ -4,9 +4,9 @@ import { useLocalSearchParams, useRouter, Href } from 'expo-router';
 import LayoutDefault from '@/layout-default/layout-default';
 import { getListening, type Listening } from '@/api/admin/content/listening';
 import { useAppTheme } from '@/hooks/use-app-theme';
-import ContentCard from '@/components/card/ContentCard';
-import ListeningQuestionBlock from '@/components/block/ListeningQuestionBlock';
-import BackButton from '@/components/ui/BackButton';
+import ContentCard from '@/components/admin/card/ContentCard';
+import ListeningQuestionBlock from '@/components/admin/block/ListeningQuestionBlock';
+import BackButton from '@/components/admin/ui/BackButton';
 
 export default function ListeningDetailScreen() {
   const { theme } = useAppTheme();

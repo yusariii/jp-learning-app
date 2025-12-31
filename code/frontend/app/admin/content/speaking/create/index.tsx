@@ -4,10 +4,10 @@ import { appAlert, appError } from '@/helpers/appAlert';
 import LayoutDefault from '@/layout-default/layout-default';
 import { createSpeaking, type Speaking } from '@/api/admin/content/speaking';
 import { useAppTheme } from '@/hooks/use-app-theme';
-import FormSection from '@/components/ui/FormSection';
-import LabeledInput from '@/components/ui/LabeledInput';
-import PromptsEditor from '@/components/block/PromptsEditor';
-import BackButton from '@/components/ui/BackButton';
+import FormSection from '@/components/admin/ui/FormSection';
+import LabeledInput from '@/components/admin/ui/LabeledInput';
+import PromptsEditor from '@/components/admin/block/PromptsEditor';
+import BackButton from '@/components/admin/ui/BackButton';
 import { router } from 'expo-router';
 
 type Form = Omit<Speaking, '_id'|'createdAt'|'updatedAt'>;

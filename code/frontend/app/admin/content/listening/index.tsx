@@ -6,13 +6,13 @@ import LayoutDefault from '@/layout-default/layout-default';
 import { useAppTheme } from '@/hooks/use-app-theme'
 import { listListenings, type Listening } from '@/api/admin/content/listening';
 
-import SearchBar from '@/components/ui/SearchBar';
-import FilterBar, { type SortKey } from '@/components/list/FilterBar';
-import ContentCard from '@/components/card/ContentCard';
-import Chip from '@/components/ui/Chip';
-import AddButton from '@/components/ui/AddButton';
-import EmptyState from '@/components/ui/EmptyState';
-import BackButton from '@/components/ui/BackButton';
+import SearchBar from '@/components/admin/ui/SearchBar';
+import FilterBar, { type SortKey } from '@/components/admin/list/FilterBar';
+import ContentCard from '@/components/admin/card/ContentCard';
+import Chip from '@/components/admin/ui/Chip';
+import AddButton from '@/components/admin/ui/AddButton';
+import EmptyState from '@/components/admin/ui/EmptyState';
+import BackButton from '@/components/admin/ui/BackButton';
 
 type ApiList = { data: Listening[]; page: number; limit: number; total: number };
 const LIMIT = 20;
@@ -36,16 +36,37 @@ export default function ListListeningScreen() {
     const fetchPage = useCallback(async (p: number, append = false) => {
         setLoading(true);
         try {
-            const res: ApiList = await listListenings({ page: p, limit: LIMIT, q: q.trim() || undefined, difficulty: difficulty || undefined, sort: (sort as any) || 'updatedAt' }) as any;
+            const res: ApiList = await listListenings({
+                page: p,
+                limit: LIMIT,
+                q: q.trim() || undefined,
+                difficulty: difficulty || undefined,
+                sort: (sort as any) || 'updatedAt',
+            }) as any;
             append ? setData(prev => [...prev, ...res.data]) : setData(res.data);
-            setPage(res.page); setTotal(res.total);
+            setPage(res.page);
+            setTotal(res.total);
             reachedEndRef.current = res.data.length < LIMIT || res.page * LIMIT >= res.total;
-        } finally { setLoading(false); setRefreshing(false); }
+        } finally {
+            setLoading(false);
+            setRefreshing(false);
+        }
     }, [q, difficulty, sort]);
 
     useEffect(() => { fetchPage(1); }, [fetchPage]);
-    const onRefresh = useCallback(() => { setRefreshing(true); reachedEndRef.current = false; fetchPage(1); }, [fetchPage]);
-    const onEndReached = useCallback(() => { if (loading || reachedEndRef.current) return; const next = page + 1; fetchPage(next, true); setPage(next); }, [loading, page, fetchPage]);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        reachedEndRef.current = false;
+        fetchPage(1);
+    }, [fetchPage]);
+
+    const onEndReached = useCallback(() => {
+        if (loading || reachedEndRef.current) return;
+        const next = page + 1;
+        fetchPage(next, true);
+        setPage(next);
+    }, [loading, page, fetchPage]);
 
     const styles = useMemo(() => ({
         header: { padding: theme.tokens.space.md, gap: theme.tokens.space.sm },

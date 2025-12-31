@@ -4,11 +4,11 @@ import { appAlert, appError } from '@/helpers/appAlert';
 import LayoutDefault from '@/layout-default/layout-default';
 import { createGrammar, type Grammar } from '@/api/admin/content/grammar';
 import { useAppTheme } from '@/hooks/use-app-theme'
-import FormSection from '@/components/ui/FormSection'
-import LabeledInput from '@/components/ui/LabeledInput';
-import JLPTPicker from '@/components/ui/JLPTPicker';
-import ExampleEditor from '@/components/block/ExampleEditor';
-import BackButton from '@/components/ui/BackButton';
+import FormSection from '@/components/admin/ui/FormSection'
+import LabeledInput from '@/components/admin/ui/LabeledInput';
+import JLPTPicker from '@/components/admin/ui/JLPTPicker';
+import ExampleEditor from '@/components/admin/block/ExampleEditor';
+import BackButton from '@/components/admin/ui/BackButton';
 import { router } from 'expo-router';
 
 type Example = Grammar['examples'][number];

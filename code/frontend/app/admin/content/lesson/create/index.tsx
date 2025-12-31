@@ -4,13 +4,13 @@ import { appAlert, appError } from '@/helpers/appAlert';
 import LayoutDefault from '@/layout-default/layout-default';
 import { createLesson, type Lesson } from '@/api/admin/content/lesson';
 import { useAppTheme } from '@/hooks/use-app-theme';
-import FormSection from '@/components/ui/FormSection';
-import LabeledInput from '@/components/ui/LabeledInput';
-import Chip from '@/components/ui/Chip';
-import LinkedContentSelector from '@/components/block/LinkedContentSelector';
-import BackButton from '@/components/ui/BackButton';
+import FormSection from '@/components/admin/ui/FormSection';
+import LabeledInput from '@/components/admin/ui/LabeledInput';
+import Chip from '@/components/admin/ui/Chip';
+import LinkedContentSelector from '@/components/admin/block/LinkedContentSelector';
+import BackButton from '@/components/admin/ui/BackButton';
 import { router, Href } from 'expo-router';
-import JLPTPicker from '@/components/ui/JLPTPicker';
+import JLPTPicker from '@/components/admin/ui/JLPTPicker';
 
 type JLPT = Lesson['jlptLevel'] | '';
 

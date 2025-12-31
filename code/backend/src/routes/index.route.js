@@ -18,31 +18,34 @@ const systemConfig = require('../config/systemConfig');
 
 module.exports = (app) => {
     // Admin routes
-    const path = systemConfig.prefixAdmin;
+    const pathContent = systemConfig.prefixAdminContent; // /api/admin/content
+    const pathSystem = systemConfig.prefixSystem; // /api/system
+    const pathAPIAdmin = systemConfig.prefixAdminAPI; // /api/admin
     
-    app.use(path + "/word", adminWordRouter)
+    app.use(pathContent + "/word", adminWordRouter)
 
-    app.use(path + "/grammar", adminGrammarRouter);
+    app.use(pathContent + "/grammar", adminGrammarRouter);
 
-    app.use(path + "/reading", adminReadingRouter);
+    app.use(pathContent + "/reading", adminReadingRouter);
 
-    app.use(path + "/speaking", adminSpeakingRouter);
+    app.use(pathContent + "/speaking", adminSpeakingRouter);
 
-    app.use(path + "/listening", adminListeningRouter);
+    app.use(pathContent + "/listening", adminListeningRouter);
 
-    app.use(path + "/lesson", adminLessonRouter);
+    app.use(pathContent + "/lesson", adminLessonRouter);
     
-    app.use(path + "/test", adminTestRouter);
+    app.use(pathContent + "/test", adminTestRouter);
 
-    app.use(path + "/admins", adminRouter);
+    app.use(pathSystem + "/admins", adminRouter);
 
-    app.use(path + "/roles", roleRouter);
+    app.use(pathSystem + "/roles", roleRouter);
 
-    app.use(path + "/roles", rolePermissionRouter);
+    app.use(pathSystem + "/roles", rolePermissionRouter);
 
-    app.use(path + "/auth", adminAuthRouter);
+    app.use(pathAPIAdmin + "/auth", adminAuthRouter);
 
 
     // User routes
-    app.use("/auth", authUserRouter);
+    const pathAPIClient = systemConfig.prefixClientAPI; // /api/client
+    app.use(pathAPIClient + "/auth", authUserRouter);
 }

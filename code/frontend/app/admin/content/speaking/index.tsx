@@ -4,12 +4,12 @@ import { useRouter, Href } from 'expo-router';
 import LayoutDefault from '@/layout-default/layout-default';
 import { useAppTheme } from '@/hooks/use-app-theme'
 import { listSpeakings, type Speaking } from '@/api/admin/content/speaking';
-import SearchBar from '@/components/ui/SearchBar';
-import FilterBar, { type SortKey } from '@/components/list/FilterBar';
-import ContentCard from '@/components/card/ContentCard';
-import AddButton from '@/components/ui/AddButton';
-import EmptyState from '@/components/ui/EmptyState';
-import BackButton from '@/components/ui/BackButton';
+import SearchBar from '@/components/admin/ui/SearchBar';
+import FilterBar, { type SortKey } from '@/components/admin/list/FilterBar';
+import ContentCard from '@/components/admin/card/ContentCard';
+import AddButton from '@/components/admin/ui/AddButton';
+import EmptyState from '@/components/admin/ui/EmptyState';
+import BackButton from '@/components/admin/ui/BackButton';
 
 type ApiList = { data: Speaking[]; page: number; limit: number; total: number };
 const LIMIT = 20;
@@ -31,12 +31,19 @@ export default function ListSpeakingScreen() {
     setLoading(true);
     try {
       const res: ApiList = await listSpeakings({
-        page: p, limit: LIMIT, q: q.trim() || undefined, sort: (sort as any) || 'updatedAt',
+        page: p,
+        limit: LIMIT,
+        q: q.trim() || undefined,
+        sort: (sort as any) || 'updatedAt',
       }) as any;
       append ? setData(prev => [...prev, ...res.data]) : setData(res.data);
-      setPage(res.page); setTotal(res.total);
+      setPage(res.page);
+      setTotal(res.total);
       reachedEndRef.current = res.data.length < LIMIT || res.page * LIMIT >= res.total;
-    } finally { setLoading(false); setRefreshing(false); }
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
   }, [q, sort]);
 
   useEffect(() => { fetchPage(1); }, [fetchPage]);
@@ -62,13 +69,13 @@ export default function ListSpeakingScreen() {
         />
         <SearchBar value={q} onChangeText={setQ} onSubmit={() => fetchPage(1)} placeholder="Tìm tiêu đề/prompt/guidance…" />
         <FilterBar
-          jlptLevels={['' as any]} selected={'' as any} onSelect={()=>{}}
+          jlptLevels={['' as any]} selected={'' as any} onSelect={() => { }}
           sorts={['updatedAt', 'createdAt', 'title']}
           sort={sort}
           onSort={(s) => { setSort(s); fetchPage(1); }}
         />
         <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-          <AddButton to={'/admin/content/speaking/create' as Href} label="Thêm chủ đề nói"/>
+          <AddButton to={'/admin/content/speaking/create' as Href} label="Thêm chủ đề nói" />
         </View>
       </View>
 

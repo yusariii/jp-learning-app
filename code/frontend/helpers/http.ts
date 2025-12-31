@@ -3,8 +3,13 @@ export type HttpOptions = RequestInit & {
   baseURL?: string;     
 };
 
+// Content API base (for word, grammar, reading, etc.)
 const ADMIN_CONTENT_BASE =
-  process.env.EXPO_PUBLIC_API_ADMIN_CONTENT_URL || ''; 
+  process.env.EXPO_PUBLIC_API_ADMIN_CONTENT_URL || '';
+
+// System API base (for roles, admins, permissions)
+const ADMIN_SYSTEM_BASE =
+  process.env.EXPO_PUBLIC_API_ADMIN_SYSTEM_URL || '';
 
 function joinUrl(base: string, path: string) {
   if (!base) return path; 
@@ -56,3 +61,6 @@ export const put = <T,>(path: string, body?: any, opts?: Omit<HttpOptions, 'meth
 
 export const del = <T,>(path: string, opts?: Omit<HttpOptions, 'method'|'body'>) =>
   http<T>(path, { method: 'DELETE', ...(opts || {}) });
+
+// Export base URLs for use in API modules
+export { ADMIN_CONTENT_BASE, ADMIN_SYSTEM_BASE };

@@ -5,11 +5,11 @@ import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import LayoutDefault from '@/layout-default/layout-default';
 import { getReading, updateReading, deleteReading, type Reading } from '@/api/admin/content/reading';
 import { useAppTheme } from '@/hooks/use-app-theme';
-import FormSection from '@/components/ui/FormSection';
-import LabeledInput from '@/components/ui/LabeledInput';
-import Chip from '@/components/ui/Chip';
-import QuestionEditor from '@/components/block/QuestionEditor';
-import BackButton from '@/components/ui/BackButton';
+import FormSection from '@/components/admin/ui/FormSection';
+import LabeledInput from '@/components/admin/ui/LabeledInput';
+import Chip from '@/components/admin/ui/Chip';
+import QuestionEditor from '@/components/admin/block/QuestionEditor';
+import BackButton from '@/components/admin/ui/BackButton';
 
 type Form = Reading;
 

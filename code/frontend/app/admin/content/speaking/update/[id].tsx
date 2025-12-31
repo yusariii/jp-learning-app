@@ -5,10 +5,10 @@ import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import LayoutDefault from '@/layout-default/layout-default';
 import { getSpeaking, updateSpeaking, deleteSpeaking, type Speaking } from '@/api/admin/content/speaking';
 import { useAppTheme } from '@/hooks/use-app-theme';
-import FormSection from '@/components/ui/FormSection';
-import LabeledInput from '@/components/ui/LabeledInput';
-import PromptsEditor from '@/components/block/PromptsEditor';
-import BackButton from '@/components/ui/BackButton';
+import FormSection from '@/components/admin/ui/FormSection';
+import LabeledInput from '@/components/admin/ui/LabeledInput';
+import PromptsEditor from '@/components/admin/block/PromptsEditor';
+import BackButton from '@/components/admin/ui/BackButton';
 
 type Form = Speaking;
 

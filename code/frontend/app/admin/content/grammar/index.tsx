@@ -6,12 +6,12 @@ import LayoutDefault from '@/layout-default/layout-default';
 import { useAppTheme } from '@/hooks/use-app-theme';
 import { listGrammars, type Grammar } from '@/api/admin/content/grammar';
 
-import SearchBar from '@/components/ui/SearchBar';
-import FilterBar, { type SortKey } from '@/components/list/FilterBar'
-import GrammarCard from '@/components/card/GrammarCard'
-import AddButton from '@/components/ui/AddButton';
-import EmptyState from '@/components/ui/EmptyState';
-import BackButton from '@/components/ui/BackButton';
+import SearchBar from '@/components/admin/ui/SearchBar';
+import FilterBar, { type SortKey } from '@/components/admin/list/FilterBar'
+import GrammarCard from '@/components/admin/card/GrammarCard'
+import AddButton from '@/components/admin/ui/AddButton';
+import EmptyState from '@/components/admin/ui/EmptyState';
+import BackButton from '@/components/admin/ui/BackButton';
 
 type ApiList = { data: Grammar[]; page: number; limit: number; total: number };
 

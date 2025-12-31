@@ -3,12 +3,12 @@ import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Alert } fr
 import { useLocalSearchParams, useRouter } from "expo-router";
 import LayoutDefault from "@/layout-default/layout-default";
 import { useAppTheme } from "@/hooks/use-app-theme";
-import ContentCard from "@/components/card/ContentCard";
-import LabeledInput from "@/components/ui/LabeledInput";
-import RolePicker from "@/components/ui/RolePicker";
+import ContentCard from "@/components/admin/card/ContentCard";
+import LabeledInput from "@/components/admin/ui/LabeledInput";
+import RolePicker from "@/components/admin/ui/RolePicker";
 import { getAdmin, updateAdmin, deleteAdmin, type AdminDoc } from "@/api/admin/admins";
-import DeleteButton from "@/components/ui/DeleteButton";
-import BackButton from "@/components/ui/BackButton";
+import DeleteButton from "@/components/admin/ui/DeleteButton";
+import BackButton from "@/components/admin/ui/BackButton";
 
 export default function AdminEditScreen() {
   const { theme } = useAppTheme();

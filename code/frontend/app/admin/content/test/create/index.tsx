@@ -6,17 +6,17 @@ import { router } from 'expo-router';
 
 import LayoutDefault from '@/layout-default/layout-default';
 import { useAppTheme } from '@/hooks/use-app-theme';
-import LabeledInput from '@/components/ui/LabeledInput';
-import ContentCard from '@/components/card/ContentCard';
-import FormSection from '@/components/ui/FormSection';
-import Chip from '@/components/ui/Chip';
-import BackButton from '@/components/ui/BackButton';
+import LabeledInput from '@/components/admin/ui/LabeledInput';
+import ContentCard from '@/components/admin/card/ContentCard';
+import FormSection from '@/components/admin/ui/FormSection';
+import Chip from '@/components/admin/ui/Chip';
+import BackButton from '@/components/admin/ui/BackButton';
 
 import { createTest, type TestDoc } from '@/api/admin/content/test';
-import SimpleUnitEditor from '@/components/block/SimpleUnitEditor';
-import ReadingUnitEditor from '@/components/block/ReadingUnitEditor';
-import ListeningUnitEditor from '@/components/block/ListeningUnitEditor';
-import JLPTPicker from '@/components/ui/JLPTPicker';
+import SimpleUnitEditor from '@/components/admin/block/SimpleUnitEditor';
+import ReadingUnitEditor from '@/components/admin/block/ReadingUnitEditor';
+import ListeningUnitEditor from '@/components/admin/block/ListeningUnitEditor';
+import JLPTPicker from '@/components/admin/ui/JLPTPicker';
 
 export default function CreateTestScreen() {
   const { theme } = useAppTheme();

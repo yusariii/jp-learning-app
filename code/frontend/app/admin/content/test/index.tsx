@@ -3,14 +3,14 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ActivityIndicator, FlatList, RefreshControl, Text, TouchableOpacity, View } from 'react-native';
 import { Href, useRouter } from 'expo-router';
 
-import LayoutDefault from '../../../../layout-default/layout-default';
+import LayoutDefault from '@/layout-default/layout-default';
 import { useAppTheme } from '@/hooks/use-app-theme';
-import SearchBar from '@/components/ui/SearchBar';
-import FilterBar, { type SortKey } from '@/components/list/FilterBar';
-import ContentCard from '@/components/card/ContentCard';
-import Chip from '@/components/ui/Chip';
-import { listTests, type TestDoc } from '../../../../api/admin/content/test';
-import BackButton from '@/components/ui/BackButton';
+import SearchBar from '@/components/admin/ui/SearchBar';
+import FilterBar, { type SortKey } from '@/components/admin/list/FilterBar';
+import ContentCard from '@/components/admin/card/ContentCard';
+import Chip from '@/components/admin/ui/Chip';
+import { listTests, type TestDoc } from '@/api/admin/content/test';
+import BackButton from '@/components/admin/ui/BackButton';
 
 type ApiList = { data: TestDoc[]; page: number; limit: number; total: number };
 

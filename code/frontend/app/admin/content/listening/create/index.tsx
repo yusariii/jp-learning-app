@@ -4,11 +4,11 @@ import { appAlert, appError } from '@/helpers/appAlert';
 import LayoutDefault from '@/layout-default/layout-default';
 import { createListening, type Listening } from '@/api/admin/content/listening';
 import { useAppTheme } from '@/hooks/use-app-theme'
-import FormSection from '@/components/ui/FormSection';
-import LabeledInput from '@/components/ui/LabeledInput';
-import Chip from '@/components/ui/Chip';
-import ListeningQuestionEditor from '@/components/block/ListeningQuestionEditor';
-import BackButton from '@/components/ui/BackButton';
+import FormSection from '@/components/admin/ui/FormSection';
+import LabeledInput from '@/components/admin/ui/LabeledInput';
+import Chip from '@/components/admin/ui/Chip';
+import ListeningQuestionEditor from '@/components/admin/block/ListeningQuestionEditor';
+import BackButton from '@/components/admin/ui/BackButton';
 import { router } from 'expo-router';
 
 type Form = Omit<Listening, '_id'|'createdAt'|'updatedAt'>;

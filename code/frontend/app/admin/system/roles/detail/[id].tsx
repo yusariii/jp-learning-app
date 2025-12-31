@@ -3,9 +3,9 @@ import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from "rea
 import { useLocalSearchParams, useRouter, Href } from "expo-router";
 import LayoutDefault from "@/layout-default/layout-default";
 import { useAppTheme } from "@/hooks/use-app-theme";
-import ContentCard from "@/components/card/ContentCard";
+import ContentCard from "@/components/admin/card/ContentCard";
 import { getRole, type RoleDoc } from "@/api/admin/roles";
-import BackButton from "@/components/ui/BackButton";
+import BackButton from "@/components/admin/ui/BackButton";
 
 export default function RoleDetailScreen() {
   const { theme } = useAppTheme();

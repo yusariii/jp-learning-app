@@ -2,7 +2,7 @@ import React, { useState, ReactNode } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text, Platform } from 'react-native';
 import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
-import Sidebar from '../components/sider';
+import Sidebar from '../components/admin/sider';
 
 
 import { useAppTheme } from '../hooks/use-app-theme';

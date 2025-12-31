@@ -16,8 +16,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan('dev'));
 
-const adminRoutes = require('./routes/admin/index.route');
-adminRoutes(app)
+const routes = require('./routes/index.route');
+routes(app);
 
 // 404 page
 app.use((req, res, next) => {

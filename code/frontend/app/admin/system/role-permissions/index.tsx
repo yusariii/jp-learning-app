@@ -3,8 +3,8 @@ import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View, Alert } fr
 import LayoutDefault from '@/layout-default/layout-default';
 import { useAppTheme } from '@/hooks/use-app-theme';
 
-import RoleDropdown from '@/components/ui/RoleDropdown';
-import Checkbox from '@/components/ui/CheckBox';
+import RoleDropdown from '@/components/admin/ui/RoleDropdown';
+import Checkbox from '@/components/admin/ui/CheckBox';
 
 import {
   getRolePermissions,

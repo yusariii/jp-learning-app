@@ -5,9 +5,9 @@ import { useLocalSearchParams, useRouter, Href } from 'expo-router';
 import LayoutDefault from '@/layout-default/layout-default';
 import { getLesson, type Lesson } from '@/api/admin/content/lesson';
 import { useAppTheme } from '@/hooks/use-app-theme';
-import ContentCard from '@/components/card/ContentCard';
-import BackButton from '@/components/ui/BackButton';
-import LinkedContentList from '@/components/block/LinkedContentList';
+import ContentCard from '@/components/admin/card/ContentCard';
+import BackButton from '@/components/admin/ui/BackButton';
+import LinkedContentList from '@/components/admin/block/LinkedContentList';
 
 export default function LessonDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();

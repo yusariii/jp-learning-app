@@ -4,9 +4,9 @@ import { useLocalSearchParams, useRouter, Href } from 'expo-router';
 import LayoutDefault from '@/layout-default/layout-default';
 import { getReading, type Reading } from '@/api/admin/content/reading';
 import { useAppTheme } from '@/hooks/use-app-theme';
-import ContentCard from '@/components/card/ContentCard';
-import QuestionBlock from '@/components/block/QuestionBlock';
-import BackButton from '@/components/ui/BackButton';
+import ContentCard from '@/components/admin/card/ContentCard';
+import QuestionBlock from '@/components/admin/block/QuestionBlock';
+import BackButton from '@/components/admin/ui/BackButton';
 
 export default function ReadingDetailScreen() {
   const { theme } = useAppTheme();

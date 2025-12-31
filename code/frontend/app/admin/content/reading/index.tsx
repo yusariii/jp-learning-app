@@ -6,13 +6,13 @@ import LayoutDefault from '@/layout-default/layout-default';
 import { useAppTheme } from '@/hooks/use-app-theme';
 import { listReadings, type Reading } from '@/api/admin/content/reading';
 
-import SearchBar from '@/components/ui/SearchBar';
-import FilterBar, { type SortKey } from '@/components/list/FilterBar';
-import ContentCard from '@/components/card/ContentCard';
-import Chip from '@/components/ui/Chip';
-import AddButton from '@/components/ui/AddButton';
-import EmptyState from '@/components/ui/EmptyState';
-import BackButton from '@/components/ui/BackButton';
+import SearchBar from '@/components/admin/ui/SearchBar';
+import FilterBar, { type SortKey } from '@/components/admin/list/FilterBar';
+import ContentCard from '@/components/admin/card/ContentCard';
+import Chip from '@/components/admin/ui/Chip';
+import AddButton from '@/components/admin/ui/AddButton';
+import EmptyState from '@/components/admin/ui/EmptyState';
+import BackButton from '@/components/admin/ui/BackButton';
 
 type ApiList = { data: Reading[]; page: number; limit: number; total: number };
 const LIMIT = 20;

@@ -4,12 +4,12 @@ import { appAlert, appError } from '@/helpers/appAlert';
 import LayoutDefault from '@/layout-default/layout-default';
 import { createWord, type Word } from '@/api/admin/content/word';
 import { useAppTheme } from '@/hooks/use-app-theme'
-import FormSection from '@/components/ui/FormSection'
-import LabeledInput from '@/components/ui/LabeledInput';
-import JLPTPicker from '@/components/ui/JLPTPicker';
-import TagsEditor from '@/components/ui/TagsEditor';
-import ExampleEditor from '@/components/block/ExampleEditor';
-import BackButton from '@/components/ui/BackButton';
+import FormSection from '@/components/admin/ui/FormSection'
+import LabeledInput from '@/components/admin/ui/LabeledInput';
+import JLPTPicker from '@/components/admin/ui/JLPTPicker';
+import TagsEditor from '@/components/admin/ui/TagsEditor';
+import ExampleEditor from '@/components/admin/block/ExampleEditor';
+import BackButton from '@/components/admin/ui/BackButton';
 import { router } from 'expo-router';
 
 type Example = Word['examples'][number];

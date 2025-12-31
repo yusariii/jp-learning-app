@@ -3,8 +3,8 @@ import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity } from "rea
 import { useLocalSearchParams, useRouter, Href } from "expo-router";
 import LayoutDefault from "@/layout-default/layout-default";
 import { useAppTheme } from "@/hooks/use-app-theme";
-import ContentCard from "@/components/card/ContentCard";
-import BackButton from "@/components/ui/BackButton";
+import ContentCard from "@/components/admin/card/ContentCard";
+import BackButton from "@/components/admin/ui/BackButton";
 import { getAdmin, type AdminDoc } from "@/api/admin/admins";
 
 export default function AdminDetailScreen() {
