@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { Admin, Role } = require("../../models/admin.model"); 
+const Admin = require("../../models/admin.model"); 
+const Role = require("../../models/role.model");
 
 const signToken = (payload) =>
   jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "7d" });
@@ -13,9 +14,8 @@ module.exports.login = async (req, res) => {
       return res.status(400).json({ message: "Thiếu email hoặc mật khẩu." });
 
     const admin = await Admin.findOne({
-      where: { email },
-      include: [{ model: Role, as: "role" }], // nếu bạn có association
-    });
+      email: email,
+    }).populate("roleId");
 
     if (!admin) return res.status(401).json({ message: "Sai email hoặc mật khẩu." });
 
@@ -27,7 +27,7 @@ module.exports.login = async (req, res) => {
     return res.json({
       token,
       data: {
-        admin: { id: admin.id, email: admin.email, roleId: admin.roleId, role: admin.role || null },
+        admin: { id: admin.id, email: admin.email, role: admin.roleId || null },
       },
     });
   } catch (e) {

@@ -1,12 +1,13 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { User } = require("../../models/user.model"); 
+const User  = require("../../models/user.model"); 
 // level enum: N5..N1 (theo model)
 
 const signToken = (payload) =>
   jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "7d" });
 
 module.exports.register = async (req, res) => {
+  console.log(req.body);
   try {
     const { email, password, fullName, level } = req.body;
 
@@ -14,7 +15,7 @@ module.exports.register = async (req, res) => {
       return res.status(400).json({ message: "Email và mật khẩu là bắt buộc." });
     }
 
-    const existed = await User.findOne({ where: { email } });
+    const existed = await User.findOne({ email: email });
     if (existed) return res.status(409).json({ message: "Email đã tồn tại." });
 
     const hash = await bcrypt.hash(password, 10);
@@ -44,7 +45,7 @@ module.exports.login = async (req, res) => {
     if (!email || !password)
       return res.status(400).json({ message: "Thiếu email hoặc mật khẩu." });
 
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({ email: email });
     if (!user) return res.status(401).json({ message: "Sai email hoặc mật khẩu." });
 
     const ok = await bcrypt.compare(password, user.password);

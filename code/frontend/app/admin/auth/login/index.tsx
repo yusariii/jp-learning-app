@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Platform } from "react-native";
 import { Href, useRouter } from "expo-router";
 import { Feather } from "@expo/vector-icons";
-
+import { saveToken, saveUser } from "@/helpers/storage";
 import { useAppTheme } from "@/hooks/use-app-theme";
 import AuthShell from "@/components/admin/block/AuthShell";
 import { adminLogin } from "@/api/auth";
@@ -28,15 +28,18 @@ export default function AdminLogin() {
     setLoading(true);
     try {
       const res = await adminLogin({ email: email.trim(), password });
-      if (!res?.token) {
+      
+      if (res?.token) {
+        const adminData = res.data?.admin;
+
+
+        await saveToken(res.token);
+        await saveUser(adminData);
+
+        router.replace("/admin");
+      } else {
         setErr(res?.message || "Đăng nhập admin thất bại.");
-        return;
       }
-
-      // TODO: lưu token admin
-      // await saveAdminToken(res.token)
-
-      router.replace("/admin");
     } catch {
       setErr("Lỗi mạng. Thử lại nhé.");
     } finally {

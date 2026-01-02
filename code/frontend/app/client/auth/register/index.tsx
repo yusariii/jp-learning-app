@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Platform } from "react-native";
 import { Href, useRouter } from "expo-router";
 import { Feather } from "@expo/vector-icons";
-
+import { saveToken, saveUser } from "@/helpers/storage";
 import { useAppTheme } from "@/hooks/use-app-theme";
 import AuthShell from "@/components/admin/block/AuthShell";
 import JLPTPicker from "@/components/admin/ui/JLPTPicker";
@@ -49,13 +49,18 @@ export default function UserRegister() {
         level: (level || "N5") as any,
       });
 
-      if (!res?.token && res?.message) {
-        setErr(res.message);
-        return;
-      }
+      if (res?.token) {
+        await saveToken(res.token);
+        if (res.data?.user) {
+          await saveUser(res.data.user);
+        }
 
-      // Đăng ký xong -> về login (hoặc router.replace("/") nếu bạn muốn auto-login)
-      router.replace("/client/auth/login" as Href);
+        router.replace("/");
+      } else if (res?.message) {
+        setErr(res.message);
+      } else {
+        router.replace("/client/auth/login" as Href);
+      }
     } catch {
       setErr("Lỗi mạng. Thử lại nhé.");
     } finally {
@@ -95,7 +100,7 @@ export default function UserRegister() {
 
         <View>
           <Text style={{ ...theme.text.secondary, marginBottom: 6 }}>Trình độ JLPT</Text>
-          <JLPTPicker value={level} onChange={setLevel} levels={["N5","N4","N3","N2","N1"]} />
+          <JLPTPicker value={level} onChange={setLevel} levels={["N5", "N4", "N3", "N2", "N1"]} />
         </View>
 
         <View>

@@ -6,6 +6,7 @@ import { Feather } from "@expo/vector-icons";
 import { useAppTheme } from "@/hooks/use-app-theme";
 import AuthShell from "@/components/admin/block/AuthShell";
 import { userLogin } from "@/api/auth";
+import { saveToken, saveUser } from "@/helpers/storage"; 
 
 export default function UserLogin() {
   const { theme } = useAppTheme();
@@ -28,22 +29,28 @@ export default function UserLogin() {
     setLoading(true);
     try {
       const res = await userLogin({ email: email.trim(), password });
-      if (!res?.token) {
+      
+      // Backend trả về: { token, data: { user: {...} } }
+      if (res?.token) {
+        // 1. Lưu token & thông tin user
+        await saveToken(res.token);
+        if (res.data?.user) {
+          await saveUser(res.data.user);
+        }
+
+        // 2. Chuyển hướng vào trang chủ (dùng replace để không quay lại được login)
+        router.replace("/"); 
+      } else {
         setErr(res?.message || "Đăng nhập thất bại.");
-        return;
       }
-
-      // TODO: lưu token nếu bạn có auth store (AsyncStorage/SecureStore)
-      // await saveToken(res.token)
-
-      router.replace("/"); // user home
-    } catch {
-      setErr("Lỗi mạng. Thử lại nhé.");
+    } catch (error) {
+      setErr("Lỗi kết nối. Vui lòng kiểm tra mạng.");
     } finally {
       setLoading(false);
     }
   };
 
+  // ... (Phần return UI giữ nguyên như cũ, chỉ thay đổi logic hàm submit ở trên)
   return (
     <AuthShell
       badge="USER"
@@ -116,7 +123,7 @@ export default function UserLogin() {
           activeOpacity={0.85}
         >
           <Text style={theme.button.primary.label}>
-            {loading ? "Đang đăng nhập..." : "Đăng nhập"}
+            {loading ? "Đang xử lý..." : "Đăng nhập"}
           </Text>
         </TouchableOpacity>
       </View>

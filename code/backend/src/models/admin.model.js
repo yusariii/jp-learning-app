@@ -9,4 +9,6 @@ const adminSchema = new Schema({
   roleId: { type: Schema.Types.ObjectId, ref: "Role", required: true },
 }, { timestamps: true });
 
-module.exports = mongoose.model("Admin", adminSchema, "admins");
+const Admin = mongoose.model("Admin", adminSchema, "admins");
+
+module.exports = Admin;
