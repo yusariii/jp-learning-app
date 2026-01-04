@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Alert } from "react-native";
-import { router } from "expo-router";
+import { router, Href } from "expo-router";
 import LayoutDefault from "@/layout-default/layout-default";
 import { useAppTheme } from "@/hooks/use-app-theme";
+import { useAuth } from "@/hooks/use-auth";
 import ContentCard from "@/components/admin/card/ContentCard";
 import LabeledInput from "@/components/admin/ui/LabeledInput";
 import RolePicker from "@/components/admin/ui/RolePicker";
@@ -11,6 +12,13 @@ import { createAdmin, type AdminDoc } from "@/api/admin/admins";
 
 export default function AdminCreateScreen() {
   const { theme } = useAppTheme();
+  const { role } = useAuth();
+
+  useEffect(() => {
+    if (role?.title !== 'SuperAdmin') {
+      router.replace('/admin/unauthorized' as Href);
+    }
+  }, [role, router]);
   const [form, setForm] = useState<AdminDoc>({ email: "", password: "", fullName: "", roleId: "" });
 
   const submit = async () => {

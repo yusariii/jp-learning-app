@@ -4,6 +4,7 @@ import { useRouter, Href } from 'expo-router';
 
 import LayoutDefault from '@/layout-default/layout-default';
 import { useAppTheme } from '@/hooks/use-app-theme';
+import { useAuth } from '@/hooks/use-auth';
 import { listReadings, type Reading } from '@/api/admin/content/reading';
 
 import SearchBar from '@/components/admin/ui/SearchBar';
@@ -20,11 +21,18 @@ const DIFFS: Array<Reading['difficulty'] | ''> = ['', 'easy', 'medium', 'hard'];
 
 export default function ListReadingScreen() {
   const { theme } = useAppTheme();
+  const { hasPermission, role } = useAuth();
   const router = useRouter();
 
   const [q, setQ] = useState('');
   const [difficulty, setDifficulty] = useState<'' | Reading['difficulty']>('');
   const [sort, setSort] = useState<SortKey>('updatedAt');
+
+  useEffect(() => {
+    if (!hasPermission('reading.view')) {
+      router.replace('/admin/unauthorized' as Href);
+    }
+  }, [hasPermission, router]);
 
   const [data, setData] = useState<Reading[]>([]);
   const [page, setPage] = useState(1);
@@ -120,9 +128,11 @@ export default function ListReadingScreen() {
                 <TouchableOpacity onPress={() => router.push(`/admin/content/reading/detail/${item._id}` as Href)} style={theme.button.ghost.container}>
                   <Text style={theme.button.ghost.label}>Chi tiết</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => router.push(`/admin/content/reading/update/${item._id}` as Href)} style={theme.button.primary.container}>
-                  <Text style={theme.button.primary.label}>Sửa</Text>
-                </TouchableOpacity>
+                {hasPermission('reading.update') && (
+                  <TouchableOpacity onPress={() => router.push(`/admin/content/reading/update/${item._id}` as Href)} style={theme.button.primary.container}>
+                    <Text style={theme.button.primary.label}>Sửa</Text>
+                  </TouchableOpacity>
+                )}
               </View>
             </View>
           </ContentCard>

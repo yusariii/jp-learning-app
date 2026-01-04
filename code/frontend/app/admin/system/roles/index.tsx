@@ -3,6 +3,7 @@ import { ActivityIndicator, FlatList, Text, TouchableOpacity, View } from "react
 import { useRouter, Href } from "expo-router";
 import LayoutDefault from "@/layout-default/layout-default";
 import { useAppTheme } from "@/hooks/use-app-theme";
+import { useAuth } from "@/hooks/use-auth";
 import SearchBar from "@/components/admin/ui/SearchBar";
 import ContentCard from "@/components/admin/card/ContentCard";
 import { listRoles, type RoleDoc } from "@/api/admin/roles";
@@ -10,7 +11,14 @@ import BackButton from "@/components/admin/ui/BackButton";
 
 export default function RoleListScreen() {
   const { theme } = useAppTheme();
+  const { role } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    if (role?.title !== 'SuperAdmin') {
+      router.replace('/admin/unauthorized' as Href);
+    }
+  }, [role, router]);
 
   const [q, setQ] = useState("");
   const [loading, setLoading] = useState(true);
@@ -35,9 +43,11 @@ export default function RoleListScreen() {
         />
         <SearchBar value={q} onChangeText={setQ} onSubmit={reload} placeholder="Tìm theo tiêu đề/mô tả…" />
         <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-          <TouchableOpacity onPress={() => router.push("/admin/system/roles/create" as Href)} style={theme.button.primary.container}>
-            <Text style={theme.button.primary.label}>＋ Thêm role</Text>
-          </TouchableOpacity>
+          {role?.title === 'SuperAdmin' && (
+            <TouchableOpacity onPress={() => router.push("/admin/system/roles/create" as Href)} style={theme.button.primary.container}>
+              <Text style={theme.button.primary.label}>＋ Thêm role</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
 
@@ -56,9 +66,11 @@ export default function RoleListScreen() {
                 <TouchableOpacity onPress={() => router.push(`/admin/system/roles/detail/${item._id}` as Href)} style={theme.button.ghost.container}>
                   <Text style={theme.button.ghost.label}>Chi tiết</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => router.push(`/admin/system/roles/update/${item._id}` as Href)} style={theme.button.primary.container}>
-                  <Text style={theme.button.primary.label}>Sửa</Text>
-                </TouchableOpacity>
+                {role?.title === 'SuperAdmin' && (
+                  <TouchableOpacity onPress={() => router.push(`/admin/system/roles/update/${item._id}` as Href)} style={theme.button.primary.container}>
+                    <Text style={theme.button.primary.label}>Sửa</Text>
+                  </TouchableOpacity>
+                )}
               </View>
             </ContentCard>
           )}

@@ -4,6 +4,7 @@ import { useRouter, Href } from 'expo-router';
 
 import LayoutDefault from '@/layout-default/layout-default';
 import { useAppTheme } from '@/hooks/use-app-theme';
+import { useAuth } from '@/hooks/use-auth';
 import { listGrammars, type Grammar } from '@/api/admin/content/grammar';
 
 import SearchBar from '@/components/admin/ui/SearchBar';
@@ -20,11 +21,18 @@ const LIMIT = 20;
 
 export default function ListGrammarScreen() {
   const { theme } = useAppTheme();
+  const { hasPermission, role } = useAuth();
   const router = useRouter();
 
   const [q, setQ] = useState('');
   const [jlpt, setJlpt] = useState<Grammar['jlptLevel']>('');
   const [sort, setSort] = useState<SortKey>('updatedAt');
+
+  useEffect(() => {
+    if (!hasPermission('grammar.view')) {
+      router.replace('/admin/unauthorized' as Href);
+    }
+  }, [hasPermission, router]);
 
   const [data, setData] = useState<Grammar[]>([]);
   const [page, setPage] = useState(1);
@@ -112,6 +120,7 @@ export default function ListGrammarScreen() {
             item={item}
             onDetail={() => router.push(`/admin/content/grammar/detail/${item._id}` as Href)}
             onEdit={() => router.push(`/admin/content/grammar/update/${item._id}` as Href)}
+            canEdit={hasPermission('grammar.update')}
           />
         )}
         onEndReachedThreshold={0.2}

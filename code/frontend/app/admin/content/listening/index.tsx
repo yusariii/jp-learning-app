@@ -4,6 +4,7 @@ import { useRouter, Href } from 'expo-router';
 
 import LayoutDefault from '@/layout-default/layout-default';
 import { useAppTheme } from '@/hooks/use-app-theme'
+import { useAuth } from '@/hooks/use-auth';
 import { listListenings, type Listening } from '@/api/admin/content/listening';
 
 import SearchBar from '@/components/admin/ui/SearchBar';
@@ -20,11 +21,18 @@ const DIFFS: Array<Listening['difficulty'] | ''> = ['', 'easy', 'medium', 'hard'
 
 export default function ListListeningScreen() {
     const { theme } = useAppTheme();
+    const { hasPermission, role } = useAuth();
     const router = useRouter();
 
     const [q, setQ] = useState('');
     const [difficulty, setDifficulty] = useState<'' | Listening['difficulty']>('');
     const [sort, setSort] = useState<SortKey>('updatedAt');
+
+    useEffect(() => {
+      if (!hasPermission('listening.view')) {
+        router.replace('/admin/unauthorized' as Href);
+      }
+    }, [hasPermission, router]);
 
     const [data, setData] = useState<Listening[]>([]);
     const [page, setPage] = useState(1);
@@ -102,7 +110,9 @@ export default function ListListeningScreen() {
                             <Text style={theme.text.meta}>{item.updatedAt ? `Cập nhật: ${new Date(item.updatedAt).toLocaleString()}` : ''}</Text>
                             <View style={{ flexDirection: 'row', gap: theme.tokens.space.sm }}>
                                 <TouchableOpacity onPress={() => router.push(`/admin/content/listening/detail/${item._id}` as Href)} style={theme.button.ghost.container}><Text style={theme.button.ghost.label}>Chi tiết</Text></TouchableOpacity>
-                                <TouchableOpacity onPress={() => router.push(`/admin/content/listening/update/${item._id}` as Href)} style={theme.button.primary.container}><Text style={theme.button.primary.label}>Sửa</Text></TouchableOpacity>
+                                {hasPermission('listening.update') && (
+                                  <TouchableOpacity onPress={() => router.push(`/admin/content/listening/update/${item._id}` as Href)} style={theme.button.primary.container}><Text style={theme.button.primary.label}>Sửa</Text></TouchableOpacity>
+                                )}
                             </View>
                         </View>
                     </ContentCard>

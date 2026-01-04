@@ -4,6 +4,7 @@ import { useLocalSearchParams, useRouter, Href } from 'expo-router';
 import LayoutDefault from '@/layout-default/layout-default';
 import { getListening, deleteListening, type Listening } from '@/api/admin/content/listening';
 import { useAppTheme } from '@/hooks/use-app-theme';
+import { useAuth } from '@/hooks/use-auth';
 import { appAlert } from '@/helpers/appAlert';
 import ContentCard from '@/components/admin/card/ContentCard';
 import ListeningQuestionBlock from '@/components/admin/block/ListeningQuestionBlock';
@@ -12,6 +13,7 @@ import DeleteButton from '@/components/admin/ui/DeleteButton';
 
 export default function ListeningDetailScreen() {
   const { theme } = useAppTheme();
+  const { hasPermission, role } = useAuth();
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
 
@@ -71,18 +73,22 @@ export default function ListeningDetailScreen() {
             <Text style={[theme.text.body, { marginTop: theme.tokens.space.xs }]}>{item.transcriptEN}</Text>
           </>)}
           <View style={{ flexDirection: 'row', gap: theme.tokens.space.sm, marginTop: theme.tokens.space.md }}>
-            <TouchableOpacity style={[theme.button.primary.container, { flex: 1 }]} onPress={() => router.push(`/admin/content/listening/update/${item._id}` as Href)} hitSlop={theme.utils.hitSlop}>
-              <Text style={theme.button.primary.label}>Sửa</Text>
-            </TouchableOpacity>
-            <DeleteButton
-              variant="solid"
-              label="Xoá"
-              onConfirm={async () => {
-                await deleteListening(item._id!);
-                appAlert('Đã xoá');
-                router.back();
-              }}
-            />
+            {hasPermission('listening.update') && (
+              <TouchableOpacity style={[theme.button.primary.container, { flex: 1 }]} onPress={() => router.push(`/admin/content/listening/update/${item._id}` as Href)} hitSlop={theme.utils.hitSlop}>
+                <Text style={theme.button.primary.label}>Sửa</Text>
+              </TouchableOpacity>
+            )}
+            {hasPermission('listening.delete') && (
+              <DeleteButton
+                variant="solid"
+                label="Xoá"
+                onConfirm={async () => {
+                  await deleteListening(item._id!);
+                  appAlert('Đã xoá');
+                  router.back();
+                }}
+              />
+            )}
           </View>
         </ContentCard>
 

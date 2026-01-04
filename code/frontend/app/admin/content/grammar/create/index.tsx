@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity} from 'react-native';
 import { appAlert, appError } from '@/helpers/appAlert';
 import LayoutDefault from '@/layout-default/layout-default';
 import { createGrammar, type Grammar } from '@/api/admin/content/grammar';
-import { useAppTheme } from '@/hooks/use-app-theme'
+import { useAppTheme } from '@/hooks/use-app-theme';
+import { useAuth } from '@/hooks/use-auth';
 import FormSection from '@/components/admin/ui/FormSection'
 import LabeledInput from '@/components/admin/ui/LabeledInput';
 import JLPTPicker from '@/components/admin/ui/JLPTPicker';
 import ExampleEditor from '@/components/admin/block/ExampleEditor';
 import BackButton from '@/components/admin/ui/BackButton';
-import { router } from 'expo-router';
+import { router, Href } from 'expo-router';
 
 type Example = Grammar['examples'][number];
 type Form = Omit<Grammar, '_id'|'createdAt'|'updatedAt'>;
@@ -17,6 +18,13 @@ const emptyEx: Example = { sentenceJP: '', readingKana: '', meaningVI: '', meani
 
 export default function CreateGrammarScreen() {
   const { theme } = useAppTheme();
+  const { hasPermission, role } = useAuth();
+
+  useEffect(() => {
+    if (!hasPermission('grammar.create')) {
+      router.replace('/admin/unauthorized' as Href);
+    }
+  }, [hasPermission, router]);
 
   const [form, setForm] = useState<Form>({
     title: '', description: '',

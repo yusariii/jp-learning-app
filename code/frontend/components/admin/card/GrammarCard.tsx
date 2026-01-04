@@ -8,9 +8,10 @@ type Props = {
   item: Grammar;
   onEdit?: () => void;
   onDetail?: () => void;
+  canEdit?: boolean;
 };
 
-export default function GrammarCard({ item, onEdit, onDetail }: Props) {
+export default function GrammarCard({ item, onEdit, onDetail, canEdit = true }: Props) {
   const { theme } = useAppTheme();
   const firstEx = item.examples?.[0];
 
@@ -73,7 +74,7 @@ export default function GrammarCard({ item, onEdit, onDetail }: Props) {
               <Text style={theme.button.ghost.label}>Chi tiết</Text>
             </TouchableOpacity>
           )}
-          {onEdit && (
+          {onEdit && canEdit && (
             <TouchableOpacity onPress={onEdit} style={theme.button.primary.container} hitSlop={theme.utils.hitSlop}>
               <Text style={theme.button.primary.label}>Sửa</Text>
             </TouchableOpacity>

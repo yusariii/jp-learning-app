@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { router } from "expo-router";
+import { router, Href } from "expo-router";
 import LayoutDefault from "@/layout-default/layout-default";
 import { useAppTheme } from "@/hooks/use-app-theme";
+import { useAuth } from "@/hooks/use-auth";
 import ContentCard from "@/components/admin/card/ContentCard";
 import LabeledInput from "@/components/admin/ui/LabeledInput";
 import { createRole, type RoleDoc } from "@/api/admin/roles";
@@ -10,6 +11,13 @@ import BackButton from "@/components/admin/ui/BackButton";
 
 export default function RoleCreateScreen() {
   const { theme } = useAppTheme();
+  const { role } = useAuth();
+
+  useEffect(() => {
+    if (role?.title !== 'SuperAdmin') {
+      router.replace('/admin/unauthorized' as Href);
+    }
+  }, [role, router]);
   const [form, setForm] = useState<RoleDoc>({ title: "", description: "" });
 
   const submit = async () => {

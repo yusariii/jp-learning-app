@@ -5,6 +5,7 @@ import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import LayoutDefault from '@/layout-default/layout-default';
 import { getSpeaking, updateSpeaking, deleteSpeaking, type Speaking } from '@/api/admin/content/speaking';
 import { useAppTheme } from '@/hooks/use-app-theme';
+import { useAuth } from '@/hooks/use-auth';
 import FormSection from '@/components/admin/ui/FormSection';
 import LabeledInput from '@/components/admin/ui/LabeledInput';
 import PromptsEditor from '@/components/admin/block/PromptsEditor';
@@ -14,11 +15,18 @@ type Form = Speaking;
 
 export default function EditSpeakingScreen() {
   const { theme } = useAppTheme();
+  const { hasPermission, role } = useAuth();
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState<Form | null>(null);
+
+  useEffect(() => {
+    if (!hasPermission('speaking.update')) {
+      router.replace('/admin/unauthorized' as Href);
+    }
+  }, [hasPermission, router]);
 
   useEffect(() => {
     let alive = true;
@@ -108,12 +116,14 @@ export default function EditSpeakingScreen() {
           >
             <Text style={theme.button.primary.label}>Lưu thay đổi</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={confirmDelete}
-            style={[theme.button.primary.container, { backgroundColor: theme.color.danger, paddingVertical: 14, borderRadius: theme.tokens.radius.lg }]}
-          >
-            <Text style={theme.button.primary.label}>Xoá</Text>
-          </TouchableOpacity>
+          {hasPermission('speaking.delete') && (
+            <TouchableOpacity
+              onPress={confirmDelete}
+              style={[theme.button.primary.container, { backgroundColor: theme.color.danger, paddingVertical: 14, borderRadius: theme.tokens.radius.lg }]}
+            >
+              <Text style={theme.button.primary.label}>Xoá</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         <View style={{ height: theme.tokens.space.xl }} />

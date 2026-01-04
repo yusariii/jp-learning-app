@@ -5,6 +5,7 @@ import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import LayoutDefault from '@/layout-default/layout-default';
 import { getListening, updateListening, deleteListening, type Listening } from '@/api/admin/content/listening';
 import { useAppTheme } from '@/hooks/use-app-theme';
+import { useAuth } from '@/hooks/use-auth';
 import FormSection from '@/components/admin/ui/FormSection';
 import LabeledInput from '@/components/admin/ui/LabeledInput';
 import Chip from '@/components/admin/ui/Chip';
@@ -15,11 +16,18 @@ type Form = Listening;
 
 export default function EditListeningScreen() {
   const { theme } = useAppTheme();
+  const { hasPermission, role } = useAuth();
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState<Form | null>(null);
+
+  useEffect(() => {
+    if (!hasPermission('listening.update')) {
+      router.replace('/admin/unauthorized' as Href);
+    }
+  }, [hasPermission, router]);
 
   useEffect(() => {
     let alive = true;
@@ -119,9 +127,11 @@ export default function EditListeningScreen() {
           <TouchableOpacity onPress={save} disabled={!isValid} style={[theme.button.primary.container, { flex: 1, paddingVertical: 14, borderRadius: theme.tokens.radius.lg, alignItems: 'center', opacity: isValid ? 1 : 0.5 }]}>
             <Text style={theme.button.primary.label}>Lưu thay đổi</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={confirmDelete} style={[theme.button.primary.container, { backgroundColor: theme.color.danger, paddingVertical: 14, borderRadius: theme.tokens.radius.lg }]}>
-            <Text style={theme.button.primary.label}>Xoá</Text>
-          </TouchableOpacity>
+          {hasPermission('listening.delete') && (
+            <TouchableOpacity onPress={confirmDelete} style={[theme.button.primary.container, { backgroundColor: theme.color.danger, paddingVertical: 14, borderRadius: theme.tokens.radius.lg }]}>
+              <Text style={theme.button.primary.label}>Xoá</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         <View style={{ height: theme.tokens.space.xl }} />

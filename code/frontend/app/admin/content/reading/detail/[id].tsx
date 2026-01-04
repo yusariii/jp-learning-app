@@ -5,6 +5,7 @@ import LayoutDefault from '@/layout-default/layout-default';
 import { getReading, deleteReading, type Reading } from '@/api/admin/content/reading';
 import { appAlert } from '@/helpers/appAlert';
 import { useAppTheme } from '@/hooks/use-app-theme';
+import { useAuth } from '@/hooks/use-auth';
 import DeleteButton from '@/components/admin/ui/DeleteButton';
 import ContentCard from '@/components/admin/card/ContentCard';
 import QuestionBlock from '@/components/admin/block/QuestionBlock';
@@ -12,6 +13,7 @@ import BackButton from '@/components/admin/ui/BackButton';
 
 export default function ReadingDetailScreen() {
   const { theme } = useAppTheme();
+  const { hasPermission, role } = useAuth();
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
 
@@ -81,22 +83,26 @@ export default function ReadingDetailScreen() {
           )}
 
           <View style={{ flexDirection: 'row', gap: theme.tokens.space.sm, marginTop: theme.tokens.space.md }}>
-            <TouchableOpacity
-              style={[theme.button.primary.container, { flex: 1 }]}
-              onPress={() => router.push(`/admin/content/reading/update/${item._id}` as Href)}
-              hitSlop={theme.utils.hitSlop}
-            >
-              <Text style={theme.button.primary.label}>Sửa</Text>
-            </TouchableOpacity>
-            <DeleteButton
-              variant="solid"
-              label="Xoá"
-              onConfirm={async () => {
-                await deleteReading(item._id!);
-                appAlert('Đã xoá');
-                router.back();
-              }}
-            />
+            {hasPermission('reading.update') && (
+              <TouchableOpacity
+                style={[theme.button.primary.container, { flex: 1 }]}
+                onPress={() => router.push(`/admin/content/reading/update/${item._id}` as Href)}
+                hitSlop={theme.utils.hitSlop}
+              >
+                <Text style={theme.button.primary.label}>Sửa</Text>
+              </TouchableOpacity>
+            )}
+            {hasPermission('reading.delete') && (
+              <DeleteButton
+                variant="solid"
+                label="Xoá"
+                onConfirm={async () => {
+                  await deleteReading(item._id!);
+                  appAlert('Đã xoá');
+                  router.back();
+                }}
+              />
+            )}
           </View>
         </ContentCard>
 

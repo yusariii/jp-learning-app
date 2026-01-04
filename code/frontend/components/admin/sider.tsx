@@ -11,7 +11,8 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
-import { useAppTheme } from '../../hooks/use-app-theme'
+import { useAppTheme } from '@/hooks/use-app-theme'
+import { useAuth } from '@/hooks/use-auth';
 
 interface SidebarProps {
   isVisible: boolean;
@@ -32,6 +33,7 @@ const MenuSection: React.FC<{ title: string; children: React.ReactNode }> = ({ t
 
 const Sidebar: React.FC<SidebarProps> = ({ isVisible, onClose }) => {
   const { theme } = useAppTheme();
+  const { hasPermission, role } = useAuth();
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
@@ -92,23 +94,23 @@ const Sidebar: React.FC<SidebarProps> = ({ isVisible, onClose }) => {
           </TouchableOpacity>
 
           <MenuSection title="Quản lý nội dung">
-            <MenuItem label="Từ vựng" onPress={() => go('/admin/content/word')} />
-            <MenuItem label="Ngữ pháp" onPress={() => go('/admin/content/grammar')} />
-            <MenuItem label="Luyện đọc" onPress={() => go('/admin/content/reading')} />
-            <MenuItem label="Luyện nói" onPress={() => go('/admin/content/speaking')} />
-            <MenuItem label="Luyện nghe" onPress={() => go('/admin/content/listening')} />
-            <MenuItem label="Bài học" onPress={() => go('/admin/content/lesson')} />
-            <MenuItem label="Kiểm tra" onPress={() => go('/admin/content/test')} />
+            { hasPermission('word.view') && <MenuItem label="Từ vựng" onPress={() => go('/admin/content/word')} />}
+            { hasPermission('grammar.view') && <MenuItem label="Ngữ pháp" onPress={() => go('/admin/content/grammar')} />}
+            { hasPermission('reading.view') && <MenuItem label="Luyện đọc" onPress={() => go('/admin/content/reading')} />}
+            { hasPermission('speaking.view') && <MenuItem label="Luyện nói" onPress={() => go('/admin/content/speaking')} />}
+            { hasPermission('listening.view') && <MenuItem label="Luyện nghe" onPress={() => go('/admin/content/listening')} />}
+            { hasPermission('lesson.view') && <MenuItem label="Bài học" onPress={() => go('/admin/content/lesson')} />}
+            { hasPermission('test.view') && <MenuItem label="Kiểm tra" onPress={() => go('/admin/content/test')} />}
           </MenuSection>
 
           <MenuSection title="Quản lý admin">
-            <MenuItem label="Danh sách tài khoản" onPress={() => go('/admin/system/admins')} />
-            <MenuItem label="Danh sách nhóm quyền" onPress={() => go('/admin/system/roles')} />
-            <MenuItem label="Phân quyền" onPress={() => go('/admin/system/role-permissions')} />
+            { hasPermission('admin.view') && <MenuItem label="Danh sách tài khoản" onPress={() => go('/admin/system/admins')} />}
+            { hasPermission('role.view') && <MenuItem label="Danh sách nhóm quyền" onPress={() => go('/admin/system/roles')} />}
+            { hasPermission('role-permission.view') && <MenuItem label="Phân quyền" onPress={() => go('/admin/system/role-permissions')} />}
           </MenuSection>
 
           <MenuSection title="Quản lý người dùng">
-            <MenuItem label="Danh sách tài khoản" onPress={() => go('/admin/users')} />
+            { hasPermission('user.view') && <MenuItem label="Danh sách tài khoản" onPress={() => go('/admin/users')} />}
           </MenuSection>
 
           <MenuSection title="Cài đặt chung">

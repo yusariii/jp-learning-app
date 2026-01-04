@@ -4,6 +4,7 @@ import { useRouter, Href } from 'expo-router';
 
 import LayoutDefault from '@/layout-default/layout-default';
 import { useAppTheme } from '@/hooks/use-app-theme';
+import { useAuth } from '@/hooks/use-auth';
 import { listWords, type Word } from '@/api/admin/content/word';
 
 import SearchBar from '@/components/admin/ui/SearchBar';
@@ -20,6 +21,7 @@ const LIMIT = 20;
 
 export default function ListWordScreen() {
   const { theme } = useAppTheme();
+  const { hasPermission, role } = useAuth();
   const router = useRouter();
 
   const [q, setQ] = useState('');
@@ -32,6 +34,12 @@ export default function ListWordScreen() {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const reachedEndRef = useRef(false);
+
+  useEffect(() => {
+    if (!hasPermission('word.view')) {
+      router.replace('/admin/unauthorized' as Href);
+    }
+  }, [hasPermission, router]);
 
   const fetchPage = useCallback(async (p: number, append = false) => {
     setLoading(true);
@@ -111,6 +119,7 @@ export default function ListWordScreen() {
             item={item}
             onDetail={() => router.push(`/admin/content/word/detail/${item._id}` as Href)}
             onEdit={() => router.push(`/admin/content/word/update/${item._id}` as Href)}
+            canEdit={hasPermission('word.update')}
           />
         )}
         onEndReachedThreshold={0.2}

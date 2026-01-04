@@ -5,6 +5,7 @@ import { useRouter, Href } from 'expo-router';
 import LayoutDefault from '@/layout-default/layout-default';
 import { listLessons, type Lesson, } from '@/api/admin/content/lesson';
 import { useAppTheme } from '@/hooks/use-app-theme';
+import { useAuth } from '@/hooks/use-auth';
 
 import SearchBar from '@/components/admin/ui/SearchBar';
 import FilterBar, { type SortKey, } from '@/components/admin/list/FilterBar';
@@ -19,11 +20,18 @@ type JLPT = '' | 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
 
 export default function LessonListScreen() {
     const { theme } = useAppTheme();
+    const { hasPermission, role } = useAuth();
     const router = useRouter();
 
     const [q, setQ] = useState('');
     const [jlpt, setJlpt] = useState<JLPT>('');
     const [sort, setSort] = useState<SortKey>('updatedAt');
+
+    useEffect(() => {
+      if (!hasPermission('lesson.view')) {
+        router.replace('/admin/unauthorized' as Href);
+      }
+    }, [hasPermission, router]);
 
     const [data, setData] = useState<Lesson[]>([]);
     const [page, setPage] = useState(1);
@@ -179,17 +187,19 @@ export default function LessonListScreen() {
                         >
                             <Text style={theme.button.ghost.label}>Chi tiết</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() =>
-                                router.push(
-                                    `/admin/content/lesson/update/${item._id}` as Href,
-                                )
-                            }
-                            style={theme.button.primary.container}
-                            hitSlop={theme.utils.hitSlop}
-                        >
-                            <Text style={theme.button.primary.label}>Sửa</Text>
-                        </TouchableOpacity>
+                        {hasPermission('lesson.update') && (
+                          <TouchableOpacity
+                              onPress={() =>
+                                  router.push(
+                                      `/admin/content/lesson/update/${item._id}` as Href,
+                                  )
+                              }
+                              style={theme.button.primary.container}
+                              hitSlop={theme.utils.hitSlop}
+                          >
+                              <Text style={theme.button.primary.label}>Sửa</Text>
+                          </TouchableOpacity>
+                        )}
                     </View>
                 </View>
             </ContentCard>

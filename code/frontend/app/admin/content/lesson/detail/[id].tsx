@@ -5,6 +5,7 @@ import { useLocalSearchParams, useRouter, Href } from 'expo-router';
 import LayoutDefault from '@/layout-default/layout-default';
 import { getLesson, deleteLesson, type Lesson } from '@/api/admin/content/lesson';
 import { useAppTheme } from '@/hooks/use-app-theme';
+import { useAuth } from '@/hooks/use-auth';
 import { appAlert } from '@/helpers/appAlert';
 import ContentCard from '@/components/admin/card/ContentCard';
 import BackButton from '@/components/admin/ui/BackButton';
@@ -14,6 +15,7 @@ import LinkedContentList from '@/components/admin/block/LinkedContentList';
 export default function LessonDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { theme } = useAppTheme();
+  const { hasPermission, role } = useAuth();
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
@@ -104,26 +106,30 @@ export default function LessonDetailScreen() {
               marginTop: theme.tokens.space.md,
             }}
           >
-            <TouchableOpacity
-              style={[theme.button.primary.container, { flex: 1 }]}
-              onPress={() =>
-                router.push(
-                  `/admin/content/lesson/update/${lesson._id}` as Href,
-                )
-              }
-              hitSlop={theme.utils.hitSlop}
-            >
-              <Text style={theme.button.primary.label}>Sửa</Text>
-            </TouchableOpacity>
-            <DeleteButton
-              variant="solid"
-              label="Xoá"
-              onConfirm={async () => {
-                await deleteLesson(lesson._id!);
-                appAlert('Đã xoá');
-                router.back();
-              }}
-            />
+            {hasPermission('lesson.update') && (
+              <TouchableOpacity
+                style={[theme.button.primary.container, { flex: 1 }]}
+                onPress={() =>
+                  router.push(
+                    `/admin/content/lesson/update/${lesson._id}` as Href,
+                  )
+                }
+                hitSlop={theme.utils.hitSlop}
+              >
+                <Text style={theme.button.primary.label}>Sửa</Text>
+              </TouchableOpacity>
+            )}
+            {hasPermission('lesson.delete') && (
+              <DeleteButton
+                variant="solid"
+                label="Xoá"
+                onConfirm={async () => {
+                  await deleteLesson(lesson._id!);
+                  appAlert('Đã xoá');
+                  router.back();
+                }}
+              />
+            )}
           </View>
         </ContentCard>
 

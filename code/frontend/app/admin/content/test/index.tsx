@@ -5,6 +5,7 @@ import { Href, useRouter } from 'expo-router';
 
 import LayoutDefault from '@/layout-default/layout-default';
 import { useAppTheme } from '@/hooks/use-app-theme';
+import { useAuth } from '@/hooks/use-auth';
 import SearchBar from '@/components/admin/ui/SearchBar';
 import FilterBar, { type SortKey } from '@/components/admin/list/FilterBar';
 import ContentCard from '@/components/admin/card/ContentCard';
@@ -19,12 +20,19 @@ const LEVELS: Array<TestDoc['jlptLevel'] | ''> = ['', 'N5', 'N4', 'N3', 'N2', 'N
 
 export default function TestListScreen() {
   const { theme } = useAppTheme();
+  const { hasPermission, role } = useAuth();
   const router = useRouter();
 
   const [q, setQ] = useState('');
   const [level, setLevel] = useState<'' | TestDoc['jlptLevel']>('');
   const [pub, setPub] = useState<'' | 'true' | 'false'>('');
   const [sort, setSort] = useState<SortKey>('updatedAt');
+
+  useEffect(() => {
+    if (!hasPermission('test.view')) {
+      router.replace('/admin/unauthorized' as Href);
+    }
+  }, [hasPermission, router]);
 
   const [data, setData] = useState<TestDoc[]>([]);
   const [page, setPage] = useState(1);
@@ -108,7 +116,9 @@ export default function TestListScreen() {
                 </Text>
                 <View style={{ flexDirection: 'row', gap: theme.tokens.space.sm }}>
                   <TouchableOpacity onPress={() => router.push(`/admin/content/test/detail/${item._id}` as Href)} style={theme.button.ghost.container}><Text style={theme.button.ghost.label}>Chi tiết</Text></TouchableOpacity>
-                  <TouchableOpacity onPress={() => router.push(`/admin/content/test/update/${item._id}` as Href)} style={theme.button.primary.container}><Text style={theme.button.primary.label}>Sửa</Text></TouchableOpacity>
+                  {hasPermission('test.update') && (
+                    <TouchableOpacity onPress={() => router.push(`/admin/content/test/update/${item._id}` as Href)} style={theme.button.primary.container}><Text style={theme.button.primary.label}>Sửa</Text></TouchableOpacity>
+                  )}
                 </View>
               </View>
             </ContentCard>

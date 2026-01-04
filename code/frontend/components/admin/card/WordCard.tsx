@@ -5,7 +5,7 @@ import TagPills from '../ui/TagPills'
 import type { Word } from '../../../api/admin/content/word';
 import { useAppTheme } from '../../../hooks/use-app-theme';
 
-export default function WordCard({ item, onEdit, onDetail }: { item: Word; onEdit?: () => void; onDetail?: () => void; }) {
+export default function WordCard({ item, onEdit, onDetail, canEdit = true }: { item: Word; onEdit?: () => void; onDetail?: () => void; canEdit?: boolean; }) {
   const { theme } = useAppTheme();
 
   return (
@@ -42,7 +42,7 @@ export default function WordCard({ item, onEdit, onDetail }: { item: Word; onEdi
               <Text style={theme.button.ghost.label}>Chi tiết</Text>
             </TouchableOpacity>
           )}
-          {onEdit && (
+          {onEdit && canEdit && (
             <TouchableOpacity onPress={onEdit} style={theme.button.primary.container} hitSlop={theme.utils.hitSlop}>
               <Text style={theme.button.primary.label}>Sửa</Text>
             </TouchableOpacity>

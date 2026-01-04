@@ -5,6 +5,7 @@ import { useLocalSearchParams, useRouter, Href } from 'expo-router';
 
 import LayoutDefault from '@/layout-default/layout-default';
 import { useAppTheme } from '@/hooks/use-app-theme';
+import { useAuth } from '@/hooks/use-auth';
 import ContentCard from '@/components/admin/card/ContentCard';
 import { getTest, deleteTest, type TestDoc } from '@/api/admin/content/test';
 import { appAlert } from '@/helpers/appAlert';
@@ -42,6 +43,7 @@ function QAList({ qs }: { qs: any[] }) {
 
 export default function TestDetailScreen() {
   const { theme } = useAppTheme();
+  const { hasPermission, role } = useAuth();
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
 
@@ -106,18 +108,22 @@ export default function TestDetailScreen() {
           </View>
 
           <View style={{ flexDirection: 'row', gap: theme.tokens.space.sm, marginTop: theme.tokens.space.md }}>
-            <TouchableOpacity style={[theme.button.primary.container, { flex: 1 }]} onPress={() => router.push(`/admin/content/test/update/${item._id}` as Href)} hitSlop={theme.utils.hitSlop}>
-              <Text style={theme.button.primary.label}>Sửa</Text>
-            </TouchableOpacity>
-            <DeleteButton
-              variant="solid"
-              label="Xoá"
-              onConfirm={async () => {
-                await deleteTest(item._id!);
-                appAlert('Đã xoá');
-                router.back();
-              }}
-            />
+            {hasPermission('test.update') && (
+              <TouchableOpacity style={[theme.button.primary.container, { flex: 1 }]} onPress={() => router.push(`/admin/content/test/update/${item._id}` as Href)} hitSlop={theme.utils.hitSlop}>
+                <Text style={theme.button.primary.label}>Sửa</Text>
+              </TouchableOpacity>
+            )}
+            {hasPermission('test.delete') && (
+              <DeleteButton
+                variant="solid"
+                label="Xoá"
+                onConfirm={async () => {
+                  await deleteTest(item._id!);
+                  appAlert('Đã xoá');
+                  router.back();
+                }}
+              />
+            )}
           </View>
         </ContentCard>
 

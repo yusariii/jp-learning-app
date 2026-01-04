@@ -1,7 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View, Alert } from 'react-native';
+import { useRouter, Href } from 'expo-router';
 import LayoutDefault from '@/layout-default/layout-default';
 import { useAppTheme } from '@/hooks/use-app-theme';
+import { useAuth } from '@/hooks/use-auth';
 
 import RoleDropdown from '@/components/admin/ui/RoleDropdown';
 import Checkbox from '@/components/admin/ui/CheckBox';
@@ -48,6 +50,14 @@ const deepClone = <T,>(x: T): T => JSON.parse(JSON.stringify(x));
 
 export default function RolePermissionsScreen() {
   const { theme } = useAppTheme();
+  const { role } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (role?.title !== 'SuperAdmin') {
+      router.replace('/admin/unauthorized' as Href);
+    }
+  }, [role, router]);
 
   const [roleId, setRoleId] = useState<string | undefined>(undefined);
   const [matrix, setMatrix] = useState<PermissionMatrix | null>(null);

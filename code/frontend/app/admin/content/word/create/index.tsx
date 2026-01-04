@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { appAlert, appError } from '@/helpers/appAlert';
 import LayoutDefault from '@/layout-default/layout-default';
 import { createWord, type Word } from '@/api/admin/content/word';
 import { useAppTheme } from '@/hooks/use-app-theme'
+import { useAuth } from '@/hooks/use-auth';
 import FormSection from '@/components/admin/ui/FormSection'
 import LabeledInput from '@/components/admin/ui/LabeledInput';
 import JLPTPicker from '@/components/admin/ui/JLPTPicker';
 import TagsEditor from '@/components/admin/ui/TagsEditor';
 import ExampleEditor from '@/components/admin/block/ExampleEditor';
 import BackButton from '@/components/admin/ui/BackButton';
-import { router } from 'expo-router';
+import { router, Href } from 'expo-router';
 
 type Example = Word['examples'][number];
 type Form = Omit<Word, '_id'|'createdAt'|'updatedAt'>;
@@ -18,6 +19,14 @@ const emptyEx: Example = { sentenceJP: '', readingKana: '', meaningVI: '' };
 
 export default function CreateWordScreen() {
   const { theme } = useAppTheme();
+  const { hasPermission, role } = useAuth();
+
+  // Kiểm tra quyền truy cập khi component mount
+  useEffect(() => {
+    if (!hasPermission('word.create')) {
+      router.replace('/admin/unauthorized' as Href);
+    }
+  }, [hasPermission, router]);
 
   const [form, setForm] = useState<Form>({
     termJP: '', hiraKata: '', romaji: '',

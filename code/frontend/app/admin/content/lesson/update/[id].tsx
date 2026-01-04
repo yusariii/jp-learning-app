@@ -5,6 +5,7 @@ import { useLocalSearchParams, useRouter, Href } from 'expo-router';
 import LayoutDefault from '@/layout-default/layout-default';
 import { getLesson, updateLesson, deleteLesson, type Lesson, } from '@/api/admin/content/lesson';
 import { useAppTheme } from '@/hooks/use-app-theme';
+import { useAuth } from '@/hooks/use-auth';
 import FormSection from '@/components/admin/ui/FormSection';
 import LabeledInput from '@/components/admin/ui/LabeledInput';
 import Chip from '@/components/admin/ui/Chip';
@@ -54,6 +55,13 @@ export default function EditLessonScreen() {
     const { id } = useLocalSearchParams<{ id: string }>();
     const router = useRouter();
     const { theme } = useAppTheme();
+    const { hasPermission, role } = useAuth();
+
+    useEffect(() => {
+      if (!hasPermission('lesson.update')) {
+        router.replace('/admin/unauthorized' as Href);
+      }
+    }, [hasPermission, router]);
 
     const [loading, setLoading] = useState(true);
     const [form, setForm] = useState<Form | null>(null);
@@ -301,19 +309,21 @@ export default function EditLessonScreen() {
                         <Text style={theme.button.primary.label}>Lưu thay đổi</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity
-                        onPress={confirmDelete}
-                        style={[
-                            theme.button.primary.container,
-                            {
-                                backgroundColor: theme.color.danger,
-                                paddingVertical: 14,
-                                borderRadius: theme.tokens.radius.lg,
-                            },
-                        ]}
-                    >
-                        <Text style={theme.button.primary.label}>Xoá</Text>
-                    </TouchableOpacity>
+                    {hasPermission('lesson.delete') && (
+                      <TouchableOpacity
+                          onPress={confirmDelete}
+                          style={[
+                              theme.button.primary.container,
+                              {
+                                  backgroundColor: theme.color.danger,
+                                  paddingVertical: 14,
+                                  borderRadius: theme.tokens.radius.lg,
+                              },
+                          ]}
+                      >
+                          <Text style={theme.button.primary.label}>Xoá</Text>
+                      </TouchableOpacity>
+                    )}
                 </View>
 
                 <View style={{ height: theme.tokens.space.xl }} />

@@ -5,6 +5,7 @@ import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import LayoutDefault from '@/layout-default/layout-default';
 import { getWord, updateWord, deleteWord, type Word } from '@/api/admin/content/word';
 import { useAppTheme } from '@/hooks/use-app-theme';
+import { useAuth } from '@/hooks/use-auth';
 import FormSection from '@/components/admin/ui/FormSection';
 import LabeledInput from '@/components/admin/ui/LabeledInput';
 import JLPTPicker from '@/components/admin/ui/JLPTPicker';
@@ -17,12 +18,19 @@ type Form = Word;
 
 export default function EditWordScreen() {
   const { theme } = useAppTheme();
+  const { hasPermission, role } = useAuth();
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState<Form | null>(null);
   const [tagDraft, setTagDraft] = useState('');
+
+  useEffect(() => {
+    if (!hasPermission('word.update')) {
+      router.replace('/admin/unauthorized' as Href);
+    }
+  }, [hasPermission, router]);
 
   useEffect(() => {
     let alive = true;
@@ -163,9 +171,11 @@ export default function EditWordScreen() {
             <Text style={theme.button.primary.label}>Lưu thay đổi</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={confirmDelete} style={[theme.button.primary.container, { backgroundColor: theme.color.danger, paddingVertical: 14, borderRadius: theme.tokens.radius.lg }]}>
-            <Text style={theme.button.primary.label}>Xoá</Text>
-          </TouchableOpacity>
+          {hasPermission('word.delete') && (
+            <TouchableOpacity onPress={confirmDelete} style={[theme.button.primary.container, { backgroundColor: theme.color.danger, paddingVertical: 14, borderRadius: theme.tokens.radius.lg }]}>
+              <Text style={theme.button.primary.label}>Xoá</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         <View style={{ height: theme.tokens.space.xl }} />

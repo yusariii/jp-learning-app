@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { appAlert, appError } from '@/helpers/appAlert';
 import LayoutDefault from '@/layout-default/layout-default';
 import { createLesson, type Lesson } from '@/api/admin/content/lesson';
 import { useAppTheme } from '@/hooks/use-app-theme';
+import { useAuth } from '@/hooks/use-auth';
 import FormSection from '@/components/admin/ui/FormSection';
 import LabeledInput from '@/components/admin/ui/LabeledInput';
 import Chip from '@/components/admin/ui/Chip';
@@ -53,6 +54,13 @@ const buildPayload = (form: Form): Lesson => {
 
 export default function CreateLessonScreen() {
     const { theme } = useAppTheme();
+    const { hasPermission, role } = useAuth();
+
+    useEffect(() => {
+      if (!hasPermission('lesson.create')) {
+        router.replace('/admin/unauthorized' as Href);
+      }
+    }, [hasPermission, router]);
 
     const [form, setForm] = useState<Form>({
         title: '',

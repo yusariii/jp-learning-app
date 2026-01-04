@@ -1,11 +1,12 @@
 // app/admin/content/test/create/index.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { appAlert, appError } from '@/helpers/appAlert';
-import { router } from 'expo-router';
+import { router, Href } from 'expo-router';
 
 import LayoutDefault from '@/layout-default/layout-default';
 import { useAppTheme } from '@/hooks/use-app-theme';
+import { useAuth } from '@/hooks/use-auth';
 import LabeledInput from '@/components/admin/ui/LabeledInput';
 import ContentCard from '@/components/admin/card/ContentCard';
 import FormSection from '@/components/admin/ui/FormSection';
@@ -20,6 +21,13 @@ import JLPTPicker from '@/components/admin/ui/JLPTPicker';
 
 export default function CreateTestScreen() {
   const { theme } = useAppTheme();
+  const { hasPermission, role } = useAuth();
+
+  useEffect(() => {
+    if (!hasPermission('test.create')) {
+      router.replace('/admin/unauthorized' as Href);
+    }
+  }, [hasPermission, router]);
 
   const [form, setForm] = useState<TestDoc>({
     title: '', jlptLevel: 'N5', description: '', published: false, passingScorePercent: 70,

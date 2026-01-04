@@ -4,6 +4,7 @@ import { useLocalSearchParams, useRouter, Href } from 'expo-router';
 import LayoutDefault from '@/layout-default/layout-default';
 import { getGrammar, deleteGrammar, type Grammar } from '@/api/admin/content/grammar';
 import { useAppTheme } from '@/hooks/use-app-theme';
+import { useAuth } from '@/hooks/use-auth';
 import ContentCard from '@/components/admin/card/ContentCard';
 import ExampleBlock from '@/components/admin/block/ExampleBlock';
 import BackButton from '@/components/admin/ui/BackButton';
@@ -12,6 +13,7 @@ import { appAlert } from '@/helpers/appAlert';
 
 export default function GrammarDetailScreen() {
   const { theme } = useAppTheme();
+  const { hasPermission, role } = useAuth();
   const router = useRouter();
   const params = useLocalSearchParams<{ id: string }>();
 
@@ -82,22 +84,26 @@ export default function GrammarDetailScreen() {
           )}
 
           <View style={{ flexDirection: 'row', gap: theme.tokens.space.sm, marginTop: theme.tokens.space.md }}>
-            <TouchableOpacity
-              style={[theme.button.primary.container, { flex: 1 }]}
-              onPress={() => router.push(`/admin/content/grammar/update/${item._id}` as Href)}
-              hitSlop={theme.utils.hitSlop}
-            >
-              <Text style={theme.button.primary.label}>Sửa</Text>
-            </TouchableOpacity>
-            <DeleteButton
-              variant="solid"
-              label="Xoá"
-              onConfirm={async () => {
-                await deleteGrammar(item._id!);
-                appAlert('Đã xoá');
-                router.back();
-              }}
-            />
+            {hasPermission('grammar.update') && (
+              <TouchableOpacity
+                style={[theme.button.primary.container, { flex: 1 }]}
+                onPress={() => router.push(`/admin/content/grammar/update/${item._id}` as Href)}
+                hitSlop={theme.utils.hitSlop}
+              >
+                <Text style={theme.button.primary.label}>Sửa</Text>
+              </TouchableOpacity>
+            )}
+            {hasPermission('grammar.delete') && (
+              <DeleteButton
+                variant="solid"
+                label="Xoá"
+                onConfirm={async () => {
+                  await deleteGrammar(item._id!);
+                  appAlert('Đã xoá');
+                  router.back();
+                }}
+              />
+            )}
 
           </View>
         </ContentCard>

@@ -1,19 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { appAlert, appError } from '@/helpers/appAlert';
 import LayoutDefault from '@/layout-default/layout-default';
 import { createSpeaking, type Speaking } from '@/api/admin/content/speaking';
 import { useAppTheme } from '@/hooks/use-app-theme';
+import { useAuth } from '@/hooks/use-auth';
 import FormSection from '@/components/admin/ui/FormSection';
 import LabeledInput from '@/components/admin/ui/LabeledInput';
 import PromptsEditor from '@/components/admin/block/PromptsEditor';
 import BackButton from '@/components/admin/ui/BackButton';
-import { router } from 'expo-router';
+import { router, Href } from 'expo-router';
 
 type Form = Omit<Speaking, '_id'|'createdAt'|'updatedAt'>;
 
 export default function CreateSpeakingScreen() {
   const { theme } = useAppTheme();
+  const { hasPermission, role } = useAuth();
+
+  useEffect(() => {
+    if (!hasPermission('speaking.create')) {
+      router.replace('/admin/unauthorized' as Href);
+    }
+  }, [hasPermission, router]);
+
   const [form, setForm] = useState<Form>({
     title: '',
     prompts: [{ promptJP: '', promptEN: '', expectedSample: '' }],
