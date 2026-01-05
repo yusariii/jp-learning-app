@@ -129,6 +129,22 @@ export function getTheme(mode: ThemeMode = 'light') {
     utils: {
       hitSlop: { top: 8, bottom: 8, left: 8, right: 8 } as const,
     },
+
+    // Theme riêng cho mini-game
+    game: {
+      nodeSize: 80, // Kích thước nút bài học
+      pathWidth: 8, // Độ dày đường đi
+      pathColor: c.path,
+      node: {
+        locked: { bg: c.locked, icon: c.textMeta },
+        active: { bg: c.primary, icon: c.primaryOn, border: c.bg },
+        completed: { bg: c.gold, icon: '#FFFFFF', border: c.bg },
+      },
+      stars: {
+        active: c.gold,
+        inactive: c.locked
+      }
+    }
   };
 }
 
