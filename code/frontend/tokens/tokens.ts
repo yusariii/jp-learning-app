@@ -37,6 +37,9 @@ export const t = {
       danger: '#C62828',       // Lỗi/nguy hiểm
       onDanger: '#FFFFFF',     // Màu chữ trên nền danger
       bgBase: '#FFFFFF',      // Nền cơ bản cho các thành phần
+      gold: '#FFC107',         // Màu vàng gold
+      locked: '#E0E0E0',       // Màu khóa (locked)
+      path: '#D1D1D6'
     },
     dark: {
       bg: '#0B0B0B',           // Nền tối
@@ -56,6 +59,9 @@ export const t = {
       danger: '#EF5350',
       onDanger: '#FFFFFF',
       bgBase: '#121212',      // Nền cơ bản cho các thành phần
+      gold: '#FFD700',
+      locked: '#333333',
+      path: '#444444',
     },
   },
 
