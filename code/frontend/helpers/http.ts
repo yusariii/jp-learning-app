@@ -1,3 +1,5 @@
+import { getToken } from './storage';
+
 export type HttpOptions = RequestInit & {
   json?: boolean;       
   baseURL?: string;     
@@ -10,6 +12,10 @@ const ADMIN_CONTENT_BASE =
 // System API base (for roles, admins, permissions)
 const ADMIN_SYSTEM_BASE =
   process.env.EXPO_PUBLIC_API_ADMIN_SYSTEM_URL || '';
+
+// Client API base (for lessons, tests, user endpoints)
+const CLIENT_BASE =
+  process.env.EXPO_PUBLIC_API_CLIENT_TEST_URL?.replace('/test', '') || 'http://192.168.1.12:3000/api/client';
 
 function joinUrl(base: string, path: string) {
   if (!base) return path; 
@@ -24,9 +30,14 @@ export async function http<T>(path: string, options: HttpOptions = {}): Promise<
 
   const url = path.startsWith('http') ? path : joinUrl(baseURL, path);
 
+  // Get token from storage
+  const token = await getToken();
+  const authHeaders = token ? { 'Authorization': `Bearer ${token}` } : {};
+
   const res = await fetch(url, {
     headers: {
       'Content-Type': 'application/json',
+      ...authHeaders,
       ...(headers || {}),
     },
     credentials: 'include',
@@ -63,4 +74,4 @@ export const del = <T,>(path: string, opts?: Omit<HttpOptions, 'method'|'body'>)
   http<T>(path, { method: 'DELETE', ...(opts || {}) });
 
 // Export base URLs for use in API modules
-export { ADMIN_CONTENT_BASE, ADMIN_SYSTEM_BASE };
+export { ADMIN_CONTENT_BASE, ADMIN_SYSTEM_BASE, CLIENT_BASE };

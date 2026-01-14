@@ -49,3 +49,19 @@ export const getUser = async () => {
   }
   return jsonValue != null ? JSON.parse(jsonValue) : null;
 };
+
+export const clearToken = async () => {
+  if (isWeb) {
+    localStorage.removeItem(TOKEN_KEY);
+  } else {
+    await SecureStore.deleteItemAsync(TOKEN_KEY);
+  }
+};
+
+export const clearUser = async () => {
+  if (isWeb) {
+    localStorage.removeItem(USER_INFO_KEY);
+  } else {
+    await SecureStore.deleteItemAsync(USER_INFO_KEY);
+  }
+};

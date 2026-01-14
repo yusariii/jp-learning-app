@@ -1,11 +1,11 @@
 import React, { ReactNode, useMemo, useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, Platform, useWindowDimensions } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, Platform, useWindowDimensions, ScrollView } from 'react-native';
 import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 
 import { useAppTheme } from '@/hooks/use-app-theme';
-import UserSidebar from '@/components/client/sider';
-import UserBottomMenuBar from '@/components/client/bottom-menu-bar';
+import UserSidebar from '@/components/client/Sider';
+import UserBottomMenuBar from '@/components/client/BottomMenuBar';
 
 type Props = {
   children: ReactNode;
@@ -13,6 +13,8 @@ type Props = {
   rightActions?: React.ReactNode;
   /** nếu muốn ẩn bottom bar (ví dụ màn thi full screen) */
   hideBottomBar?: boolean;
+  /** nếu children đã có ScrollView riêng thì set false */
+  enableScroll?: boolean;
 };
 
 export default function LayoutUserDefault({
@@ -20,6 +22,7 @@ export default function LayoutUserDefault({
   title = 'JLPT',
   rightActions,
   hideBottomBar = false,
+  enableScroll = true,
 }: Props) {
   const insets = useSafeAreaInsets();
   const { theme } = useAppTheme();
@@ -87,10 +90,17 @@ export default function LayoutUserDefault({
         },
         body: {
           flex: 1,
+          backgroundColor: theme.color.bg,
+        },
+        bodyScrollContent: {
           paddingHorizontal: theme.tokens.space.md,
           paddingTop: theme.tokens.space.md,
-          paddingBottom: bottomBarHeight, // chừa chỗ bottom bar trên mobile
-          backgroundColor: theme.color.bg,
+          paddingBottom: bottomBarHeight + 20, // chừa chỗ bottom bar + extra space
+        },
+        bodyNoScroll: {
+          paddingHorizontal: theme.tokens.space.md,
+          paddingTop: theme.tokens.space.md,
+          paddingBottom: bottomBarHeight,
         },
         bottomBarWrap: {
           position: 'absolute',
@@ -133,7 +143,17 @@ export default function LayoutUserDefault({
 
       <View style={styles.mainRow}>
         {/* Permanent sider cho desktop/web */}
-        {isWide ? (
+        {enableScroll ? (
+          <ScrollView 
+            style={styles.body}
+            contentContainerStyle={styles.bodyScrollContent}
+            showsVerticalScrollIndicator={false}
+          >
+            {children}
+          </ScrollView>
+        ) : (
+          <View style={[styles.body, styles.bodyNoScroll]}>{children}</View>
+        )}
           <View style={styles.permanentSider}>
             {/* Dùng cùng component UserSidebar nhưng render ở trạng thái luôn mở */}
             <UserSidebar isVisible={true} onClose={() => {}} />
