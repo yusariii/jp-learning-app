@@ -1,0 +1,1423 @@
+{
+  "users": [
+    {
+      "_id": { "$oid": "678a1234567890abcdef0001" },
+      "name": "Nguyễn Văn A",
+      "email": "user1@example.com",
+      "password": "$2b$10$YourHashedPasswordHere",
+      "role": "user",
+      "progress": [
+        {
+          "lessonId": { "$oid": "678a1234567890abcdef0101" },
+          "status": "completed",
+          "stars": 3,
+          "completed": true,
+          "completedAt": { "$date": "2026-01-10T10:00:00Z" }
+        },
+        {
+          "lessonId": { "$oid": "678a1234567890abcdef0102" },
+          "status": "in-progress",
+          "stars": 2,
+          "completed": false
+        },
+        {
+          "lessonId": { "$oid": "678a1234567890abcdef0103" },
+          "status": "locked",
+          "stars": 0,
+          "completed": false
+        }
+      ],
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-10T10:00:00Z" }
+    }
+  ],
+  "lessons": [
+    {
+      "_id": { "$oid": "678a1234567890abcdef0101" },
+      "title": "Bài 1: Chào hỏi cơ bản",
+      "description": "Học các cách chào hỏi và giới thiệu bản thân trong tiếng Nhật",
+      "jlptLevel": "N5",
+      "order": 1,
+      "wordIds": [
+        { "$oid": "678a1234567890abcdef0201" },
+        { "$oid": "678a1234567890abcdef0202" },
+        { "$oid": "678a1234567890abcdef0203" },
+        { "$oid": "678a1234567890abcdef0204" },
+        { "$oid": "678a1234567890abcdef0205" }
+      ],
+      "grammarIds": [
+        { "$oid": "678a1234567890abcdef0301" },
+        { "$oid": "678a1234567890abcdef0302" }
+      ],
+      "listeningIds": [
+        { "$oid": "678a1234567890abcdef0401" }
+      ],
+      "readingIds": [
+        { "$oid": "678a1234567890abcdef0801" }
+      ],
+      "speakingIds": [
+        { "$oid": "678a1234567890abcdef0901" }
+      ],
+      "published": true,
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0102" },
+      "title": "Bài 2: Gia đình và bạn bè",
+      "description": "Từ vựng và ngữ pháp về gia đình, bạn bè",
+      "jlptLevel": "N5",
+      "order": 2,
+      "wordIds": [
+        { "$oid": "678a1234567890abcdef0206" },
+        { "$oid": "678a1234567890abcdef0207" },
+        { "$oid": "678a1234567890abcdef0208" },
+        { "$oid": "678a1234567890abcdef0209" },
+        { "$oid": "678a1234567890abcdef020a" }
+      ],
+      "grammarIds": [
+        { "$oid": "678a1234567890abcdef0303" },
+        { "$oid": "678a1234567890abcdef0304" }
+      ],
+      "listeningIds": [
+        { "$oid": "678a1234567890abcdef0402" }
+      ],
+      "readingIds": [
+        { "$oid": "678a1234567890abcdef0802" }
+      ],
+      "speakingIds": [
+        { "$oid": "678a1234567890abcdef0902" }
+      ],
+      "published": true,
+      "createdAt": { "$date": "2026-01-02T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-02T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0103" },
+      "title": "Bài 3: Mua sắm và giá cả",
+      "description": "Cách hỏi giá, mua bán, số đếm trong tiếng Nhật",
+      "jlptLevel": "N5",
+      "order": 3,
+      "wordIds": [
+        { "$oid": "678a1234567890abcdef020b" },
+        { "$oid": "678a1234567890abcdef020c" },
+        { "$oid": "678a1234567890abcdef020d" },
+        { "$oid": "678a1234567890abcdef020e" },
+        { "$oid": "678a1234567890abcdef020f" }
+      ],
+      "grammarIds": [
+        { "$oid": "678a1234567890abcdef0305" },
+        { "$oid": "678a1234567890abcdef0306" }
+      ],
+      "listeningIds": [
+        { "$oid": "678a1234567890abcdef0403" }
+      ],
+      "readingIds": [
+        { "$oid": "678a1234567890abcdef0803" }
+      ],
+      "speakingIds": [
+        { "$oid": "678a1234567890abcdef0903" }
+      ],
+      "published": true,
+      "createdAt": { "$date": "2026-01-03T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-03T00:00:00Z" }
+    }
+  ],
+  "words": [
+    {
+      "_id": { "$oid": "678a1234567890abcdef0201" },
+      "wordJP": "こんにちは",
+      "wordEN": "Hello",
+      "wordVN": "Xin chào",
+      "hiragana": "こんにちは",
+      "romaji": "konnichiwa",
+      "jlptLevel": "N5",
+      "exampleJP": "こんにちは、田中さん。",
+      "exampleEN": "Hello, Mr. Tanaka.",
+      "exampleVN": "Xin chào, anh Tanaka.",
+      "audioUrl": "https://example.com/audio/konnichiwa.mp3",
+      "imageUrl": "https://example.com/images/greeting.jpg",
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0202" },
+      "wordJP": "ありがとう",
+      "wordEN": "Thank you",
+      "wordVN": "Cảm ơn",
+      "hiragana": "ありがとう",
+      "romaji": "arigatou",
+      "jlptLevel": "N5",
+      "exampleJP": "ありがとうございます。",
+      "exampleEN": "Thank you very much.",
+      "exampleVN": "Cảm ơn rất nhiều.",
+      "audioUrl": "https://example.com/audio/arigatou.mp3",
+      "imageUrl": "https://example.com/images/thankyou.jpg",
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0203" },
+      "wordJP": "すみません",
+      "wordEN": "Excuse me / Sorry",
+      "wordVN": "Xin lỗi / Làm ơn",
+      "hiragana": "すみません",
+      "romaji": "sumimasen",
+      "jlptLevel": "N5",
+      "exampleJP": "すみません、トイレはどこですか。",
+      "exampleEN": "Excuse me, where is the toilet?",
+      "exampleVN": "Xin lỗi, nhà vệ sinh ở đâu?",
+      "audioUrl": "https://example.com/audio/sumimasen.mp3",
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0204" },
+      "wordJP": "さようなら",
+      "wordEN": "Goodbye",
+      "wordVN": "Tạm biệt",
+      "hiragana": "さようなら",
+      "romaji": "sayounara",
+      "jlptLevel": "N5",
+      "exampleJP": "さようなら、また明日。",
+      "exampleEN": "Goodbye, see you tomorrow.",
+      "exampleVN": "Tạm biệt, hẹn gặp lại ngày mai.",
+      "audioUrl": "https://example.com/audio/sayounara.mp3",
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0205" },
+      "wordJP": "はじめまして",
+      "wordEN": "Nice to meet you",
+      "wordVN": "Rất vui được gặp bạn",
+      "hiragana": "はじめまして",
+      "romaji": "hajimemashite",
+      "jlptLevel": "N5",
+      "exampleJP": "はじめまして、山田です。",
+      "exampleEN": "Nice to meet you, I'm Yamada.",
+      "exampleVN": "Rất vui được gặp bạn, tôi là Yamada.",
+      "audioUrl": "https://example.com/audio/hajimemashite.mp3",
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0206" },
+      "wordJP": "家族",
+      "wordEN": "Family",
+      "wordVN": "Gia đình",
+      "hiragana": "かぞく",
+      "romaji": "kazoku",
+      "jlptLevel": "N5",
+      "exampleJP": "私の家族は四人です。",
+      "exampleEN": "My family has four people.",
+      "exampleVN": "Gia đình tôi có 4 người.",
+      "audioUrl": "https://example.com/audio/kazoku.mp3",
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0207" },
+      "wordJP": "友達",
+      "wordEN": "Friend",
+      "wordVN": "Bạn bè",
+      "hiragana": "ともだち",
+      "romaji": "tomodachi",
+      "jlptLevel": "N5",
+      "exampleJP": "友達と映画を見ます。",
+      "exampleEN": "I watch movies with friends.",
+      "exampleVN": "Tôi xem phim với bạn bè.",
+      "audioUrl": "https://example.com/audio/tomodachi.mp3",
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0208" },
+      "wordJP": "父",
+      "wordEN": "Father",
+      "wordVN": "Bố",
+      "hiragana": "ちち",
+      "romaji": "chichi",
+      "jlptLevel": "N5",
+      "exampleJP": "父は会社員です。",
+      "exampleEN": "My father is an office worker.",
+      "exampleVN": "Bố tôi là nhân viên văn phòng.",
+      "audioUrl": "https://example.com/audio/chichi.mp3",
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0209" },
+      "wordJP": "母",
+      "wordEN": "Mother",
+      "wordVN": "Mẹ",
+      "hiragana": "はは",
+      "romaji": "haha",
+      "jlptLevel": "N5",
+      "exampleJP": "母は料理が上手です。",
+      "exampleEN": "My mother is good at cooking.",
+      "exampleVN": "Mẹ tôi nấu ăn giỏi.",
+      "audioUrl": "https://example.com/audio/haha.mp3",
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef020a" },
+      "wordJP": "兄弟",
+      "wordEN": "Siblings",
+      "wordVN": "Anh em",
+      "hiragana": "きょうだい",
+      "romaji": "kyoudai",
+      "jlptLevel": "N5",
+      "exampleJP": "兄弟は何人いますか。",
+      "exampleEN": "How many siblings do you have?",
+      "exampleVN": "Bạn có mấy anh em?",
+      "audioUrl": "https://example.com/audio/kyoudai.mp3",
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef020b" },
+      "wordJP": "買う",
+      "wordEN": "To buy",
+      "wordVN": "Mua",
+      "hiragana": "かう",
+      "romaji": "kau",
+      "jlptLevel": "N5",
+      "exampleJP": "りんごを買います。",
+      "exampleEN": "I buy apples.",
+      "exampleVN": "Tôi mua táo.",
+      "audioUrl": "https://example.com/audio/kau.mp3",
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef020c" },
+      "wordJP": "高い",
+      "wordEN": "Expensive / High",
+      "wordVN": "Đắt / Cao",
+      "hiragana": "たかい",
+      "romaji": "takai",
+      "jlptLevel": "N5",
+      "exampleJP": "このカメラは高いです。",
+      "exampleEN": "This camera is expensive.",
+      "exampleVN": "Chiếc máy ảnh này đắt.",
+      "audioUrl": "https://example.com/audio/takai.mp3",
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef020d" },
+      "wordJP": "安い",
+      "wordEN": "Cheap",
+      "wordVN": "Rẻ",
+      "hiragana": "やすい",
+      "romaji": "yasui",
+      "jlptLevel": "N5",
+      "exampleJP": "この本は安いです。",
+      "exampleEN": "This book is cheap.",
+      "exampleVN": "Quyển sách này rẻ.",
+      "audioUrl": "https://example.com/audio/yasui.mp3",
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef020e" },
+      "wordJP": "お金",
+      "wordEN": "Money",
+      "wordVN": "Tiền",
+      "hiragana": "おかね",
+      "romaji": "okane",
+      "jlptLevel": "N5",
+      "exampleJP": "お金がありません。",
+      "exampleEN": "I don't have money.",
+      "exampleVN": "Tôi không có tiền.",
+      "audioUrl": "https://example.com/audio/okane.mp3",
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef020f" },
+      "wordJP": "店",
+      "wordEN": "Store / Shop",
+      "wordVN": "Cửa hàng",
+      "hiragana": "みせ",
+      "romaji": "mise",
+      "jlptLevel": "N5",
+      "exampleJP": "新しい店ができました。",
+      "exampleEN": "A new store opened.",
+      "exampleVN": "Cửa hàng mới đã mở.",
+      "audioUrl": "https://example.com/audio/mise.mp3",
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    }
+  ],
+  "grammars": [
+    {
+      "_id": { "$oid": "678a1234567890abcdef0301" },
+      "title": "です (desu) - Động từ to be",
+      "jlptLevel": "N5",
+      "explanation": "です được dùng để nói về trạng thái, tính chất hoặc danh tính của người/vật. Đây là động từ to be trong tiếng Nhật.",
+      "structure": "[Danh từ/Tính từ な] + です",
+      "examples": [
+        {
+          "sentenceJP": "私は学生です。",
+          "sentenceEN": "I am a student.",
+          "sentenceVN": "Tôi là học sinh."
+        },
+        {
+          "sentenceJP": "これは本です。",
+          "sentenceEN": "This is a book.",
+          "sentenceVN": "Đây là quyển sách."
+        },
+        {
+          "sentenceJP": "田中さんは先生です。",
+          "sentenceEN": "Mr. Tanaka is a teacher.",
+          "sentenceVN": "Anh Tanaka là giáo viên."
+        }
+      ],
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0302" },
+      "title": "は (wa) - Trợ từ chủ đề",
+      "jlptLevel": "N5",
+      "explanation": "は đánh dấu chủ đề của câu. Nó chỉ ra người/vật mà câu đang nói đến.",
+      "structure": "[Danh từ] + は",
+      "examples": [
+        {
+          "sentenceJP": "私は日本人です。",
+          "sentenceEN": "I am Japanese.",
+          "sentenceVN": "Tôi là người Nhật."
+        },
+        {
+          "sentenceJP": "これは私のかばんです。",
+          "sentenceEN": "This is my bag.",
+          "sentenceVN": "Đây là cặp của tôi."
+        }
+      ],
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0303" },
+      "title": "の (no) - Trợ từ sở hữu",
+      "jlptLevel": "N5",
+      "explanation": "の được dùng để chỉ quan hệ sở hữu hoặc liên kết giữa hai danh từ.",
+      "structure": "[Danh từ 1] + の + [Danh từ 2]",
+      "examples": [
+        {
+          "sentenceJP": "私の家族",
+          "sentenceEN": "My family",
+          "sentenceVN": "Gia đình của tôi"
+        },
+        {
+          "sentenceJP": "日本の文化",
+          "sentenceEN": "Japanese culture",
+          "sentenceVN": "Văn hóa Nhật Bản"
+        },
+        {
+          "sentenceJP": "友達の本",
+          "sentenceEN": "Friend's book",
+          "sentenceVN": "Sách của bạn"
+        }
+      ],
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0304" },
+      "title": "います/あります - Động từ tồn tại",
+      "jlptLevel": "N5",
+      "explanation": "います dùng cho người và động vật. あります dùng cho đồ vật và thực vật.",
+      "structure": "[Danh từ] + が + います/あります",
+      "examples": [
+        {
+          "sentenceJP": "部屋に猫がいます。",
+          "sentenceEN": "There is a cat in the room.",
+          "sentenceVN": "Có một con mèo trong phòng."
+        },
+        {
+          "sentenceJP": "机の上に本があります。",
+          "sentenceEN": "There is a book on the desk.",
+          "sentenceVN": "Có một quyển sách trên bàn."
+        }
+      ],
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0305" },
+      "title": "を (wo/o) - Trợ từ tân ngữ",
+      "jlptLevel": "N5",
+      "explanation": "を đánh dấu tân ngữ trực tiếp của động từ.",
+      "structure": "[Danh từ] + を + [Động từ]",
+      "examples": [
+        {
+          "sentenceJP": "りんごを買います。",
+          "sentenceEN": "I buy apples.",
+          "sentenceVN": "Tôi mua táo."
+        },
+        {
+          "sentenceJP": "本を読みます。",
+          "sentenceEN": "I read a book.",
+          "sentenceVN": "Tôi đọc sách."
+        },
+        {
+          "sentenceJP": "水を飲みます。",
+          "sentenceEN": "I drink water.",
+          "sentenceVN": "Tôi uống nước."
+        }
+      ],
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0306" },
+      "title": "いくらですか - Hỏi giá",
+      "jlptLevel": "N5",
+      "explanation": "いくらですか được dùng để hỏi giá cả của một món hàng.",
+      "structure": "[Danh từ] + は + いくらですか",
+      "examples": [
+        {
+          "sentenceJP": "このカメラはいくらですか。",
+          "sentenceEN": "How much is this camera?",
+          "sentenceVN": "Chiếc máy ảnh này giá bao nhiêu?"
+        },
+        {
+          "sentenceJP": "それはいくらでしたか。",
+          "sentenceEN": "How much was that?",
+          "sentenceVN": "Cái đó giá bao nhiêu?"
+        }
+      ],
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    }
+  ],
+  "listenings": [
+    {
+      "_id": { "$oid": "678a1234567890abcdef0401" },
+      "title": "Chào hỏi tại công ty",
+      "jlptLevel": "N5",
+      "audioUrl": "https://example.com/audio/listening001.mp3",
+      "transcriptJP": "A: おはようございます。\\nB: おはようございます。今日はいい天気ですね。\\nA: はい、そうですね。",
+      "transcriptEN": "A: Good morning.\\nB: Good morning. Nice weather today, isn't it?\\nA: Yes, it is.",
+      "transcriptVN": "A: Chào buổi sáng.\\nB: Chào buổi sáng. Hôm nay thời tiết đẹp nhỉ.\\nA: Vâng, đúng vậy.",
+      "questions": [
+        {
+          "questionText": "二人はいつ会いましたか。",
+          "options": [
+            { "label": "A", "text": "朝" },
+            { "label": "B", "text": "昼" },
+            { "label": "C", "text": "夜" },
+            { "label": "D", "text": "夕方" }
+          ],
+          "correctIndex": 0,
+          "points": 1
+        },
+        {
+          "questionText": "今日の天気はどうですか。",
+          "options": [
+            { "label": "A", "text": "雨です" },
+            { "label": "B", "text": "いいです" },
+            { "label": "C", "text": "寒いです" },
+            { "label": "D", "text": "暑いです" }
+          ],
+          "correctIndex": 1,
+          "points": 1
+        }
+      ],
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0402" },
+      "title": "Giới thiệu gia đình",
+      "jlptLevel": "N5",
+      "audioUrl": "https://example.com/audio/listening002.mp3",
+      "transcriptJP": "私の家族は四人です。父と母と兄と私です。父は会社員で、母は先生です。兄は大学生です。",
+      "transcriptEN": "My family has four people. My father, mother, older brother, and me. My father is an office worker, and my mother is a teacher. My older brother is a university student.",
+      "transcriptVN": "Gia đình tôi có 4 người. Bố, mẹ, anh trai và tôi. Bố là nhân viên văn phòng, mẹ là giáo viên. Anh trai đang là sinh viên đại học.",
+      "questions": [
+        {
+          "questionText": "家族は何人ですか。",
+          "options": [
+            { "label": "A", "text": "三人" },
+            { "label": "B", "text": "四人" },
+            { "label": "C", "text": "五人" },
+            { "label": "D", "text": "六人" }
+          ],
+          "correctIndex": 1,
+          "points": 1
+        },
+        {
+          "questionText": "お母さんの仕事は何ですか。",
+          "options": [
+            { "label": "A", "text": "会社員" },
+            { "label": "B", "text": "先生" },
+            { "label": "C", "text": "医者" },
+            { "label": "D", "text": "学生" }
+          ],
+          "correctIndex": 1,
+          "points": 1
+        }
+      ],
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0403" },
+      "title": "Mua sắm tại cửa hàng",
+      "jlptLevel": "N5",
+      "audioUrl": "https://example.com/audio/listening003.mp3",
+      "transcriptJP": "A: すみません、このりんごはいくらですか。\\nB: 一つ百円です。\\nA: じゃ、三つください。\\nB: はい、三百円です。",
+      "transcriptEN": "A: Excuse me, how much is this apple?\\nB: One hundred yen each.\\nA: Then, please give me three.\\nB: Yes, three hundred yen.",
+      "transcriptVN": "A: Xin lỗi, quả táo này giá bao nhiêu?\\nB: Một trăm yên một quả.\\nA: Vậy cho tôi ba quả.\\nB: Vâng, ba trăm yên.",
+      "questions": [
+        {
+          "questionText": "りんご一つはいくらですか。",
+          "options": [
+            { "label": "A", "text": "五十円" },
+            { "label": "B", "text": "百円" },
+            { "label": "C", "text": "二百円" },
+            { "label": "D", "text": "三百円" }
+          ],
+          "correctIndex": 1,
+          "points": 1
+        },
+        {
+          "questionText": "全部でいくらですか。",
+          "options": [
+            { "label": "A", "text": "百円" },
+            { "label": "B", "text": "二百円" },
+            { "label": "C", "text": "三百円" },
+            { "label": "D", "text": "四百円" }
+          ],
+          "correctIndex": 2,
+          "points": 1
+        }
+      ],
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    }
+  ],
+  "tests": [
+    {
+      "_id": { "$oid": "678a1234567890abcdef0501" },
+      "title": "JLPT N5 Mock Test - Phần 1",
+      "jlptLevel": "N5",
+      "description": "Bài kiểm tra mô phỏng JLPT N5 bao gồm từ vựng, ngữ pháp đọc hiểu và nghe hiểu",
+      "totalTime": 105,
+      "passingScorePercent": 70,
+      "published": true,
+      "vocabSection": {
+        "totalTime": 25,
+        "vocabUnits": [
+          {
+            "title": "もんだい1 ___のことばの読み方として最もよいものを、1・2・3・4から一つえらびなさい。",
+            "instructionsJP": "___のことばの読み方として最もよいものを、1・2・3・4から一つえらびなさい。",
+            "instructionsEN": "Choose the best reading for the underlined word from 1, 2, 3, or 4.",
+            "questions": [
+              {
+                "questionText": "山田さんは会社で働いています。",
+                "contextJP": "会社",
+                "options": [
+                  { "label": "1", "text": "かいしゃ" },
+                  { "label": "2", "text": "がいしゃ" },
+                  { "label": "3", "text": "かいじゃ" },
+                  { "label": "4", "text": "がいじゃ" }
+                ],
+                "correctIndex": 0,
+                "points": 2
+              },
+              {
+                "questionText": "私は毎日新聞を読みます。",
+                "contextJP": "新聞",
+                "options": [
+                  { "label": "1", "text": "しんもん" },
+                  { "label": "2", "text": "しんぶん" },
+                  { "label": "3", "text": "あたらしもん" },
+                  { "label": "4", "text": "にいぶん" }
+                ],
+                "correctIndex": 1,
+                "points": 2
+              },
+              {
+                "questionText": "今日は天気がいいです。",
+                "contextJP": "天気",
+                "options": [
+                  { "label": "1", "text": "てんき" },
+                  { "label": "2", "text": "でんき" },
+                  { "label": "3", "text": "あまき" },
+                  { "label": "4", "text": "そらき" }
+                ],
+                "correctIndex": 0,
+                "points": 2
+              }
+            ]
+          },
+          {
+            "title": "もんだい2 ___のことばを漢字で書くとき、最もよいものを1・2・3・4から一つえらびなさい。",
+            "instructionsJP": "___のことばを漢字で書くとき、最もよいものを1・2・3・4から一つえらびなさい。",
+            "instructionsEN": "Choose the best kanji for the underlined hiragana word from 1, 2, 3, or 4.",
+            "questions": [
+              {
+                "questionText": "私のちちは医者です。",
+                "contextJP": "ちち",
+                "options": [
+                  { "label": "1", "text": "父" },
+                  { "label": "2", "text": "母" },
+                  { "label": "3", "text": "兄" },
+                  { "label": "4", "text": "弟" }
+                ],
+                "correctIndex": 0,
+                "points": 2
+              },
+              {
+                "questionText": "あさごはんを食べました。",
+                "contextJP": "あさ",
+                "options": [
+                  { "label": "1", "text": "朝" },
+                  { "label": "2", "text": "昼" },
+                  { "label": "3", "text": "夜" },
+                  { "label": "4", "text": "夕" }
+                ],
+                "correctIndex": 0,
+                "points": 2
+              }
+            ]
+          }
+        ]
+      },
+      "grammarReadingSection": {
+        "totalTime": 50,
+        "grammarUnits": [
+          {
+            "title": "もんだい3 （　　）に入れるのに最もよいものを、1・2・3・4から一つえらびなさい。",
+            "instructionsJP": "（　　）に入れるのに最もよいものを、1・2・3・4から一つえらびなさい。",
+            "instructionsEN": "Choose the best option to fill in (　　) from 1, 2, 3, or 4.",
+            "questions": [
+              {
+                "questionText": "田中さんは学生（　　）。",
+                "options": [
+                  { "label": "1", "text": "だ" },
+                  { "label": "2", "text": "です" },
+                  { "label": "3", "text": "である" },
+                  { "label": "4", "text": "でした" }
+                ],
+                "correctIndex": 1,
+                "points": 2
+              },
+              {
+                "questionText": "私（　　）日本人です。",
+                "options": [
+                  { "label": "1", "text": "は" },
+                  { "label": "2", "text": "が" },
+                  { "label": "3", "text": "を" },
+                  { "label": "4", "text": "に" }
+                ],
+                "correctIndex": 0,
+                "points": 2
+              },
+              {
+                "questionText": "毎日日本語（　　）勉強します。",
+                "options": [
+                  { "label": "1", "text": "は" },
+                  { "label": "2", "text": "が" },
+                  { "label": "3", "text": "を" },
+                  { "label": "4", "text": "に" }
+                ],
+                "correctIndex": 2,
+                "points": 2
+              },
+              {
+                "questionText": "友達（　　）映画を見ます。",
+                "options": [
+                  { "label": "1", "text": "で" },
+                  { "label": "2", "text": "と" },
+                  { "label": "3", "text": "に" },
+                  { "label": "4", "text": "へ" }
+                ],
+                "correctIndex": 1,
+                "points": 2
+              }
+            ]
+          }
+        ],
+        "readingUnits": [
+          {
+            "title": "もんだい4 次の文章を読んで、質問に答えなさい。答えは、1・2・3・4から最もよいものを一つえらびなさい。",
+            "instructionsJP": "次の文章を読んで、質問に答えなさい。答えは、1・2・3・4から最もよいものを一つえらびなさい。",
+            "instructionsEN": "Read the following passage and answer the questions. Choose the best answer from 1, 2, 3, or 4.",
+            "passages": [
+              {
+                "title": "自己紹介",
+                "passageJP": "はじめまして。私は山田太郎です。東京大学の学生です。専攻は経済学です。趣味は読書と音楽を聞くことです。週末はよく友達と映画を見に行きます。日本語の勉強は難しいですが、とても楽しいです。",
+                "passageEN": "Nice to meet you. I'm Taro Yamada. I'm a student at Tokyo University. My major is economics. My hobbies are reading and listening to music. On weekends, I often go to see movies with friends. Studying Japanese is difficult, but it's very fun.",
+                "questions": [
+                  {
+                    "questionText": "山田さんの専攻は何ですか。",
+                    "options": [
+                      { "label": "1", "text": "文学" },
+                      { "label": "2", "text": "経済学" },
+                      { "label": "3", "text": "医学" },
+                      { "label": "4", "text": "工学" }
+                    ],
+                    "correctIndex": 1,
+                    "points": 3
+                  },
+                  {
+                    "questionText": "山田さんは週末に何をしますか。",
+                    "options": [
+                      { "label": "1", "text": "本を読みます" },
+                      { "label": "2", "text": "音楽を聞きます" },
+                      { "label": "3", "text": "映画を見に行きます" },
+                      { "label": "4", "text": "勉強します" }
+                    ],
+                    "correctIndex": 2,
+                    "points": 3
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "listeningSection": {
+        "totalTime": 30,
+        "listeningUnits": [
+          {
+            "title": "もんだい1 問題用紙に何も印刷されていません。まず文を聞いてください。それから、その返事を聞いて、1から3の中から、最もよいものを一つ選んでください。",
+            "instructionsJP": "問題用紙に何も印刷されていません。まず文を聞いてください。それから、その返事を聞いて、1から3の中から、最もよいものを一つ選んでください。",
+            "instructionsEN": "There is nothing printed on the question paper. First, listen to the sentence. Then listen to the response and choose the best option from 1 to 3.",
+            "mediaUrl": "https://example.com/audio/test001-listen001.mp3",
+            "questions": [
+              {
+                "questionText": "1番",
+                "options": [
+                  { "label": "1", "text": "はい、そうです。" },
+                  { "label": "2", "text": "いいえ、違います。" },
+                  { "label": "3", "text": "わかりません。" }
+                ],
+                "correctIndex": 0,
+                "points": 2
+              },
+              {
+                "questionText": "2番",
+                "options": [
+                  { "label": "1", "text": "9時です。" },
+                  { "label": "2", "text": "学校です。" },
+                  { "label": "3", "text": "明日です。" }
+                ],
+                "correctIndex": 0,
+                "points": 2
+              }
+            ]
+          },
+          {
+            "title": "もんだい2 問題用紙に何も印刷されていません。この問題は、全体としてどんな内容かを聞く問題です。話の前に質問はありません。まず話を聞いてください。それから、質問とせんたくしを聞いて、1から4の中から、最もよいものを一つ選んでください。",
+            "instructionsJP": "問題用紙に何も印刷されていません。この問題は、全体としてどんな内容かを聞く問題です。話の前に質問はありません。まず話を聞いてください。それから、質問とせんたくしを聞いて、1から4の中から、最もよいものを一つ選んでください。",
+            "instructionsEN": "There is nothing printed on the question paper. This problem asks you to understand the overall content. There are no questions before the conversation. First, listen to the conversation. Then listen to the question and choices, and choose the best option from 1 to 4.",
+            "mediaUrl": "https://example.com/audio/test001-listen002.mp3",
+            "questions": [
+              {
+                "questionText": "1番",
+                "options": [
+                  { "label": "1", "text": "駅に行きます" },
+                  { "label": "2", "text": "学校に行きます" },
+                  { "label": "3", "text": "家に帰ります" },
+                  { "label": "4", "text": "図書館に行きます" }
+                ],
+                "correctIndex": 3,
+                "points": 2
+              }
+            ]
+          }
+        ]
+      },
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0502" },
+      "title": "JLPT N5 Mock Test - Phần 2",
+      "jlptLevel": "N5",
+      "description": "Bài kiểm tra mô phỏng JLPT N5 (Phần 2)",
+      "totalTime": 105,
+      "passingScorePercent": 70,
+      "published": true,
+      "vocabSection": {
+        "totalTime": 25,
+        "vocabUnits": [
+          {
+            "title": "もんだい1 ___のことばの読み方として最もよいものを、1・2・3・4から一つえらびなさい。",
+            "instructionsJP": "___のことばの読み方として最もよいものを、1・2・3・4から一つえらびなさい。",
+            "questions": [
+              {
+                "questionText": "私は毎朝六時に起きます。",
+                "contextJP": "六時",
+                "options": [
+                  { "label": "1", "text": "ろくじ" },
+                  { "label": "2", "text": "むじ" },
+                  { "label": "3", "text": "ろっじ" },
+                  { "label": "4", "text": "りくじ" }
+                ],
+                "correctIndex": 0,
+                "points": 2
+              }
+            ]
+          }
+        ]
+      },
+      "grammarReadingSection": {
+        "totalTime": 50,
+        "grammarUnits": [
+          {
+            "title": "もんだい3 （　　）に入れるのに最もよいものを、1・2・3・4から一つえらびなさい。",
+            "instructionsJP": "（　　）に入れるのに最もよいものを、1・2・3・4から一つえらびなさい。",
+            "questions": [
+              {
+                "questionText": "明日図書館（　　）行きます。",
+                "options": [
+                  { "label": "1", "text": "で" },
+                  { "label": "2", "text": "に" },
+                  { "label": "3", "text": "を" },
+                  { "label": "4", "text": "へ" }
+                ],
+                "correctIndex": 1,
+                "points": 2
+              }
+            ]
+          }
+        ],
+        "readingUnits": []
+      },
+      "listeningSection": {
+        "totalTime": 30,
+        "listeningUnits": []
+      },
+      "createdAt": { "$date": "2026-01-02T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-02T00:00:00Z" }
+    }
+  ],
+  "readings": [
+    {
+      "_id": { "$oid": "678a1234567890abcdef0801" },
+      "title": "自己紹介 - Self Introduction",
+      "textJP": "はじめまして。私は田中太郎です。東京に住んでいます。会社員です。趣味は読書と映画を見ることです。よろしくお願いします。",
+      "textEN": "Nice to meet you. I'm Taro Tanaka. I live in Tokyo. I'm an office worker. My hobbies are reading and watching movies. Nice to meet you.",
+      "audioUrl": "https://example.com/audio/reading001.mp3",
+      "difficulty": "easy",
+      "comprehension": [
+        {
+          "questionJP": "田中さんはどこに住んでいますか。",
+          "questionEN": "Where does Tanaka-san live?",
+          "type": "mcq",
+          "options": [
+            { "text": "大阪", "isCorrect": false },
+            { "text": "東京", "isCorrect": true },
+            { "text": "京都", "isCorrect": false },
+            { "text": "福岡", "isCorrect": false }
+          ]
+        },
+        {
+          "questionJP": "田中さんの仕事は何ですか。",
+          "questionEN": "What is Tanaka-san's job?",
+          "type": "mcq",
+          "options": [
+            { "text": "学生", "isCorrect": false },
+            { "text": "先生", "isCorrect": false },
+            { "text": "会社員", "isCorrect": true },
+            { "text": "医者", "isCorrect": false }
+          ]
+        },
+        {
+          "questionJP": "田中さんの趣味は何ですか。",
+          "questionEN": "What are Tanaka-san's hobbies?",
+          "type": "short_answer",
+          "answer": "読書と映画"
+        }
+      ],
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0802" },
+      "title": "私の家族 - My Family",
+      "textJP": "私の家族は四人です。父、母、兄と私です。父は銀行員で、五十歳です。母は看護師で、四十八歳です。兄は大学生で、二十二歳です。私は高校生で、十七歳です。毎週日曜日に、家族でレストランに行きます。",
+      "textEN": "My family has four people. My father, mother, older brother, and me. My father is a bank employee and is 50 years old. My mother is a nurse and is 48 years old. My older brother is a university student and is 22 years old. I'm a high school student and am 17 years old. Every Sunday, we go to a restaurant as a family.",
+      "audioUrl": "https://example.com/audio/reading002.mp3",
+      "difficulty": "easy",
+      "comprehension": [
+        {
+          "questionJP": "家族は何人ですか。",
+          "questionEN": "How many people are in the family?",
+          "type": "mcq",
+          "options": [
+            { "text": "三人", "isCorrect": false },
+            { "text": "四人", "isCorrect": true },
+            { "text": "五人", "isCorrect": false },
+            { "text": "六人", "isCorrect": false }
+          ]
+        },
+        {
+          "questionJP": "お父さんの仕事は何ですか。",
+          "questionEN": "What is the father's job?",
+          "type": "mcq",
+          "options": [
+            { "text": "先生", "isCorrect": false },
+            { "text": "銀行員", "isCorrect": true },
+            { "text": "医者", "isCorrect": false },
+            { "text": "会社員", "isCorrect": false }
+          ]
+        },
+        {
+          "questionJP": "家族はいつレストランに行きますか。",
+          "questionEN": "When does the family go to a restaurant?",
+          "type": "short_answer",
+          "answer": "日曜日"
+        }
+      ],
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0803" },
+      "title": "デパートで買い物 - Shopping at the Department Store",
+      "textJP": "昨日、デパートで買い物をしました。新しいシャツを買いました。赤いシャツは三千円でした。高かったですが、とても気に入りました。それから、母にプレゼントを買いました。青いスカーフは二千円でした。母はとても喜びました。",
+      "textEN": "Yesterday, I went shopping at a department store. I bought a new shirt. The red shirt was 3,000 yen. It was expensive, but I really liked it. Then, I bought a present for my mother. The blue scarf was 2,000 yen. My mother was very happy.",
+      "audioUrl": "https://example.com/audio/reading003.mp3",
+      "difficulty": "easy",
+      "comprehension": [
+        {
+          "questionJP": "シャツはいくらでしたか。",
+          "questionEN": "How much was the shirt?",
+          "type": "mcq",
+          "options": [
+            { "text": "千円", "isCorrect": false },
+            { "text": "二千円", "isCorrect": false },
+            { "text": "三千円", "isCorrect": true },
+            { "text": "四千円", "isCorrect": false }
+          ]
+        },
+        {
+          "questionJP": "誰にプレゼントを買いましたか。",
+          "questionEN": "Who did they buy a present for?",
+          "type": "mcq",
+          "options": [
+            { "text": "父", "isCorrect": false },
+            { "text": "母", "isCorrect": true },
+            { "text": "兄", "isCorrect": false },
+            { "text": "友達", "isCorrect": false }
+          ]
+        },
+        {
+          "questionJP": "スカーフは何色でしたか。",
+          "questionEN": "What color was the scarf?",
+          "type": "short_answer",
+          "answer": "青い"
+        }
+      ],
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    }
+  ],
+  "speakings": [
+    {
+      "_id": { "$oid": "678a1234567890abcdef0901" },
+      "title": "自己紹介の練習 - Self Introduction Practice",
+      "guidance": "Hãy giới thiệu bản thân bằng tiếng Nhật. Nói tên, quốc tịch, nghề nghiệp và sở thích của bạn.",
+      "sampleAudioUrl": "https://example.com/audio/speaking001.mp3",
+      "prompts": [
+        {
+          "promptJP": "あなたの名前は何ですか。",
+          "promptEN": "What is your name?",
+          "expectedSample": "私の名前は〇〇です。"
+        },
+        {
+          "promptJP": "どこから来ましたか。",
+          "promptEN": "Where are you from?",
+          "expectedSample": "私はベトナムから来ました。"
+        },
+        {
+          "promptJP": "職業は何ですか。",
+          "promptEN": "What is your occupation?",
+          "expectedSample": "私は学生です。/ 私は会社員です。"
+        },
+        {
+          "promptJP": "趣味は何ですか。",
+          "promptEN": "What are your hobbies?",
+          "expectedSample": "私の趣味は音楽を聞くことです。"
+        }
+      ],
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0902" },
+      "title": "家族について話す - Talking About Family",
+      "guidance": "Hãy nói về gia đình của bạn bằng tiếng Nhật. Giới thiệu các thành viên trong gia đình, công việc và tuổi của họ.",
+      "sampleAudioUrl": "https://example.com/audio/speaking002.mp3",
+      "prompts": [
+        {
+          "promptJP": "家族は何人ですか。",
+          "promptEN": "How many people are in your family?",
+          "expectedSample": "私の家族は〇人です。"
+        },
+        {
+          "promptJP": "お父さんの仕事は何ですか。",
+          "promptEN": "What is your father's job?",
+          "expectedSample": "父は会社員です。/ 父は先生です。"
+        },
+        {
+          "promptJP": "お母さんは何歳ですか。",
+          "promptEN": "How old is your mother?",
+          "expectedSample": "母は〇〇歳です。"
+        },
+        {
+          "promptJP": "兄弟がいますか。",
+          "promptEN": "Do you have siblings?",
+          "expectedSample": "はい、兄がいます。/ いいえ、一人っ子です。"
+        }
+      ],
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0903" },
+      "title": "買い物の会話 - Shopping Conversation",
+      "guidance": "Hãy thực hành hội thoại mua sắm. Hỏi giá cả và mua hàng bằng tiếng Nhật.",
+      "sampleAudioUrl": "https://example.com/audio/speaking003.mp3",
+      "prompts": [
+        {
+          "promptJP": "店員に挨拶をしてください。",
+          "promptEN": "Greet the shop clerk.",
+          "expectedSample": "すみません。/ いらっしゃいませ。"
+        },
+        {
+          "promptJP": "この本はいくらですか。",
+          "promptEN": "How much is this book?",
+          "expectedSample": "これはいくらですか。"
+        },
+        {
+          "promptJP": "二つください。",
+          "promptEN": "Please give me two.",
+          "expectedSample": "〇〇を二つください。"
+        },
+        {
+          "promptJP": "カードで払えますか。",
+          "promptEN": "Can I pay by card?",
+          "expectedSample": "カードで払えますか。/ 現金で払います。"
+        }
+      ],
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    }
+  ],
+  "roles": [
+    {
+      "_id": { "$oid": "678a1234567890abcdef0601" },
+      "name": "Super Admin",
+      "description": "Full system access",
+      "permissions": ["*"],
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0602" },
+      "name": "Content Manager",
+      "description": "Manage lessons, words, grammar, listening, tests",
+      "permissions": [
+        "lesson.create",
+        "lesson.read",
+        "lesson.update",
+        "lesson.delete",
+        "word.create",
+        "word.read",
+        "word.update",
+        "word.delete",
+        "grammar.create",
+        "grammar.read",
+        "grammar.update",
+        "grammar.delete",
+        "listening.create",
+        "listening.read",
+        "listening.update",
+        "listening.delete",
+        "test.create",
+        "test.read",
+        "test.update",
+        "test.delete"
+      ],
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    }
+  ],
+  "admins": [
+    {
+      "_id": { "$oid": "678a1234567890abcdef0701" },
+      "email": "admin@example.com",
+      "password": "$2b$10$YourHashedPasswordHere",
+      "name": "System Admin",
+      "roleId": { "$oid": "678a1234567890abcdef0601" },
+      "active": true,
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0702" },
+      "email": "content@example.com",
+      "password": "$2b$10$YourHashedPasswordHere",
+      "name": "Content Manager",
+      "roleId": { "$oid": "678a1234567890abcdef0602" },
+      "active": true,
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    }
+  ],
+  "readings": [
+    {
+      "_id": { "$oid": "678a1234567890abcdef0801" },
+      "lessonId": { "$oid": "678a1234567890abcdef0101" },
+      "title": "自己紹介 - Self Introduction",
+      "textJP": "はじめまして。私は田中太郎です。東京に住んでいます。会社員です。趣味は読書と映画を見ることです。よろしくお願いします。",
+      "textEN": "Nice to meet you. I'm Taro Tanaka. I live in Tokyo. I'm an office worker. My hobbies are reading and watching movies. Nice to meet you.",
+      "textVN": "Rất vui được gặp bạn. Tôi là Taro Tanaka. Tôi sống ở Tokyo. Tôi là nhân viên văn phòng. Sở thích của tôi là đọc sách và xem phim. Rất vui được làm quen.",
+      "audioUrl": "https://example.com/audio/reading001.mp3",
+      "difficulty": "beginner",
+      "comprehension": [
+        {
+          "questionJP": "田中さんはどこに住んでいますか。",
+          "questionEN": "Where does Tanaka-san live?",
+          "questionVN": "Anh Tanaka sống ở đâu?",
+          "type": "mcq",
+          "options": [
+            { "text": "大阪", "isCorrect": false },
+            { "text": "東京", "isCorrect": true },
+            { "text": "京都", "isCorrect": false },
+            { "text": "福岡", "isCorrect": false }
+          ]
+        },
+        {
+          "questionJP": "田中さんの仕事は何ですか。",
+          "questionEN": "What is Tanaka-san's job?",
+          "questionVN": "Công việc của anh Tanaka là gì?",
+          "type": "mcq",
+          "options": [
+            { "text": "学生", "isCorrect": false },
+            { "text": "先生", "isCorrect": false },
+            { "text": "会社員", "isCorrect": true },
+            { "text": "医者", "isCorrect": false }
+          ]
+        },
+        {
+          "questionJP": "田中さんの趣味は何ですか。",
+          "questionEN": "What are Tanaka-san's hobbies?",
+          "questionVN": "Sở thích của anh Tanaka là gì?",
+          "type": "short_answer",
+          "answer": "読書と映画"
+        }
+      ],
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0802" },
+      "lessonId": { "$oid": "678a1234567890abcdef0102" },
+      "title": "私の家族 - My Family",
+      "textJP": "私の家族は四人です。父、母、兄と私です。父は銀行員で、五十歳です。母は看護師で、四十八歳です。兄は大学生で、二十二歳です。私は高校生で、十七歳です。毎週日曜日に、家族でレストランに行きます。",
+      "textEN": "My family has four people. My father, mother, older brother, and me. My father is a bank employee and is 50 years old. My mother is a nurse and is 48 years old. My older brother is a university student and is 22 years old. I'm a high school student and am 17 years old. Every Sunday, we go to a restaurant as a family.",
+      "textVN": "Gia đình tôi có 4 người. Bố, mẹ, anh trai và tôi. Bố là nhân viên ngân hàng, 50 tuổi. Mẹ là y tá, 48 tuổi. Anh trai đang là sinh viên đại học, 22 tuổi. Tôi là học sinh trung học, 17 tuổi. Mỗi Chủ nhật, gia đình chúng tôi đi nhà hàng.",
+      "audioUrl": "https://example.com/audio/reading002.mp3",
+      "difficulty": "beginner",
+      "comprehension": [
+        {
+          "questionJP": "家族は何人ですか。",
+          "questionEN": "How many people are in the family?",
+          "questionVN": "Gia đình có bao nhiêu người?",
+          "type": "mcq",
+          "options": [
+            { "text": "三人", "isCorrect": false },
+            { "text": "四人", "isCorrect": true },
+            { "text": "五人", "isCorrect": false },
+            { "text": "六人", "isCorrect": false }
+          ]
+        },
+        {
+          "questionJP": "お父さんの仕事は何ですか。",
+          "questionEN": "What is the father's job?",
+          "questionVN": "Công việc của bố là gì?",
+          "type": "mcq",
+          "options": [
+            { "text": "先生", "isCorrect": false },
+            { "text": "銀行員", "isCorrect": true },
+            { "text": "医者", "isCorrect": false },
+            { "text": "会社員", "isCorrect": false }
+          ]
+        },
+        {
+          "questionJP": "家族はいつレストランに行きますか。",
+          "questionEN": "When does the family go to a restaurant?",
+          "questionVN": "Gia đình đi nhà hàng khi nào?",
+          "type": "short_answer",
+          "answer": "日曜日"
+        }
+      ],
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0803" },
+      "lessonId": { "$oid": "678a1234567890abcdef0103" },
+      "title": "デパートで買い物 - Shopping at the Department Store",
+      "textJP": "昨日、デパートで買い物をしました。新しいシャツを買いました。赤いシャツは三千円でした。高かったですが、とても気に入りました。それから、母にプレゼントを買いました。青いスカーフは二千円でした。母はとても喜びました。",
+      "textEN": "Yesterday, I went shopping at a department store. I bought a new shirt. The red shirt was 3,000 yen. It was expensive, but I really liked it. Then, I bought a present for my mother. The blue scarf was 2,000 yen. My mother was very happy.",
+      "textVN": "Hôm qua, tôi đi mua sắm ở trung tâm thương mại. Tôi mua một chiếc áo sơ mi mới. Chiếc áo sơ mi màu đỏ giá 3,000 yên. Tuy hơi đắt nhưng tôi rất thích. Sau đó, tôi mua quà cho mẹ. Chiếc khăn choàng màu xanh giá 2,000 yên. Mẹ rất vui.",
+      "audioUrl": "https://example.com/audio/reading003.mp3",
+      "difficulty": "beginner",
+      "comprehension": [
+        {
+          "questionJP": "シャツはいくらでしたか。",
+          "questionEN": "How much was the shirt?",
+          "questionVN": "Chiếc áo sơ mi giá bao nhiêu?",
+          "type": "mcq",
+          "options": [
+            { "text": "千円", "isCorrect": false },
+            { "text": "二千円", "isCorrect": false },
+            { "text": "三千円", "isCorrect": true },
+            { "text": "四千円", "isCorrect": false }
+          ]
+        },
+        {
+          "questionJP": "誰にプレゼントを買いましたか。",
+          "questionEN": "Who did they buy a present for?",
+          "questionVN": "Họ mua quà cho ai?",
+          "type": "mcq",
+          "options": [
+            { "text": "父", "isCorrect": false },
+            { "text": "母", "isCorrect": true },
+            { "text": "兄", "isCorrect": false },
+            { "text": "友達", "isCorrect": false }
+          ]
+        },
+        {
+          "questionJP": "スカーフは何色でしたか。",
+          "questionEN": "What color was the scarf?",
+          "questionVN": "Chiếc khăn choàng màu gì?",
+          "type": "short_answer",
+          "answer": "青い"
+        }
+      ],
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    }
+  ],
+  "speakings": [
+    {
+      "_id": { "$oid": "678a1234567890abcdef0901" },
+      "lessonId": { "$oid": "678a1234567890abcdef0101" },
+      "title": "自己紹介の練習 - Self Introduction Practice",
+      "guidance": "Hãy giới thiệu bản thân bằng tiếng Nhật. Nói tên, quốc tịch, nghề nghiệp và sở thích của bạn.",
+      "sampleAudioUrl": "https://example.com/audio/speaking001.mp3",
+      "prompts": [
+        {
+          "promptJP": "あなたの名前は何ですか。",
+          "promptEN": "What is your name?",
+          "promptVN": "Tên bạn là gì?",
+          "expectedSample": "私の名前は〇〇です。"
+        },
+        {
+          "promptJP": "どこから来ましたか。",
+          "promptEN": "Where are you from?",
+          "promptVN": "Bạn đến từ đâu?",
+          "expectedSample": "私はベトナムから来ました。"
+        },
+        {
+          "promptJP": "職業は何ですか。",
+          "promptEN": "What is your occupation?",
+          "promptVN": "Nghề nghiệp của bạn là gì?",
+          "expectedSample": "私は学生です。/ 私は会社員です。"
+        },
+        {
+          "promptJP": "趣味は何ですか。",
+          "promptEN": "What are your hobbies?",
+          "promptVN": "Sở thích của bạn là gì?",
+          "expectedSample": "私の趣味は音楽を聞くことです。"
+        }
+      ],
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0902" },
+      "lessonId": { "$oid": "678a1234567890abcdef0102" },
+      "title": "家族について話す - Talking About Family",
+      "guidance": "Hãy nói về gia đình của bạn bằng tiếng Nhật. Giới thiệu các thành viên trong gia đình, công việc và tuổi của họ.",
+      "sampleAudioUrl": "https://example.com/audio/speaking002.mp3",
+      "prompts": [
+        {
+          "promptJP": "家族は何人ですか。",
+          "promptEN": "How many people are in your family?",
+          "promptVN": "Gia đình bạn có bao nhiêu người?",
+          "expectedSample": "私の家族は〇人です。"
+        },
+        {
+          "promptJP": "お父さんの仕事は何ですか。",
+          "promptEN": "What is your father's job?",
+          "promptVN": "Công việc của bố bạn là gì?",
+          "expectedSample": "父は会社員です。/ 父は先生です。"
+        },
+        {
+          "promptJP": "お母さんは何歳ですか。",
+          "promptEN": "How old is your mother?",
+          "promptVN": "Mẹ bạn bao nhiêu tuổi?",
+          "expectedSample": "母は〇〇歳です。"
+        },
+        {
+          "promptJP": "兄弟がいますか。",
+          "promptEN": "Do you have siblings?",
+          "promptVN": "Bạn có anh chị em không?",
+          "expectedSample": "はい、兄がいます。/ いいえ、一人っ子です。"
+        }
+      ],
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "678a1234567890abcdef0903" },
+      "lessonId": { "$oid": "678a1234567890abcdef0103" },
+      "title": "買い物の会話 - Shopping Conversation",
+      "guidance": "Hãy thực hành hội thoại mua sắm. Hỏi giá cả và mua hàng bằng tiếng Nhật.",
+      "sampleAudioUrl": "https://example.com/audio/speaking003.mp3",
+      "prompts": [
+        {
+          "promptJP": "店員に挨拶をしてください。",
+          "promptEN": "Greet the shop clerk.",
+          "promptVN": "Chào nhân viên cửa hàng.",
+          "expectedSample": "すみません。/ いらっしゃいませ。"
+        },
+        {
+          "promptJP": "この本はいくらですか。",
+          "promptEN": "How much is this book?",
+          "promptVN": "Quyển sách này giá bao nhiêu?",
+          "expectedSample": "これはいくらですか。"
+        },
+        {
+          "promptJP": "二つください。",
+          "promptEN": "Please give me two.",
+          "promptVN": "Cho tôi hai cái.",
+          "expectedSample": "〇〇を二つください。"
+        },
+        {
+          "promptJP": "カードで払えますか。",
+          "promptEN": "Can I pay by card?",
+          "promptVN": "Tôi có thể trả bằng thẻ không?",
+          "expectedSample": "カードで払えますか。/ 現金で払います。"
+        }
+      ],
+      "createdAt": { "$date": "2026-01-01T00:00:00Z" },
+      "updatedAt": { "$date": "2026-01-01T00:00:00Z" }
+    }
+  ]
+}

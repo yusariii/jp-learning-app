@@ -1,0 +1,137 @@
+[
+  {
+    "title": "Luyện nói - Tự giới thiệu cơ bản",
+    "guidance": "Hãy nói câu trả lời của bạn bằng tiếng Nhật. Bạn có thể xem câu mẫu để tham khảo.",
+    "prompts": [
+      {
+        "promptJP": "あなたの名前は何ですか？",
+        "promptEN": "What is your name?",
+        "expectedSample": "私の名前は[名前]です。"
+      },
+      {
+        "promptJP": "どこに住んでいますか？",
+        "promptEN": "Where do you live?",
+        "expectedSample": "私は[場所]に住んでいます。"
+      },
+      {
+        "promptJP": "趣味は何ですか？",
+        "promptEN": "What is your hobby?",
+        "expectedSample": "私の趣味は[趣味]です。"
+      },
+      {
+        "promptJP": "好きな食べ物は何ですか？",
+        "promptEN": "What is your favorite food?",
+        "expectedSample": "私は[食べ物]が好きです。"
+      }
+    ],
+    "lessonId": "678a1234567890abcdef0101"
+  },
+  {
+    "title": "Luyện nói - Mua sắm",
+    "guidance": "Tưởng tượng bạn đang ở cửa hàng và muốn mua hàng. Trả lời các câu hỏi bằng tiếng Nhật.",
+    "prompts": [
+      {
+        "promptJP": "何を探していますか？",
+        "promptEN": "What are you looking for?",
+        "expectedSample": "[商品]を探しています。"
+      },
+      {
+        "promptJP": "これはいくらですか？",
+        "promptEN": "How much is this?",
+        "expectedSample": "これは[値段]円です。"
+      },
+      {
+        "promptJP": "これをください。",
+        "promptEN": "Please give me this.",
+        "expectedSample": "はい、これをください。"
+      },
+      {
+        "promptJP": "支払いは現金ですか、カードですか？",
+        "promptEN": "Will you pay with cash or card?",
+        "expectedSample": "[現金/カード]でお願いします。"
+      }
+    ],
+    "lessonId": "678a1234567890abcdef0103"
+  },
+  {
+    "title": "Luyện nói - Nhà hàng",
+    "guidance": "Bạn đang ở nhà hàng. Hãy đặt món ăn và nói chuyện với nhân viên.",
+    "prompts": [
+      {
+        "promptJP": "いらっしゃいませ。何名様ですか？",
+        "promptEN": "Welcome. How many people?",
+        "expectedSample": "[人数]人です。"
+      },
+      {
+        "promptJP": "ご注文はお決まりですか？",
+        "promptEN": "Are you ready to order?",
+        "expectedSample": "はい、[料理]をください。"
+      },
+      {
+        "promptJP": "お飲み物は何にしますか？",
+        "promptEN": "What would you like to drink?",
+        "expectedSample": "[飲み物]をお願いします。"
+      },
+      {
+        "promptJP": "お会計お願いします。",
+        "promptEN": "Check, please.",
+        "expectedSample": "はい、お会計をお願いします。"
+      }
+    ],
+    "lessonId": "678a1234567890abcdef0101"
+  },
+  {
+    "title": "Luyện nói - Hỏi đường",
+    "guidance": "Bạn bị lạc đường. Hãy hỏi người khác để tìm đường đi.",
+    "prompts": [
+      {
+        "promptJP": "すみません、駅はどこですか？",
+        "promptEN": "Excuse me, where is the station?",
+        "expectedSample": "すみません、[場所]はどこですか？"
+      },
+      {
+        "promptJP": "ここから遠いですか？",
+        "promptEN": "Is it far from here?",
+        "expectedSample": "ここから遠いですか？近いですか？"
+      },
+      {
+        "promptJP": "どうやって行きますか？",
+        "promptEN": "How do I get there?",
+        "expectedSample": "どうやって[場所]に行きますか？"
+      },
+      {
+        "promptJP": "ありがとうございます。",
+        "promptEN": "Thank you.",
+        "expectedSample": "ありがとうございます。助かりました。"
+      }
+    ],
+    "lessonId": "678a1234567890abcdef0101"
+  },
+  {
+    "title": "Luyện nói - Nói về thời gian và lịch trình",
+    "guidance": "Nói về thời gian và lịch trình hàng ngày của bạn.",
+    "prompts": [
+      {
+        "promptJP": "毎日何時に起きますか？",
+        "promptEN": "What time do you wake up every day?",
+        "expectedSample": "私は毎日[時間]に起きます。"
+      },
+      {
+        "promptJP": "朝ご飯は何を食べますか？",
+        "promptEN": "What do you eat for breakfast?",
+        "expectedSample": "朝ご飯は[食べ物]を食べます。"
+      },
+      {
+        "promptJP": "何時に学校/会社に行きますか？",
+        "promptEN": "What time do you go to school/work?",
+        "expectedSample": "[時間]に[学校/会社]に行きます。"
+      },
+      {
+        "promptJP": "夜は何をしますか？",
+        "promptEN": "What do you do at night?",
+        "expectedSample": "夜は[活動]をします。"
+      }
+    ],
+    "lessonId": "678a1234567890abcdef0101"
+  }
+]

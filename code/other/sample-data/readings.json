@@ -1,0 +1,125 @@
+[
+  {
+    "title": "Đọc hiểu - Giới thiệu bản thân",
+    "textJP": "私は田中です。東京に住んでいます。毎日会社に行きます。会社は家から遠いです。だから、電車に乗ります。仕事は大変ですが、面白いです。週末は友達と遊びます。",
+    "textEN": "I am Tanaka. I live in Tokyo. I go to the company every day. The company is far from my house. Therefore, I take the train. Work is hard, but it's interesting. On weekends, I play with friends.",
+    "comprehension": [
+      {
+        "questionJP": "田中さんはどこに住んでいますか？",
+        "questionEN": "Where does Tanaka live?",
+        "type": "mcq",
+        "options": [
+          { "text": "東京", "isCorrect": true },
+          { "text": "大阪", "isCorrect": false },
+          { "text": "京都", "isCorrect": false },
+          { "text": "福岡", "isCorrect": false }
+        ]
+      },
+      {
+        "questionJP": "田中さんは毎日どこに行きますか？",
+        "questionEN": "Where does Tanaka go every day?",
+        "type": "mcq",
+        "options": [
+          { "text": "学校", "isCorrect": false },
+          { "text": "会社", "isCorrect": true },
+          { "text": "図書館", "isCorrect": false },
+          { "text": "公園", "isCorrect": false }
+        ]
+      },
+      {
+        "questionJP": "会社へ何で行きますか？",
+        "questionEN": "How does he go to the company?",
+        "type": "short_answer",
+        "answer": "電車"
+      },
+      {
+        "questionJP": "週末は何をしますか？",
+        "questionEN": "What does he do on weekends?",
+        "type": "short_answer",
+        "answer": "友達と遊びます"
+      }
+    ],
+    "difficulty": "easy",
+    "lessonId": "678a1234567890abcdef0101"
+  },
+  {
+    "title": "Đọc hiểu - Gia đình",
+    "textJP": "私の家族は五人です。父と母と兄と妹がいます。父は銀行員です。母は先生です。兄は大学生です。妹は高校生です。私は会社員です。みんな元気です。",
+    "textEN": "My family has five people. There are my father, mother, older brother, and younger sister. My father is a banker. My mother is a teacher. My older brother is a university student. My younger sister is a high school student. I am a company employee. Everyone is healthy.",
+    "comprehension": [
+      {
+        "questionJP": "家族は何人ですか？",
+        "questionEN": "How many people are in the family?",
+        "type": "mcq",
+        "options": [
+          { "text": "三人", "isCorrect": false },
+          { "text": "四人", "isCorrect": false },
+          { "text": "五人", "isCorrect": true },
+          { "text": "六人", "isCorrect": false }
+        ]
+      },
+      {
+        "questionJP": "お父さんの仕事は何ですか？",
+        "questionEN": "What is father's job?",
+        "type": "short_answer",
+        "answer": "銀行員"
+      },
+      {
+        "questionJP": "お母さんは何をしていますか？",
+        "questionEN": "What does mother do?",
+        "type": "mcq",
+        "options": [
+          { "text": "銀行員", "isCorrect": false },
+          { "text": "先生", "isCorrect": true },
+          { "text": "会社員", "isCorrect": false },
+          { "text": "医者", "isCorrect": false }
+        ]
+      }
+    ],
+    "difficulty": "easy",
+    "lessonId": "678a1234567890abcdef0102"
+  },
+  {
+    "title": "Đọc hiểu - Thời tiết và mùa",
+    "textJP": "日本には四つの季節があります。春、夏、秋、冬です。春は暖かいです。花が咲きます。夏は暑いです。海に行きます。秋は涼しいです。紅葉がきれいです。冬は寒いです。雪が降ります。私は春が好きです。",
+    "textEN": "Japan has four seasons. They are spring, summer, autumn, and winter. Spring is warm. Flowers bloom. Summer is hot. I go to the sea. Autumn is cool. The autumn leaves are beautiful. Winter is cold. It snows. I like spring.",
+    "comprehension": [
+      {
+        "questionJP": "日本には季節がいくつありますか？",
+        "questionEN": "How many seasons are there in Japan?",
+        "type": "mcq",
+        "options": [
+          { "text": "二つ", "isCorrect": false },
+          { "text": "三つ", "isCorrect": false },
+          { "text": "四つ", "isCorrect": true },
+          { "text": "五つ", "isCorrect": false }
+        ]
+      },
+      {
+        "questionJP": "夏は何をしますか？",
+        "questionEN": "What do you do in summer?",
+        "type": "short_answer",
+        "answer": "海に行きます"
+      },
+      {
+        "questionJP": "冬はどんな天気ですか？",
+        "questionEN": "What is the weather like in winter?",
+        "type": "mcq",
+        "options": [
+          { "text": "暑いです", "isCorrect": false },
+          { "text": "暖かいです", "isCorrect": false },
+          { "text": "寒いです", "isCorrect": true },
+          { "text": "涼しいです", "isCorrect": false }
+        ]
+      },
+      {
+        "questionJP": "私は何が好きですか？",
+        "questionEN": "What do I like?",
+        "type": "short_answer",
+        "answer": "春"
+      }
+    ],
+    "difficulty": "medium",
+    "lessonId": "678a1234567890abcdef0101"
+  }
+]
