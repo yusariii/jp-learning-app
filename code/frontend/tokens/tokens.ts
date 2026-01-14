@@ -42,26 +42,26 @@ export const t = {
       path: '#D1D1D6'
     },
     dark: {
-      bg: '#0B0B0B',           // Nền tối
-      bgSubtle: '#141414',     // Nền input/section tối hơn
-      surface: '#121212',      // Card trong chế độ tối
-      surfaceAlt: '#1B1B1B',   // Phân lớp cho bề mặt
-      text: '#F2F2F2',         // Chữ chính sáng
-      textSub: '#C2C2C2',      // Chữ phụ
-      textMeta: '#9C9C9C',     // Metadata
-      border: '#2A2A2A',       // Viền trong dark (đậm hơn để nhìn thấy)
-      primary: '#EDEDED',      // CTA sáng trên nền tối
-      primaryOn: '#111111',    // Chữ trên primary (tối để tương phản)
-      primarySoft: '#333333',  // Nền phụ cho button/element primary
+      bg: '#121212',           // Nền tối (sáng hơn chút)
+      bgSubtle: '#1C1C1C',     // Nền input/section tối hơn (sáng hơn)
+      surface: '#1E1E1E',      // Card trong chế độ tối (sáng hơn)
+      surfaceAlt: '#282828',   // Phân lớp cho bề mặt (sáng hơn)
+      text: '#F5F5F5',         // Chữ chính sáng hơn
+      textSub: '#CCCCCC',      // Chữ phụ sáng hơn
+      textMeta: '#AAAAAA',     // Metadata sáng hơn
+      border: '#404040',       // Viền trong dark (sáng hơn để dễ nhìn)
+      primary: '#F0F0F0',      // CTA sáng trên nền tối
+      primaryOn: '#0A0A0A',    // Chữ trên primary (tối để tương phản)
+      primarySoft: '#3A3A3A',  // Nền phụ cho button/element primary (sáng hơn)
       link: '#7AD9CB',         // Link trong dark
       success: '#69D6B6',
       warning: '#E5C07B',
       danger: '#EF5350',
       onDanger: '#FFFFFF',
-      bgBase: '#121212',      // Nền cơ bản cho các thành phần
+      bgBase: '#1E1E1E',      // Nền cơ bản cho các thành phần (sáng hơn)
       gold: '#FFD700',
-      locked: '#333333',
-      path: '#444444',
+      locked: '#3E3E3E',      // Locked sáng hơn
+      path: '#505050',        // Path sáng hơn
     },
   },
 
