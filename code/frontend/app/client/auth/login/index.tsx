@@ -30,12 +30,16 @@ export default function UserLogin() {
     try {
       const res = await userLogin({ email: email.trim(), password });
       
+      console.log('Login response:', res);
+      
       // Backend trả về: { token, data: { user: {...} } }
       if (res?.token) {
         // 1. Lưu token & thông tin user
         await saveToken(res.token);
+        console.log('Token saved');
         if (res.data?.user) {
           await saveUser(res.data.user);
+          console.log('User saved:', res.data.user);
         }
 
         // 2. Chuyển hướng vào trang chủ (dùng replace để không quay lại được login)
@@ -44,6 +48,7 @@ export default function UserLogin() {
         setErr(res?.message || "Đăng nhập thất bại.");
       }
     } catch (error) {
+      console.error('Login error:', error);
       setErr("Lỗi kết nối. Vui lòng kiểm tra mạng.");
     } finally {
       setLoading(false);
