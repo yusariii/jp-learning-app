@@ -14,6 +14,12 @@ const adminAuthRouter = require('./admin/auth.route');
 
 // Import routers user
 const authUserRouter = require('./client/auth.route');
+const lessonClientRouter = require('./client/lesson.route');
+const userClientRouter = require('./client/user.route');
+const testClientRouter = require('./client/test.route');
+const dictionaryClientRouter = require('./client/dictionary.route');
+const readingClientRouter = require('./client/reading.route');
+const speakingClientRouter = require('./client/speaking.route');
 const systemConfig = require('../config/systemConfig'); 
 
 module.exports = (app) => {
@@ -48,4 +54,10 @@ module.exports = (app) => {
     // User routes
     const pathAPIClient = systemConfig.prefixClientAPI; // /api/client
     app.use(pathAPIClient + "/auth", authUserRouter);
+    app.use(pathAPIClient + "/lesson", lessonClientRouter);
+    app.use(pathAPIClient + "/user", userClientRouter);
+    app.use(pathAPIClient + "/test", testClientRouter);
+    app.use(pathAPIClient + "/dictionary", dictionaryClientRouter);
+    app.use(pathAPIClient + "/reading", readingClientRouter);
+    app.use(pathAPIClient + "/speaking", speakingClientRouter);
 }
