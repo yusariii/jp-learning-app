@@ -27,11 +27,20 @@ module.exports.register = async (req, res) => {
       level: level || "N5",
     });
 
-    const token = signToken({ id: user.id, type: "user" });
+    const token = signToken({ id: user._id, type: "user" });
 
     return res.status(201).json({
       token,
-      data: { user: { id: user.id, email: user.email, fullName: user.fullName, level: user.level } },
+      data: { 
+        user: { 
+          _id: user._id, 
+          email: user.email, 
+          fullName: user.fullName, 
+          level: user.level,
+          progress: user.progress || [],
+          streak: user.streak || 0,
+        } 
+      },
     });
   } catch (e) {
     return res.status(500).json({ message: "Server error", error: e?.message });
@@ -51,11 +60,20 @@ module.exports.login = async (req, res) => {
     const ok = await bcrypt.compare(password, user.password);
     if (!ok) return res.status(401).json({ message: "Sai email hoặc mật khẩu." });
 
-    const token = signToken({ id: user.id, type: "user" });
+    const token = signToken({ id: user._id, type: "user" });
 
     return res.json({
       token,
-      data: { user: { id: user.id, email: user.email, fullName: user.fullName, level: user.level } },
+      data: { 
+        user: { 
+          _id: user._id, 
+          email: user.email, 
+          fullName: user.fullName, 
+          level: user.level,
+          progress: user.progress || [],
+          streak: user.streak || 0,
+        } 
+      },
     });
   } catch (e) {
     return res.status(500).json({ message: "Server error", error: e?.message });
