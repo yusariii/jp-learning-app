@@ -55,13 +55,18 @@ export default function EditLessonScreen() {
     const { id } = useLocalSearchParams<{ id: string }>();
     const router = useRouter();
     const { theme } = useAppTheme();
-    const { hasPermission, role } = useAuth();
+    const { hasPermission, isLoading, isAuthenticated } = useAuth();
 
     useEffect(() => {
-      if (!hasPermission('lesson.update')) {
-        router.replace('/admin/unauthorized' as Href);
-      }
-    }, [hasPermission, router]);
+            if (isLoading) return;
+            if (!isAuthenticated) {
+                router.replace('/admin/auth/login' as Href);
+                return;
+            }
+            if (!hasPermission('lesson.update')) {
+                router.replace('/admin/unauthorized' as Href);
+            }
+        }, [isLoading, isAuthenticated, hasPermission, router]);
 
     const [loading, setLoading] = useState(true);
     const [form, setForm] = useState<Form | null>(null);
@@ -292,22 +297,24 @@ export default function EditLessonScreen() {
                         marginTop: theme.tokens.space.md,
                     }}
                 >
-                    <TouchableOpacity
-                        onPress={save}
-                        disabled={!isValid}
-                        style={[
-                            theme.button.primary.container,
-                            {
-                                flex: 1,
-                                paddingVertical: 14,
-                                borderRadius: theme.tokens.radius.lg,
-                                alignItems: 'center',
-                                opacity: isValid ? 1 : 0.5,
-                            },
-                        ]}
-                    >
-                        <Text style={theme.button.primary.label}>Lưu thay đổi</Text>
-                    </TouchableOpacity>
+                    {hasPermission('lesson.update') && (
+                      <TouchableOpacity
+                          onPress={save}
+                          disabled={!isValid}
+                          style={[
+                              theme.button.primary.container,
+                              {
+                                  flex: 1,
+                                  paddingVertical: 14,
+                                  borderRadius: theme.tokens.radius.lg,
+                                  alignItems: 'center',
+                                  opacity: isValid ? 1 : 0.5,
+                              },
+                          ]}
+                      >
+                          <Text style={theme.button.primary.label}>Lưu thay đổi</Text>
+                      </TouchableOpacity>
+                    )}
 
                     {hasPermission('lesson.delete') && (
                       <TouchableOpacity

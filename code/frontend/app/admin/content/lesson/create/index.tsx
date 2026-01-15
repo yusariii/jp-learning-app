@@ -54,13 +54,18 @@ const buildPayload = (form: Form): Lesson => {
 
 export default function CreateLessonScreen() {
     const { theme } = useAppTheme();
-    const { hasPermission, role } = useAuth();
+    const { hasPermission, isLoading, isAuthenticated } = useAuth();
 
     useEffect(() => {
-      if (!hasPermission('lesson.create')) {
-        router.replace('/admin/unauthorized' as Href);
-      }
-    }, [hasPermission, router]);
+            if (isLoading) return;
+            if (!isAuthenticated) {
+                router.replace('/admin/auth/login' as Href);
+                return;
+            }
+            if (!hasPermission('lesson.create')) {
+                router.replace('/admin/unauthorized' as Href);
+            }
+        }, [isLoading, isAuthenticated, hasPermission]);
 
     const [form, setForm] = useState<Form>({
         title: '',

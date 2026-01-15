@@ -17,7 +17,7 @@ type Form = Grammar;
 
 export default function EditGrammarScreen() {
   const { theme } = useAppTheme();
-  const { hasPermission, role } = useAuth();
+  const { hasPermission, isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
 
@@ -25,10 +25,15 @@ export default function EditGrammarScreen() {
   const [form, setForm] = useState<Form | null>(null);
 
   useEffect(() => {
+    if (isLoading) return;
+    if (!isAuthenticated) {
+      router.replace('/admin/auth/login' as Href);
+      return;
+    }
     if (!hasPermission('grammar.update')) {
       router.replace('/admin/unauthorized' as Href);
     }
-  }, [hasPermission, router]);
+  }, [isLoading, isAuthenticated, hasPermission, router]);
 
   useEffect(() => {
     let alive = true;
@@ -133,13 +138,15 @@ export default function EditGrammarScreen() {
         </FormSection>
 
         <View style={{ flexDirection: 'row', gap: theme.tokens.space.sm }}>
-          <TouchableOpacity
-            onPress={save}
-            disabled={!isValid}
-            style={[theme.button.primary.container, { flex: 1, paddingVertical: 14, borderRadius: theme.tokens.radius.lg, alignItems: 'center', opacity: isValid ? 1 : 0.5 }]}
-          >
-            <Text style={theme.button.primary.label}>Lưu thay đổi</Text>
-          </TouchableOpacity>
+          {hasPermission('grammar.update') && (
+            <TouchableOpacity
+              onPress={save}
+              disabled={!isValid}
+              style={[theme.button.primary.container, { flex: 1, paddingVertical: 14, borderRadius: theme.tokens.radius.lg, alignItems: 'center', opacity: isValid ? 1 : 0.5 }]}
+            >
+              <Text style={theme.button.primary.label}>Lưu thay đổi</Text>
+            </TouchableOpacity>
+          )}
 
           {hasPermission('grammar.delete') && (
             <TouchableOpacity onPress={confirmDelete} style={[theme.button.primary.container, { backgroundColor: theme.color.danger, paddingVertical: 14, borderRadius: theme.tokens.radius.lg }]}>

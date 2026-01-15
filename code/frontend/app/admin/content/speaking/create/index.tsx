@@ -15,13 +15,18 @@ type Form = Omit<Speaking, '_id'|'createdAt'|'updatedAt'>;
 
 export default function CreateSpeakingScreen() {
   const { theme } = useAppTheme();
-  const { hasPermission, role } = useAuth();
+  const { hasPermission, isLoading, isAuthenticated } = useAuth();
 
   useEffect(() => {
+    if (isLoading) return;
+    if (!isAuthenticated) {
+      router.replace('/admin/auth/login' as Href);
+      return;
+    }
     if (!hasPermission('speaking.create')) {
       router.replace('/admin/unauthorized' as Href);
     }
-  }, [hasPermission, router]);
+  }, [isLoading, isAuthenticated, hasPermission]);
 
   const [form, setForm] = useState<Form>({
     title: '',

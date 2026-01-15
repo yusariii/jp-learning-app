@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from "react-native";
+import { Href, useLocalSearchParams, useRouter } from "expo-router";
 import LayoutDefault from "@/layout-default/layout-default";
 import { useAppTheme } from "@/hooks/use-app-theme";
+import { useAuth } from "@/hooks/use-auth";
+import { appAlert, appError } from "@/helpers/appAlert";
 import ContentCard from "@/components/admin/card/ContentCard";
 import LabeledInput from "@/components/admin/ui/LabeledInput";
 import RolePicker from "@/components/admin/ui/RolePicker";
@@ -12,10 +14,22 @@ import BackButton from "@/components/admin/ui/BackButton";
 
 export default function AdminEditScreen() {
   const { theme } = useAppTheme();
+  const { hasPermission, isLoading: authLoading, isAuthenticated } = useAuth();
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [form, setForm] = useState<AdminDoc | null>(null);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (authLoading) return;
+    if (!isAuthenticated) {
+      router.replace('/admin/auth/login' as Href);
+      return;
+    }
+    if (!hasPermission('admin.update')) {
+      router.replace('/admin/unauthorized' as Href);
+    }
+  }, [authLoading, isAuthenticated, hasPermission, router]);
 
   useEffect(() => {
     let alive = true;
@@ -28,8 +42,17 @@ export default function AdminEditScreen() {
 
   const save = async () => {
     if (!form) return;
-    try { await updateAdmin(String(form._id), { email: form.email, fullName: form.fullName, roleId: typeof form.roleId === "string" ? form.roleId : (form.roleId as any)._id, ...(form.password ? { password: form.password } : {}) }); Alert.alert("Đã lưu"); }
-    catch (e:any) { Alert.alert("Lỗi", String(e?.message || e)); }
+    try {
+      await updateAdmin(String(form._id), {
+        email: form.email,
+        fullName: form.fullName,
+        roleId: typeof form.roleId === "string" ? form.roleId : (form.roleId as any)._id,
+        ...(form.password ? { password: form.password } : {}),
+      });
+      appAlert("Đã lưu", "Cập nhật quản trị viên thành công.");
+    } catch (e:any) {
+      appError(String(e?.message || e));
+    }
   };
 
   if (loading || !form) {
@@ -68,11 +91,16 @@ export default function AdminEditScreen() {
           <TouchableOpacity onPress={save} style={[theme.button.primary.container, { flex: 1 }]}>
             <Text style={theme.button.primary.label}>Lưu</Text>
           </TouchableOpacity>
-          <DeleteButton
-            variant="solid"
-            label="Xoá"
-            onConfirm={async () => { await deleteAdmin(String(form._id)); Alert.alert("Đã xoá"); router.back(); }}
-          />
+          {hasPermission('admin.delete') && (
+            <DeleteButton
+              variant="solid"
+              label="Xoá"
+              onConfirm={async () => {
+                await deleteAdmin(String(form._id));
+                appAlert("Đã xoá", "Quản trị viên đã được xoá.", () => router.back());
+              }}
+            />
+          )}
         </View>
       </ScrollView>
     </LayoutDefault>

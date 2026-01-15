@@ -13,12 +13,23 @@ import BackButton from '@/components/admin/ui/BackButton';
 
 export default function ReadingDetailScreen() {
   const { theme } = useAppTheme();
-  const { hasPermission, role } = useAuth();
+  const { hasPermission, isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const [loading, setLoading] = useState(true);
   const [item, setItem] = useState<Reading | null>(null);
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (!isAuthenticated) {
+      router.replace('/admin/auth/login' as Href);
+      return;
+    }
+    if (!hasPermission('reading.view')) {
+      router.replace('/admin/unauthorized' as Href);
+    }
+  }, [isLoading, isAuthenticated, hasPermission, router]);
 
   useEffect(() => {
     let alive = true;
@@ -92,17 +103,18 @@ export default function ReadingDetailScreen() {
                 <Text style={theme.button.primary.label}>Sửa</Text>
               </TouchableOpacity>
             )}
-            {hasPermission('reading.delete') && (
-              <DeleteButton
-                variant="solid"
-                label="Xoá"
-                onConfirm={async () => {
-                  await deleteReading(item._id!);
-                  appAlert('Đã xoá');
-                  router.back();
-                }}
-              />
-            )}
+              {hasPermission('reading.delete') && (
+                <DeleteButton
+                  variant="solid"
+                  label="Xoá"
+                  onConfirm={async () => {
+                    await deleteReading(String(item._id));
+                    appAlert('Đã xoá', 'Bài đọc đã được xoá.', () => {
+                      router.replace('/admin/content/reading' as Href);
+                    });
+                  }}
+                />
+              )}
           </View>
         </ContentCard>
 

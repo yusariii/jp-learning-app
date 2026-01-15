@@ -13,12 +13,23 @@ import { appAlert } from '@/helpers/appAlert';
 
 export default function GrammarDetailScreen() {
   const { theme } = useAppTheme();
-  const { hasPermission, role } = useAuth();
+  const { hasPermission, isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
   const params = useLocalSearchParams<{ id: string }>();
 
   const [loading, setLoading] = useState(true);
   const [item, setItem] = useState<Grammar | null>(null);
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (!isAuthenticated) {
+      router.replace('/admin/auth/login' as Href);
+      return;
+    }
+    if (!hasPermission('grammar.view')) {
+      router.replace('/admin/unauthorized' as Href);
+    }
+  }, [isLoading, isAuthenticated, hasPermission, router]);
 
   useEffect(() => {
     let mounted = true;
@@ -98,9 +109,10 @@ export default function GrammarDetailScreen() {
                 variant="solid"
                 label="Xoá"
                 onConfirm={async () => {
-                  await deleteGrammar(item._id!);
-                  appAlert('Đã xoá');
-                  router.back();
+                  await deleteGrammar(String(item._id));
+                  appAlert('Đã xoá', 'Ngữ pháp đã được xoá.', () => {
+                    router.replace('/admin/content/grammar' as Href);
+                  });
                 }}
               />
             )}

@@ -19,14 +19,19 @@ const emptyEx: Example = { sentenceJP: '', readingKana: '', meaningVI: '' };
 
 export default function CreateWordScreen() {
   const { theme } = useAppTheme();
-  const { hasPermission, role } = useAuth();
+  const { hasPermission, isLoading, isAuthenticated } = useAuth();
 
   // Kiểm tra quyền truy cập khi component mount
   useEffect(() => {
+    if (isLoading) return;
+    if (!isAuthenticated) {
+      router.replace('/admin/auth/login' as Href);
+      return;
+    }
     if (!hasPermission('word.create')) {
       router.replace('/admin/unauthorized' as Href);
     }
-  }, [hasPermission, router]);
+  }, [isLoading, isAuthenticated, hasPermission]);
 
   const [form, setForm] = useState<Form>({
     termJP: '', hiraKata: '', romaji: '',

@@ -14,12 +14,23 @@ import BackButton from '@/components/admin/ui/BackButton';
 
 export default function WordDetailScreen() {
   const { theme } = useAppTheme();
-  const { hasPermission, role } = useAuth();
+  const { hasPermission, isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
   const params = useLocalSearchParams<{ id: string }>();
 
   const [loading, setLoading] = useState(true);
   const [item, setItem] = useState<Word | null>(null);
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (!isAuthenticated) {
+      router.replace('/admin/auth/login' as Href);
+      return;
+    }
+    if (!hasPermission('word.view')) {
+      router.replace('/admin/unauthorized' as Href);
+    }
+  }, [isLoading, isAuthenticated, hasPermission, router]);
 
   useEffect(() => {
     let mounted = true;
@@ -90,17 +101,18 @@ export default function WordDetailScreen() {
                 <Text style={theme.button.primary.label}>Sửa</Text>
               </TouchableOpacity>
             )}
-            {hasPermission('word.delete') && (
-              <DeleteButton
-                variant="solid"
-                label="Xoá"
-                onConfirm={async () => {
-                  await deleteWord(item._id!);
-                  appAlert('Đã xoá');
-                  router.back();
-                }}
-              />
-            )}
+              {hasPermission('word.delete') && (
+                <DeleteButton
+                  variant="solid"
+                  label="Xoá"
+                  onConfirm={async () => {
+                    await deleteWord(String(item._id));
+                    appAlert('Đã xoá', 'Từ vựng đã được xoá.', () => {
+                      router.replace('/admin/content/word' as Href);
+                    });
+                  }}
+                />
+              )}
           </View>
         </ContentCard>
 

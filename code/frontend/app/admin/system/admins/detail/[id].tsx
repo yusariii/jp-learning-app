@@ -3,16 +3,29 @@ import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity } from "rea
 import { useLocalSearchParams, useRouter, Href } from "expo-router";
 import LayoutDefault from "@/layout-default/layout-default";
 import { useAppTheme } from "@/hooks/use-app-theme";
+import { useAuth } from "@/hooks/use-auth";
 import ContentCard from "@/components/admin/card/ContentCard";
 import BackButton from "@/components/admin/ui/BackButton";
 import { getAdmin, type AdminDoc } from "@/api/admin/admins";
 
 export default function AdminDetailScreen() {
   const { theme } = useAppTheme();
+  const { hasPermission, isLoading: authLoading, isAuthenticated } = useAuth();
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [item, setItem] = useState<AdminDoc | null>(null);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (authLoading) return;
+    if (!isAuthenticated) {
+      router.replace('/admin/auth/login' as Href);
+      return;
+    }
+    if (!hasPermission('admin.view')) {
+      router.replace('/admin/unauthorized' as Href);
+    }
+  }, [authLoading, isAuthenticated, hasPermission, router]);
 
   useEffect(() => {
     let alive = true;
@@ -55,7 +68,7 @@ export default function AdminDetailScreen() {
           <View style={{ height: theme.tokens.space.sm }} />
           <Text style={theme.text.meta}>Role: {(item.roleId as any)?.title || "—"}</Text>
           <View style={{ flexDirection: "row", gap: theme.tokens.space.sm, marginTop: theme.tokens.space.sm }}>
-            <TouchableOpacity onPress={() => router.push(`/admin/system/admins/edit/${item._id}` as Href)} style={theme.button.primary.container}>
+            <TouchableOpacity onPress={() => router.push(`/admin/system/admins/update/${item._id}` as Href)} style={theme.button.primary.container}>
               <Text style={theme.button.primary.label}>Sửa</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => router.back()} style={theme.button.ghost.container}>

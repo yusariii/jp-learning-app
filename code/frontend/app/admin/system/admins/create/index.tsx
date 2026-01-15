@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, TouchableOpacity, Alert } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { router, Href } from "expo-router";
 import LayoutDefault from "@/layout-default/layout-default";
 import { useAppTheme } from "@/hooks/use-app-theme";
 import { useAuth } from "@/hooks/use-auth";
+import { appAlert, appError } from "@/helpers/appAlert";
 import ContentCard from "@/components/admin/card/ContentCard";
 import LabeledInput from "@/components/admin/ui/LabeledInput";
 import RolePicker from "@/components/admin/ui/RolePicker";
@@ -12,21 +13,30 @@ import { createAdmin, type AdminDoc } from "@/api/admin/admins";
 
 export default function AdminCreateScreen() {
   const { theme } = useAppTheme();
-  const { role } = useAuth();
+  const { hasPermission, isLoading, isAuthenticated } = useAuth();
 
   useEffect(() => {
-    if (role?.title !== 'SuperAdmin') {
+    if (isLoading) return;
+    if (!isAuthenticated) {
+      router.replace('/admin/auth/login' as Href);
+      return;
+    }
+    if (!hasPermission('admin.create')) {
       router.replace('/admin/unauthorized' as Href);
     }
-  }, [role, router]);
+  }, [isLoading, isAuthenticated, hasPermission]);
   const [form, setForm] = useState<AdminDoc>({ email: "", password: "", fullName: "", roleId: "" });
 
   const submit = async () => {
     if (!form.email || !form.password || !form.roleId) {
-      return Alert.alert("Thiếu dữ liệu", "Cần Email, Mật khẩu và Role.");
+      return appAlert("Thiếu dữ liệu", "Cần Email, Mật khẩu và Role.");
     }
-    try { await createAdmin(form); Alert.alert("Đã tạo admin"); router.back(); }
-    catch (e:any) { Alert.alert("Lỗi", String(e?.message || e)); }
+    try {
+      await createAdmin(form);
+      appAlert("Đã tạo admin", "Tạo tài khoản quản trị viên thành công.", () => router.back());
+    } catch (e:any) {
+      appError(String(e?.message || e));
+    }
   };
 
   return (

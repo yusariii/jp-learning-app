@@ -15,11 +15,22 @@ import LinkedContentList from '@/components/admin/block/LinkedContentList';
 export default function LessonDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { theme } = useAppTheme();
-  const { hasPermission, role } = useAuth();
+  const { hasPermission, isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
   const [lesson, setLesson] = useState<Lesson | null>(null);
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (!isAuthenticated) {
+      router.replace('/admin/auth/login' as Href);
+      return;
+    }
+    if (!hasPermission('lesson.view')) {
+      router.replace('/admin/unauthorized' as Href);
+    }
+  }, [isLoading, isAuthenticated, hasPermission, router]);
 
   useEffect(() => {
     let alive = true;

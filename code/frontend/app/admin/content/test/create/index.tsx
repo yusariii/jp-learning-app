@@ -21,13 +21,18 @@ import JLPTPicker from '@/components/admin/ui/JLPTPicker';
 
 export default function CreateTestScreen() {
   const { theme } = useAppTheme();
-  const { hasPermission, role } = useAuth();
+  const { hasPermission, isLoading, isAuthenticated } = useAuth();
 
   useEffect(() => {
+    if (isLoading) return;
+    if (!isAuthenticated) {
+      router.replace('/admin/auth/login' as Href);
+      return;
+    }
     if (!hasPermission('test.create')) {
       router.replace('/admin/unauthorized' as Href);
     }
-  }, [hasPermission, router]);
+  }, [isLoading, isAuthenticated, hasPermission]);
 
   const [form, setForm] = useState<TestDoc>({
     title: '', jlptLevel: 'N5', description: '', published: false, passingScorePercent: 70,

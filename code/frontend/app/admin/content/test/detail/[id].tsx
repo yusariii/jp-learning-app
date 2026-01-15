@@ -43,12 +43,23 @@ function QAList({ qs }: { qs: any[] }) {
 
 export default function TestDetailScreen() {
   const { theme } = useAppTheme();
-  const { hasPermission, role } = useAuth();
+  const { hasPermission, isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const [loading, setLoading] = useState(true);
   const [item, setItem] = useState<TestDoc | null>(null);
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (!isAuthenticated) {
+      router.replace('/admin/auth/login' as Href);
+      return;
+    }
+    if (!hasPermission('test.view')) {
+      router.replace('/admin/unauthorized' as Href);
+    }
+  }, [isLoading, isAuthenticated, hasPermission, router]);
 
   useEffect(() => {
     let alive = true;

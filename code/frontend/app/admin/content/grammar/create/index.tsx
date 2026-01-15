@@ -18,13 +18,18 @@ const emptyEx: Example = { sentenceJP: '', readingKana: '', meaningVI: '', meani
 
 export default function CreateGrammarScreen() {
   const { theme } = useAppTheme();
-  const { hasPermission, role } = useAuth();
+  const { hasPermission, isLoading, isAuthenticated } = useAuth();
 
   useEffect(() => {
+    if (isLoading) return;
+    if (!isAuthenticated) {
+      router.replace('/admin/auth/login' as Href);
+      return;
+    }
     if (!hasPermission('grammar.create')) {
       router.replace('/admin/unauthorized' as Href);
     }
-  }, [hasPermission, router]);
+  }, [isLoading, isAuthenticated, hasPermission]);
 
   const [form, setForm] = useState<Form>({
     title: '', description: '',
