@@ -1,7 +1,7 @@
 // app/admin/content/test/index.tsx
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, FlatList, RefreshControl, Text, TouchableOpacity, View } from 'react-native';
-import { Href, useRouter } from 'expo-router';
+import { Href, useRouter, useFocusEffect } from 'expo-router';
 
 import LayoutDefault from '@/layout-default/layout-default';
 import { useAppTheme } from '@/hooks/use-app-theme';
@@ -20,7 +20,7 @@ const LEVELS: Array<TestDoc['jlptLevel'] | ''> = ['', 'N5', 'N4', 'N3', 'N2', 'N
 
 export default function TestListScreen() {
   const { theme } = useAppTheme();
-  const { hasPermission, role } = useAuth();
+  const { hasPermission, isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
 
   const [q, setQ] = useState('');
@@ -29,10 +29,15 @@ export default function TestListScreen() {
   const [sort, setSort] = useState<SortKey>('updatedAt');
 
   useEffect(() => {
+    if (isLoading) return;
+    if (!isAuthenticated) {
+      router.replace('/admin/auth/login' as Href);
+      return;
+    }
     if (!hasPermission('test.view')) {
       router.replace('/admin/unauthorized' as Href);
     }
-  }, [hasPermission, router]);
+  }, [isLoading, isAuthenticated, hasPermission, router]);
 
   const [data, setData] = useState<TestDoc[]>([]);
   const [page, setPage] = useState(1);
@@ -61,6 +66,15 @@ export default function TestListScreen() {
   }, [q, level, sort, pub]);
 
   useEffect(() => { fetchPage(1); }, [fetchPage]);
+
+  // When navigating back from create/update/detail screens, this list screen is usually kept mounted.
+  // useFocusEffect ensures we refresh data when it becomes active again.
+  useFocusEffect(
+    useCallback(() => {
+      reachedEndRef.current = false;
+      fetchPage(1);
+    }, [fetchPage])
+  );
   const onRefresh = useCallback(() => { setRefreshing(true); reachedEndRef.current = false; fetchPage(1); }, [fetchPage]);
   const onEndReached = useCallback(() => { if (loading || reachedEndRef.current) return; const next = page + 1; fetchPage(next, true); setPage(next); }, [loading, page, fetchPage]);
 
@@ -87,9 +101,11 @@ export default function TestListScreen() {
         </View>
         <FilterBar jlptLevels={['' as any]} selected={'' as any} onSelect={() => { }} sorts={['updatedAt', 'createdAt', 'title']} sort={sort} onSort={(s) => { setSort(s); fetchPage(1); }} />
         <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-          <TouchableOpacity onPress={() => router.push('/admin/content/test/create' as Href)} style={[theme.button.primary.container]} hitSlop={theme.utils.hitSlop}>
-            <Text style={theme.button.primary.label}>＋ Tạo đề</Text>
-          </TouchableOpacity>
+          {hasPermission('test.create') && (
+            <TouchableOpacity onPress={() => router.push('/admin/content/test/create' as Href)} style={[theme.button.primary.container]} hitSlop={theme.utils.hitSlop}>
+              <Text style={theme.button.primary.label}>＋ Tạo đề</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
 

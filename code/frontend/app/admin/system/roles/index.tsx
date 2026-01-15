@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Text, TouchableOpacity, View } from "react-native";
-import { useRouter, Href } from "expo-router";
+import { useRouter, Href, useFocusEffect } from "expo-router";
 import LayoutDefault from "@/layout-default/layout-default";
 import { useAppTheme } from "@/hooks/use-app-theme";
 import { useAuth } from "@/hooks/use-auth";
@@ -9,16 +9,24 @@ import ContentCard from "@/components/admin/card/ContentCard";
 import { listRoles, type RoleDoc } from "@/api/admin/roles";
 import BackButton from "@/components/admin/ui/BackButton";
 
+const isSuperAdminTitle = (title?: string) =>
+  typeof title === 'string' && title.trim().toLowerCase() === 'superadmin';
+
 export default function RoleListScreen() {
   const { theme } = useAppTheme();
-  const { role } = useAuth();
+  const { role, hasPermission, isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (role?.title !== 'SuperAdmin') {
+    if (isLoading) return;
+    if (!isAuthenticated) {
+      router.replace('/admin/auth/login' as Href);
+      return;
+    }
+    if (!hasPermission('role.view')) {
       router.replace('/admin/unauthorized' as Href);
     }
-  }, [role, router]);
+  }, [isLoading, isAuthenticated, hasPermission, router]);
 
   const [q, setQ] = useState("");
   const [loading, setLoading] = useState(true);
@@ -28,11 +36,19 @@ export default function RoleListScreen() {
     setLoading(true);
     try {
       const res = await listRoles({ q, page: 1, limit: 100 }) as any;
-      setRows(res.data);
+      setRows((res.data || []).filter((r: RoleDoc) => !isSuperAdminTitle(r?.title)));
     } finally { setLoading(false); }
   }, [q]);
 
   useEffect(() => { reload(); }, [reload]);
+
+  // When navigating back from create/update screens, this list screen is usually kept mounted.
+  // useFocusEffect ensures we refresh data when it becomes active again.
+  useFocusEffect(
+    useCallback(() => {
+      reload();
+    }, [reload])
+  );
 
   return (
     <LayoutDefault title="Role (vai trò)">
@@ -43,7 +59,7 @@ export default function RoleListScreen() {
         />
         <SearchBar value={q} onChangeText={setQ} onSubmit={reload} placeholder="Tìm theo tiêu đề/mô tả…" />
         <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-          {role?.title === 'SuperAdmin' && (
+          {hasPermission('role.create') && (
             <TouchableOpacity onPress={() => router.push("/admin/system/roles/create" as Href)} style={theme.button.primary.container}>
               <Text style={theme.button.primary.label}>＋ Thêm role</Text>
             </TouchableOpacity>
@@ -66,7 +82,7 @@ export default function RoleListScreen() {
                 <TouchableOpacity onPress={() => router.push(`/admin/system/roles/detail/${item._id}` as Href)} style={theme.button.ghost.container}>
                   <Text style={theme.button.ghost.label}>Chi tiết</Text>
                 </TouchableOpacity>
-                {role?.title === 'SuperAdmin' && (
+                {hasPermission('role.update') && (
                   <TouchableOpacity onPress={() => router.push(`/admin/system/roles/update/${item._id}` as Href)} style={theme.button.primary.container}>
                     <Text style={theme.button.primary.label}>Sửa</Text>
                   </TouchableOpacity>

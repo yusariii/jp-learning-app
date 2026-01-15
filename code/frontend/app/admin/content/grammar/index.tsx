@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, FlatList, ActivityIndicator, RefreshControl, Text } from 'react-native';
-import { useRouter, Href } from 'expo-router';
+import { useRouter, Href, useFocusEffect } from 'expo-router';
 
 import LayoutDefault from '@/layout-default/layout-default';
 import { useAppTheme } from '@/hooks/use-app-theme';
@@ -21,7 +21,7 @@ const LIMIT = 20;
 
 export default function ListGrammarScreen() {
   const { theme } = useAppTheme();
-  const { hasPermission, role } = useAuth();
+  const { hasPermission, isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
 
   const [q, setQ] = useState('');
@@ -29,10 +29,15 @@ export default function ListGrammarScreen() {
   const [sort, setSort] = useState<SortKey>('updatedAt');
 
   useEffect(() => {
+    if (isLoading) return;
+    if (!isAuthenticated) {
+      router.replace('/admin/auth/login' as Href);
+      return;
+    }
     if (!hasPermission('grammar.view')) {
       router.replace('/admin/unauthorized' as Href);
     }
-  }, [hasPermission, router]);
+  }, [isLoading, isAuthenticated, hasPermission, router]);
 
   const [data, setData] = useState<Grammar[]>([]);
   const [page, setPage] = useState(1);
@@ -63,6 +68,15 @@ export default function ListGrammarScreen() {
   }, [q, jlpt, sort]);
 
   useEffect(() => { fetchPage(1); }, [fetchPage]);
+
+  // When navigating back from create/update/detail screens, this list screen is usually kept mounted.
+  // useFocusEffect ensures we refresh data when it becomes active again.
+  useFocusEffect(
+    useCallback(() => {
+      reachedEndRef.current = false;
+      fetchPage(1);
+    }, [fetchPage])
+  );
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -107,7 +121,9 @@ export default function ListGrammarScreen() {
         />
 
         <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-          <AddButton to={'/admin/content/grammar/create'} label="Thêm ngữ pháp" />
+          {hasPermission('grammar.create') && (
+            <AddButton to={'/admin/content/grammar/create'} label="Thêm ngữ pháp" />
+          )}
         </View>
       </View>
 

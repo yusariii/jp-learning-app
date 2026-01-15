@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, RefreshControl } from 'react-native';
-import { useRouter, Href } from 'expo-router';
+import { useRouter, Href, useFocusEffect } from 'expo-router';
 
 import LayoutDefault from '@/layout-default/layout-default';
 import { listLessons, type Lesson, } from '@/api/admin/content/lesson';
@@ -20,7 +20,7 @@ type JLPT = '' | 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
 
 export default function LessonListScreen() {
     const { theme } = useAppTheme();
-    const { hasPermission, role } = useAuth();
+    const { hasPermission, isLoading, isAuthenticated } = useAuth();
     const router = useRouter();
 
     const [q, setQ] = useState('');
@@ -28,10 +28,15 @@ export default function LessonListScreen() {
     const [sort, setSort] = useState<SortKey>('updatedAt');
 
     useEffect(() => {
-      if (!hasPermission('lesson.view')) {
-        router.replace('/admin/unauthorized' as Href);
-      }
-    }, [hasPermission, router]);
+            if (isLoading) return;
+            if (!isAuthenticated) {
+                router.replace('/admin/auth/login' as Href);
+                return;
+            }
+            if (!hasPermission('lesson.view')) {
+                router.replace('/admin/unauthorized' as Href);
+            }
+        }, [isLoading, isAuthenticated, hasPermission, router]);
 
     const [data, setData] = useState<Lesson[]>([]);
     const [page, setPage] = useState(1);
@@ -79,6 +84,15 @@ export default function LessonListScreen() {
     useEffect(() => {
         fetchPage(1, false);
     }, [fetchPage]);
+
+    // When navigating back from create/update/detail screens, this list screen is usually kept mounted.
+    // useFocusEffect ensures we refresh data when it becomes active again.
+    useFocusEffect(
+        useCallback(() => {
+            setNoMore(false);
+            fetchPage(1, false);
+        }, [fetchPage]),
+    );
 
     const onSearch = () => {
         setNoMore(false);
@@ -239,10 +253,12 @@ export default function LessonListScreen() {
                     }}
                 />
 
-                <AddButton
-                    to={'/admin/content/lesson/create' as Href}
-                    label="Thêm lesson"
-                />
+                {hasPermission('lesson.create') && (
+                    <AddButton
+                        to={'/admin/content/lesson/create' as Href}
+                        label="Thêm lesson"
+                    />
+                )}
             </View>
 
             <FlatList

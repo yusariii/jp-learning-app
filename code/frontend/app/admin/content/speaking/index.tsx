@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, FlatList, ActivityIndicator, RefreshControl, Text, TouchableOpacity } from 'react-native';
-import { useRouter, Href } from 'expo-router';
+import { useRouter, Href, useFocusEffect } from 'expo-router';
 import LayoutDefault from '@/layout-default/layout-default';
 import { useAppTheme } from '@/hooks/use-app-theme'
 import { useAuth } from '@/hooks/use-auth';
@@ -17,17 +17,22 @@ const LIMIT = 20;
 
 export default function ListSpeakingScreen() {
   const { theme } = useAppTheme();
-  const { hasPermission, role } = useAuth();
+  const { hasPermission, isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
 
   const [q, setQ] = useState('');
   const [sort, setSort] = useState<SortKey>('updatedAt');
 
   useEffect(() => {
+    if (isLoading) return;
+    if (!isAuthenticated) {
+      router.replace('/admin/auth/login' as Href);
+      return;
+    }
     if (!hasPermission('speaking.view')) {
       router.replace('/admin/unauthorized' as Href);
     }
-  }, [hasPermission, router]);
+  }, [isLoading, isAuthenticated, hasPermission, router]);
 
   const [data, setData] = useState<Speaking[]>([]);
   const [page, setPage] = useState(1);
@@ -57,6 +62,15 @@ export default function ListSpeakingScreen() {
 
   useEffect(() => { fetchPage(1); }, [fetchPage]);
 
+  // When navigating back from create/update/detail screens, this list screen is usually kept mounted.
+  // useFocusEffect ensures we refresh data when it becomes active again.
+  useFocusEffect(
+    useCallback(() => {
+      reachedEndRef.current = false;
+      fetchPage(1);
+    }, [fetchPage])
+  );
+
   const onRefresh = useCallback(() => { setRefreshing(true); reachedEndRef.current = false; fetchPage(1); }, [fetchPage]);
 
   const onEndReached = useCallback(() => {
@@ -84,7 +98,9 @@ export default function ListSpeakingScreen() {
           onSort={(s) => { setSort(s); fetchPage(1); }}
         />
         <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-          <AddButton to={'/admin/content/speaking/create' as Href} label="Thêm chủ đề nói" />
+          {hasPermission('speaking.create') && (
+            <AddButton to={'/admin/content/speaking/create' as Href} label="Thêm chủ đề nói" />
+          )}
         </View>
       </View>
 

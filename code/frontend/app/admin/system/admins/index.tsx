@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator } from "react-native";
-import { useRouter, Href } from "expo-router";
+import { useRouter, Href, useFocusEffect } from "expo-router";
 import LayoutDefault from "@/layout-default/layout-default";
 import { useAppTheme } from "@/hooks/use-app-theme";
 import { useAuth } from "@/hooks/use-auth";
@@ -12,14 +12,19 @@ import BackButton from "@/components/admin/ui/BackButton";
 
 export default function AdminListScreen() {
   const { theme } = useAppTheme();
-  const { role } = useAuth();
+  const { hasPermission, isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (role?.title !== 'SuperAdmin') {
+    if (isLoading) return;
+    if (!isAuthenticated) {
+      router.replace('/admin/auth/login' as Href);
+      return;
+    }
+    if (!hasPermission('admin.view')) {
       router.replace('/admin/unauthorized' as Href);
     }
-  }, [role, router]);
+  }, [isLoading, isAuthenticated, hasPermission, router]);
   const [q, setQ] = useState("");
   const [data, setData] = useState<AdminDoc[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,6 +37,14 @@ export default function AdminListScreen() {
 
   useEffect(() => { reload(); }, [reload]);
 
+  // When navigating back from create/update screens, this list screen is usually kept mounted.
+  // useFocusEffect ensures we refresh data when it becomes active again.
+  useFocusEffect(
+    useCallback(() => {
+      reload();
+    }, [reload])
+  );
+
   return (
     <LayoutDefault title="Quản trị viên">
       <View style={{ padding: theme.tokens.space.md, gap: theme.tokens.space.sm }}>
@@ -41,7 +54,7 @@ export default function AdminListScreen() {
         />
         <SearchBar value={q} onChangeText={setQ} onSubmit={reload} placeholder="Tìm email / họ tên…" />
         <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-          {role?.title === 'SuperAdmin' && (
+          {hasPermission('admin.create') && (
             <TouchableOpacity onPress={() => router.push("/admin/system/admins/create" as Href)} style={theme.button.primary.container}>
               <Text style={theme.button.primary.label}>＋ Thêm admin</Text>
             </TouchableOpacity>
@@ -68,7 +81,7 @@ export default function AdminListScreen() {
                 <TouchableOpacity onPress={() => router.push(`/admin/system/admins/detail/${item._id}` as Href)} style={theme.button.ghost.container}>
                   <Text style={theme.button.ghost.label}>Chi tiết</Text>
                 </TouchableOpacity>
-                {role?.title === 'SuperAdmin' && (
+                {hasPermission('admin.update') && (
                   <TouchableOpacity onPress={() => router.push(`/admin/system/admins/update/${item._id}` as Href)} style={theme.button.primary.container}>
                     <Text style={theme.button.primary.label}>Sửa</Text>
                   </TouchableOpacity>

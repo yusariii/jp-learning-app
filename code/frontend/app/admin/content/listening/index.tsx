@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, FlatList, ActivityIndicator, RefreshControl, Text, TouchableOpacity } from 'react-native';
-import { useRouter, Href } from 'expo-router';
+import { useRouter, Href, useFocusEffect } from 'expo-router';
 
 import LayoutDefault from '@/layout-default/layout-default';
 import { useAppTheme } from '@/hooks/use-app-theme'
@@ -21,7 +21,7 @@ const DIFFS: Array<Listening['difficulty'] | ''> = ['', 'easy', 'medium', 'hard'
 
 export default function ListListeningScreen() {
     const { theme } = useAppTheme();
-    const { hasPermission, role } = useAuth();
+    const { hasPermission, isLoading, isAuthenticated } = useAuth();
     const router = useRouter();
 
     const [q, setQ] = useState('');
@@ -29,10 +29,15 @@ export default function ListListeningScreen() {
     const [sort, setSort] = useState<SortKey>('updatedAt');
 
     useEffect(() => {
-      if (!hasPermission('listening.view')) {
-        router.replace('/admin/unauthorized' as Href);
-      }
-    }, [hasPermission, router]);
+            if (isLoading) return;
+            if (!isAuthenticated) {
+                router.replace('/admin/auth/login' as Href);
+                return;
+            }
+            if (!hasPermission('listening.view')) {
+                router.replace('/admin/unauthorized' as Href);
+            }
+        }, [isLoading, isAuthenticated, hasPermission, router]);
 
     const [data, setData] = useState<Listening[]>([]);
     const [page, setPage] = useState(1);
@@ -62,6 +67,15 @@ export default function ListListeningScreen() {
     }, [q, difficulty, sort]);
 
     useEffect(() => { fetchPage(1); }, [fetchPage]);
+
+    // When navigating back from create/update/detail screens, this list screen is usually kept mounted.
+    // useFocusEffect ensures we refresh data when it becomes active again.
+    useFocusEffect(
+        useCallback(() => {
+            reachedEndRef.current = false;
+            fetchPage(1);
+        }, [fetchPage])
+    );
 
     const onRefresh = useCallback(() => {
         setRefreshing(true);
@@ -94,7 +108,9 @@ export default function ListListeningScreen() {
                 </View>
                 <FilterBar jlptLevels={['' as any]} selected={'' as any} onSelect={() => { }} sorts={['updatedAt', 'createdAt', 'title']} sort={sort} onSort={(s) => { setSort(s); fetchPage(1); }} />
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-                    <AddButton to={'/admin/content/listening/create' as Href} label="Thêm bài nghe" />
+                                        {hasPermission('listening.create') && (
+                                            <AddButton to={'/admin/content/listening/create' as Href} label="Thêm bài nghe" />
+                                        )}
                 </View>
             </View>
 
