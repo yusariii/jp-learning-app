@@ -7,6 +7,7 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAppTheme } from '@/hooks/use-app-theme';
 import { getUser } from '@/helpers/storage';
 import { getUserProgress } from '@/api/client/user';
+import { listLessons } from '@/api/client/lesson';
 
 export default function HomePage() {
   const router = useRouter();
@@ -15,32 +16,62 @@ export default function HomePage() {
 
   const [user, setUser] = useState<any>(null);
   const [progress, setProgress] = useState<any>(null);
+  const [lessons, setLessons] = useState<any[]>([]);
+  const [currentLesson, setCurrentLesson] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  
+  // Calculate completed lessons from lessons array
+  const completedLessonsCount = lessons.filter(l => l.userProgress?.status === 'completed').length;
 
   useEffect(() => {
-    getUser()
-      .then((storedUser) => {
+    const loadData = async () => {
+      try {
+        const storedUser = await getUser();
         if (storedUser) {
           setUser(storedUser);
-          return getUserProgress(storedUser.id || storedUser._id);
+          const userId = storedUser.id || storedUser._id;
+          
+          // Fetch user progress and lessons in parallel
+          const [prog, lessonsData] = await Promise.all([
+            getUserProgress(userId),
+            listLessons({ limit: 50, userId })
+          ]);
+          
+          setProgress(prog);
+          setLessons(lessonsData.data || []);
+          
+          // Find current lesson (first in-progress or first lesson)
+          const inProgressLesson = lessonsData.data?.find((l: any) => 
+            l.userProgress?.status === 'in-progress'
+          );
+          const firstActiveLesson = lessonsData.data?.find((l: any) => 
+            l.userProgress?.status === 'active'
+          );
+          setCurrentLesson(inProgressLesson || firstActiveLesson || lessonsData.data?.[0]);
+        } else {
+          setProgress({ 
+            progress: [], 
+            xp: 0, 
+            streak: 0, 
+            totalLessonsCompleted: 0, 
+            totalWords: 0 
+          });
         }
-        return Promise.resolve({ 
+      } catch (error) {
+        console.error('Failed to load home data:', error);
+        setProgress({ 
           progress: [], 
           xp: 0, 
           streak: 0, 
           totalLessonsCompleted: 0, 
           totalWords: 0 
         });
-      })
-      .then((prog) => setProgress(prog))
-      .catch(() => setProgress({ 
-        progress: [], 
-        xp: 0, 
-        streak: 0, 
-        totalLessonsCompleted: 0, 
-        totalWords: 0 
-      }))
-      .finally(() => setLoading(false));
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadData();
   }, []);
 
   const quickActions = [
@@ -51,8 +82,8 @@ export default function HomePage() {
   ];
 
   return (
-    <View style={{ flex: 1, backgroundColor: theme.color.bg, paddingTop: insets.top }}>
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+    <View style={{ flex: 1, backgroundColor: theme.color.bg }}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={[styles.container, { paddingTop: insets.top }]} showsVerticalScrollIndicator={false}>
         
         {/* Header với gradient */}
         <LinearGradient
@@ -89,7 +120,7 @@ export default function HomePage() {
               </View>
               <View style={styles.statItem}>
                 <Ionicons name="book" size={28} color="#4CAF50" />
-                <Text style={styles.statValue}>{progress?.totalLessonsCompleted || 0}/15</Text>
+                <Text style={styles.statValue}>{completedLessonsCount}/{lessons.length || 0}</Text>
                 <Text style={styles.statLabel}>Bài</Text>
               </View>
             </View>
@@ -101,9 +132,14 @@ export default function HomePage() {
           <Text style={[theme.text.h3, { marginBottom: 12 }]}>Mục tiêu hôm nay</Text>
           <View style={styles.goalProgress}>
             <View style={[styles.progressBar, { backgroundColor: theme.color.border }]}>
-              <View style={[styles.progressFill, { width: '40%', backgroundColor: theme.color.primary }]} />
+              <View style={[styles.progressFill, { 
+                width: `${Math.min(100, (completedLessonsCount / Math.max(1, lessons.length)) * 100)}%`, 
+                backgroundColor: theme.color.primary 
+              }]} />
             </View>
-            <Text style={theme.text.secondary}>2/5 bài đã hoàn thành</Text>
+            <Text style={theme.text.secondary}>
+              {completedLessonsCount}/{lessons.length || 0} bài đã hoàn thành
+            </Text>
           </View>
         </View>
 
@@ -130,30 +166,36 @@ export default function HomePage() {
         </View>
 
         {/* Continue Learning Banner */}
-        <TouchableOpacity 
-          style={[styles.section, { paddingHorizontal: 16 }]}
-          onPress={() => router.push('/client/tabs')}
-          activeOpacity={0.9}
-        >
-          <LinearGradient
-            colors={['#667eea', '#764ba2']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.continueBanner}
+        {currentLesson && (
+          <TouchableOpacity 
+            style={[styles.section, { paddingHorizontal: 16 }]}
+            onPress={() => router.push(`/client/learning/lesson/${currentLesson._id}` as any)}
+            activeOpacity={0.9}
           >
-            <View style={{ flex: 1 }}>
-              <Text style={styles.bannerTitle}>Tiếp tục học tập 🚀</Text>
-              <Text style={styles.bannerSub}>Unit 4: Chào hỏi & Làm quen</Text>
-              <View style={styles.bannerProgress}>
-                <View style={styles.bannerProgressBar}>
-                  <View style={[styles.bannerProgressFill, { width: '65%' }]} />
+            <LinearGradient
+              colors={['#667eea', '#764ba2']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.continueBanner}
+            >
+              <View style={{ flex: 1 }}>
+                <Text style={styles.bannerTitle}>Tiếp tục học tập 🚀</Text>
+                <Text style={styles.bannerSub}>{currentLesson.title}</Text>
+                <View style={styles.bannerProgress}>
+                  <View style={styles.bannerProgressBar}>
+                    <View style={[styles.bannerProgressFill, { 
+                      width: `${(currentLesson.userProgress?.stars || 0) * 20}%` 
+                    }]} />
+                  </View>
+                  <Text style={styles.bannerProgressText}>
+                    {currentLesson.userProgress?.stars || 0}/5 ⭐
+                  </Text>
                 </View>
-                <Text style={styles.bannerProgressText}>65%</Text>
               </View>
-            </View>
-            <Ionicons name="chevron-forward" size={24} color="#fff" />
-          </LinearGradient>
-        </TouchableOpacity>
+              <Ionicons name="chevron-forward" size={24} color="#fff" />
+            </LinearGradient>
+          </TouchableOpacity>
+        )}
 
         {/* Admin Button (if needed) */}
         {user?.role === 'admin' && (
@@ -175,7 +217,7 @@ export default function HomePage() {
 }
 
 const styles = StyleSheet.create({
-  container: { flexGrow: 1, paddingBottom: 20 },
+  container: { paddingBottom: 20 },
   headerGradient: {
     paddingTop: 20,
     paddingHorizontal: 20,

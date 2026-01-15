@@ -37,6 +37,13 @@ export default function ClientTabsLayout() {
         }}
       >
         <Tabs.Screen
+          name="home"
+          options={{
+            title: 'Trang chủ',
+            tabBarIcon: ({ color }) => <Feather name="home" size={24} color={color} />,
+          }}
+        />
+        <Tabs.Screen
           name="index"
           options={{
             title: 'Hành trình',
