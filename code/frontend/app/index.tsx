@@ -77,7 +77,7 @@ export default function HomePage() {
   const quickActions = [
     { id: 'learn', title: 'Bắt đầu học', icon: 'book-open-variant', color: '#4CAF50', route: '/client/tabs' },
     { id: 'practice', title: 'Luyện tập', icon: 'sword-cross', color: '#2196F3', route: '/client/tabs/study' },
-    { id: 'test', title: 'Kiểm tra', icon: 'clipboard-check', color: '#FF9800', route: '/client/tabs' },
+    { id: 'dictionary', title: 'Từ điển', icon: 'book-alphabet', color: '#FF9800', route: '/client/tabs/dictionary' },
     { id: 'profile', title: 'Hồ sơ', icon: 'account', color: '#9C27B0', route: '/client/tabs/profile' },
   ];
 
