@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View, Alert } from 'react-native';
+import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { useRouter, Href } from 'expo-router';
 import LayoutDefault from '@/layout-default/layout-default';
 import { useAppTheme } from '@/hooks/use-app-theme';
 import { useAuth } from '@/hooks/use-auth';
+import { appAlert, appError } from '@/helpers/appAlert';
 
 import RoleDropdown from '@/components/admin/ui/RoleDropdown';
 import Checkbox from '@/components/admin/ui/CheckBox';
@@ -50,14 +51,20 @@ const deepClone = <T,>(x: T): T => JSON.parse(JSON.stringify(x));
 
 export default function RolePermissionsScreen() {
   const { theme } = useAppTheme();
-  const { role } = useAuth();
+  const { role, hasPermission, isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (role?.title !== 'SuperAdmin') {
+    // Tránh redirect sớm khi auth chưa load xong (lúc đó hasPermission sẽ luôn false)
+    if (isLoading) return;
+    if (!isAuthenticated) {
+      router.replace('/admin/auth/login' as Href);
+      return;
+    }
+    if (!hasPermission('role.view')) {
       router.replace('/admin/unauthorized' as Href);
     }
-  }, [role, router]);
+  }, [isLoading, isAuthenticated, hasPermission, router]);
 
   const [roleId, setRoleId] = useState<string | undefined>(undefined);
   const [matrix, setMatrix] = useState<PermissionMatrix | null>(null);
@@ -82,21 +89,28 @@ export default function RolePermissionsScreen() {
     const mySeq = ++reqSeq.current;
 
     (async () => {
-      // Ưu tiên cache
-      const cached = cacheRef.current[roleId];
-      if (cached) {
-        setMatrix(deepClone(cached));
-        setLoading(false);
-        return;
+      try {
+        // Ưu tiên cache
+        const cached = cacheRef.current[roleId];
+        if (cached) {
+          setMatrix(deepClone(cached));
+          setLoading(false);
+          return;
+        }
+
+        const res = await getRolePermissions(roleId);
+        if (reqSeq.current !== mySeq) return; // response cũ -> bỏ
+
+        const fresh = deepClone((res?.permissions || {}) as PermissionMatrix);
+        cacheRef.current[roleId] = fresh; // ghi cache
+        setMatrix(deepClone(fresh));
+      } catch (e: any) {
+        if (reqSeq.current !== mySeq) return;
+        setMatrix(null);
+        appError(String(e?.message || 'Lỗi mạng hoặc server.'), 'Không tải được phân quyền');
+      } finally {
+        if (reqSeq.current === mySeq) setLoading(false);
       }
-
-      const res = await getRolePermissions(roleId);
-      if (reqSeq.current !== mySeq) return; // response cũ -> bỏ
-
-      const fresh = deepClone((res?.permissions || {}) as PermissionMatrix);
-      cacheRef.current[roleId] = fresh; // ghi cache
-      setMatrix(deepClone(fresh));
-      setLoading(false);
     })();
   }, [roleId]);
 
@@ -129,9 +143,13 @@ export default function RolePermissionsScreen() {
   /** Lưu matrix hiện tại */
   const save = async () => {
     if (!roleId || !matrix) return;
-    await updateRolePermissions(roleId, matrix);
-    cacheRef.current[roleId] = deepClone(matrix); // xác nhận lại cache
-    Alert.alert('Thành công', 'Đã cập nhật phân quyền.');
+    try {
+      await updateRolePermissions(roleId, matrix);
+      cacheRef.current[roleId] = deepClone(matrix); // xác nhận lại cache
+      appAlert('Thành công', 'Đã cập nhật phân quyền.');
+    } catch (e: any) {
+      appError(String(e?.message || 'Lỗi mạng hoặc server.'), 'Cập nhật thất bại');
+    }
   };
 
   const header = useMemo(
@@ -147,14 +165,17 @@ export default function RolePermissionsScreen() {
         <Text style={theme.text.h1}>Phân quyền</Text>
         <TouchableOpacity
           onPress={save}
-          disabled={!roleId}
-          style={[theme.button.primary.container, { opacity: roleId ? 1 : 0.5 }]}
+          disabled={!roleId || !hasPermission('role.update')}
+          style={[
+            theme.button.primary.container,
+            { opacity: roleId && hasPermission('role.update') ? 1 : 0.5 },
+          ]}
         >
           <Text style={theme.button.primary.label}>Cập nhật</Text>
         </TouchableOpacity>
       </View>
     ),
-    [theme.mode, roleId, matrix]
+    [theme.mode, roleId, matrix, hasPermission]
   );
 
   return (

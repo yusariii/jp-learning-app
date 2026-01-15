@@ -4,6 +4,9 @@ import { useAppTheme } from "@/hooks/use-app-theme";
 import Chip from "./Chip";
 import { listRoles, type RoleItem } from "@/api/admin/admins";
 
+const isSuperAdminTitle = (title?: string) =>
+  typeof title === 'string' && title.trim().toLowerCase() === 'superadmin';
+
 export default function RolePicker({
   value, onChange, inline = true,
 }: {
@@ -18,7 +21,11 @@ export default function RolePicker({
   useEffect(() => {
     let alive = true;
     (async () => {
-      try { const data = await listRoles(); if (alive) setRoles(data); }
+      try {
+        const data = await listRoles();
+        const filtered = (data || []).filter(r => !isSuperAdminTitle(r?.title));
+        if (alive) setRoles(filtered);
+      }
       finally { if (alive) setLoading(false); }
     })();
     return () => { alive = false; };

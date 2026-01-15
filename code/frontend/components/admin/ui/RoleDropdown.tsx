@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { useAppTheme } from '@/hooks/use-app-theme';
 import { listRoles, type RoleDoc } from '@/api/admin/roles';
+
+const isSuperAdminTitle = (title?: string) =>
+  typeof title === 'string' && title.trim().toLowerCase() === 'superadmin';
 
 export default function RoleDropdown({
   value, onChange,
@@ -12,8 +15,14 @@ export default function RoleDropdown({
   const [label, setLabel] = useState<string>('Chọn role');
 
   useEffect(() => { (async () => {
-    const res = await listRoles({ page:1, limit:100 }) as any;
-    setRoles(res.data || []);
+    try {
+      const res = await listRoles({ page:1, limit:100 }) as any;
+      const data = (res?.data || []) as RoleDoc[];
+      setRoles(data.filter(r => !isSuperAdminTitle(r?.title)));
+    } catch (e: any) {
+      setRoles([]);
+      Alert.alert('Không tải được role', e?.message || 'Lỗi mạng hoặc server.');
+    }
   })(); }, []);
 
   useEffect(() => {

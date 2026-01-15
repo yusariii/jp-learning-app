@@ -13,6 +13,10 @@ import { useRouter } from 'expo-router';
 
 import { useAppTheme } from '@/hooks/use-app-theme'
 import { useAuth } from '@/hooks/use-auth';
+import { appConfirm, appError } from '@/helpers/appAlert';
+
+const isSuperAdminTitle = (title?: string) =>
+  typeof title === 'string' && title.trim().toLowerCase() === 'superadmin';
 
 interface SidebarProps {
   isVisible: boolean;
@@ -33,7 +37,7 @@ const MenuSection: React.FC<{ title: string; children: React.ReactNode }> = ({ t
 
 const Sidebar: React.FC<SidebarProps> = ({ isVisible, onClose }) => {
   const { theme } = useAppTheme();
-  const { hasPermission, role } = useAuth();
+  const { hasPermission, role, logout } = useAuth();
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
@@ -42,6 +46,18 @@ const Sidebar: React.FC<SidebarProps> = ({ isVisible, onClose }) => {
   const go = (href: string) => {
     onClose();
     router.push(href as Parameters<typeof router.push>[0]);
+  };
+
+  const handleLogout = () => {
+    appConfirm('Đăng xuất', 'Bạn chắc chắn muốn đăng xuất?', async () => {
+      try {
+        await logout();
+        onClose();
+        router.replace('/admin/auth/login' as Parameters<typeof router.replace>[0]);
+      } catch (e: any) {
+        appError(String(e?.message || e));
+      }
+    });
   };
 
   return (
@@ -106,7 +122,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isVisible, onClose }) => {
           <MenuSection title="Quản lý admin">
             { hasPermission('admin.view') && <MenuItem label="Danh sách tài khoản" onPress={() => go('/admin/system/admins')} />}
             { hasPermission('role.view') && <MenuItem label="Danh sách nhóm quyền" onPress={() => go('/admin/system/roles')} />}
-            { hasPermission('role-permission.view') && <MenuItem label="Phân quyền" onPress={() => go('/admin/system/role-permissions')} />}
+            { hasPermission('role.view') && <MenuItem label="Phân quyền" onPress={() => go('/admin/system/role-permissions')} />}
           </MenuSection>
 
           <MenuSection title="Quản lý người dùng">
@@ -116,13 +132,27 @@ const Sidebar: React.FC<SidebarProps> = ({ isVisible, onClose }) => {
           <MenuSection title="Cài đặt chung">
             <MenuItem label="Giao diện" onPress={() => go('/admin/setting')} />
           </MenuSection>
+
+          <MenuSection title="Tài khoản">
+            <MenuItem
+              label="Đăng xuất"
+              onPress={handleLogout}
+              danger
+            />
+            {!!(role?.title || role?.name) && !isSuperAdminTitle(String(role?.title || role?.name)) && (
+              <Text style={[theme.text.secondary, { marginTop: 6, marginLeft: 10 }]}
+              >
+                Quyền: {String(role?.title || role?.name)}
+              </Text>
+            )}
+          </MenuSection>
         </ScrollView>
       </View>
     </>
   );
 };
 
-function MenuItem({ label, onPress }: { label: string; onPress: () => void }) {
+function MenuItem({ label, onPress, danger }: { label: string; onPress: () => void; danger?: boolean }) {
   const { theme } = useAppTheme();
   return (
     <TouchableOpacity
@@ -135,7 +165,14 @@ function MenuItem({ label, onPress }: { label: string; onPress: () => void }) {
       hitSlop={theme.utils.hitSlop}
       activeOpacity={0.7}
     >
-      <Text style={theme.text.body /* 16/22, màu theo light/dark */}>{label}</Text>
+      <Text
+        style={[
+          theme.text.body,
+          danger ? { color: theme.color.danger } : null,
+        ]}
+      >
+        {label}
+      </Text>
     </TouchableOpacity>
   );
 }

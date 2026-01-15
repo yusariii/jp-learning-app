@@ -3,21 +3,45 @@ import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from "rea
 import { useLocalSearchParams, useRouter, Href } from "expo-router";
 import LayoutDefault from "@/layout-default/layout-default";
 import { useAppTheme } from "@/hooks/use-app-theme";
+import { useAuth } from "@/hooks/use-auth";
 import ContentCard from "@/components/admin/card/ContentCard";
 import { getRole, type RoleDoc } from "@/api/admin/roles";
 import BackButton from "@/components/admin/ui/BackButton";
 
+const isSuperAdminTitle = (title?: string) =>
+  typeof title === 'string' && title.trim().toLowerCase() === 'superadmin';
+
 export default function RoleDetailScreen() {
   const { theme } = useAppTheme();
+  const { hasPermission, isLoading: authLoading, isAuthenticated } = useAuth();
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [item, setItem] = useState<RoleDoc | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (authLoading) return;
+    if (!isAuthenticated) {
+      router.replace('/admin/auth/login' as Href);
+      return;
+    }
+    if (!hasPermission('role.view')) {
+      router.replace('/admin/unauthorized' as Href);
+    }
+  }, [authLoading, isAuthenticated, hasPermission, router]);
+
+  useEffect(() => {
     let alive = true;
     (async () => {
-      try { const it = await getRole(String(id)); if (alive) setItem(it); }
+      try {
+        const it = await getRole(String(id));
+        if (!alive) return;
+        if (isSuperAdminTitle(it?.title)) {
+          router.replace('/admin/system/roles' as Href);
+          return;
+        }
+        setItem(it);
+      }
       finally { if (alive) setLoading(false); }
     })();
     return () => { alive = false; };
@@ -54,9 +78,11 @@ export default function RoleDetailScreen() {
             <Text style={theme.button.ghost.label}>Quản lý phân quyền (màn riêng)</Text>
           </TouchableOpacity>
           <View style={{ height: theme.tokens.space.sm }} />
-          <TouchableOpacity onPress={() => router.push(`/admin/system/roles/update/${item._id}` as Href)} style={theme.button.primary.container}>
-            <Text style={theme.button.primary.label}>Sửa</Text>
-          </TouchableOpacity>
+          {hasPermission('role.update') && (
+            <TouchableOpacity onPress={() => router.push(`/admin/system/roles/update/${item._id}` as Href)} style={theme.button.primary.container}>
+              <Text style={theme.button.primary.label}>Sửa</Text>
+            </TouchableOpacity>
+          )}
         </ContentCard>
       </ScrollView>
     </LayoutDefault>
