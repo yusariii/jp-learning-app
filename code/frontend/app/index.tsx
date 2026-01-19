@@ -20,18 +20,20 @@ export default function HomePage() {
   const [currentLesson, setCurrentLesson] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   
-  // Calculate completed lessons from lessons array
   const completedLessonsCount = lessons.filter(l => l.userProgress?.status === 'completed').length;
 
   useEffect(() => {
     const loadData = async () => {
       try {
         const storedUser = await getUser();
+        if (!storedUser) {
+          router.replace('/client/auth/login');
+          return;
+        }
         if (storedUser) {
           setUser(storedUser);
           const userId = storedUser.id || storedUser._id;
           
-          // Fetch user progress and lessons in parallel
           const [prog, lessonsData] = await Promise.all([
             getUserProgress(userId),
             listLessons({ limit: 50, userId })
@@ -40,7 +42,6 @@ export default function HomePage() {
           setProgress(prog);
           setLessons(lessonsData.data || []);
           
-          // Find current lesson (first in-progress or first lesson)
           const inProgressLesson = lessonsData.data?.find((l: any) => 
             l.userProgress?.status === 'in-progress'
           );
@@ -85,7 +86,6 @@ export default function HomePage() {
     <View style={{ flex: 1, backgroundColor: theme.color.bg }}>
       <ScrollView style={{ flex: 1 }} contentContainerStyle={[styles.container, { paddingTop: insets.top }]} showsVerticalScrollIndicator={false}>
         
-        {/* Header với gradient */}
         <LinearGradient
           colors={[theme.color.primary, theme.color.link]}
           start={{ x: 0, y: 0 }}
@@ -105,7 +105,6 @@ export default function HomePage() {
             </TouchableOpacity>
           </View>
 
-          {/* Progress Card */}
           <View style={[styles.progressCard, { backgroundColor: 'rgba(255,255,255,0.15)' }]}>
             <View style={styles.progressRow}>
               <View style={styles.statItem}>
@@ -127,7 +126,6 @@ export default function HomePage() {
           </View>
         </LinearGradient>
 
-        {/* Daily Goal Section */}
         <View style={[styles.section, { backgroundColor: theme.color.surface, marginTop: -20, borderRadius: 20, marginHorizontal: 16 }]}>
           <Text style={[theme.text.h3, { marginBottom: 12 }]}>Mục tiêu hôm nay</Text>
           <View style={styles.goalProgress}>
@@ -143,7 +141,6 @@ export default function HomePage() {
           </View>
         </View>
 
-        {/* Quick Actions */}
         <View style={[styles.section, { paddingHorizontal: 16 }]}>
           <Text style={[theme.text.h3, { marginBottom: 16 }]}>Bắt đầu nhanh</Text>
           <View style={styles.actionsGrid}>
