@@ -1,9 +1,11 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, useColorScheme } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import LayoutDefault from '../../layout-default/layout-default';
 import { Feather } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppTheme } from "../../hooks/use-app-theme";
+import { useAuth } from '@/hooks/use-auth';
+import { Href, useRouter } from 'expo-router';
 
 interface MetricCardProps {
   title: string;
@@ -40,6 +42,16 @@ const MetricCard: React.FC<MetricCardProps> = ({ title, value, iconName }) => {
 const DashboardScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
   const { theme } = useAppTheme();
+  const { isLoading, isAuthenticated, role } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoading) return;
+    // This is the admin dashboard entry. Require an admin session (must have a role).
+    if (!isAuthenticated || !role) {
+      router.replace('/admin/auth/login' as Href);
+    }
+  }, [isLoading, isAuthenticated, role, router]);
 
   const dashboardMetrics = [
     { title: 'Tài khoản Người dùng', value: 1250, iconName: 'users' as const },
@@ -81,6 +93,19 @@ const DashboardScreen: React.FC = () => {
       }),
     [theme.mode, insets.bottom]
   );
+
+  if (isLoading) {
+    return (
+      <LayoutDefault title="Admin">
+        <View style={{ padding: theme.tokens.space.md, alignItems: 'center' }}>
+          <ActivityIndicator color={theme.color.textSub} />
+        </View>
+      </LayoutDefault>
+    );
+  }
+
+  // Redirect is triggered in the effect; return nothing to avoid flashing protected UI.
+  if (!isAuthenticated || !role) return null;
 
   return (
     <LayoutDefault>
