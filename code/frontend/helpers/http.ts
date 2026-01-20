@@ -7,15 +7,15 @@ export type HttpOptions = RequestInit & {
 
 // Content API base (for word, grammar, reading, etc.)
 const ADMIN_CONTENT_BASE =
-  process.env.EXPO_PUBLIC_API_ADMIN_CONTENT_URL || '';
+  process.env.EXPO_PUBLIC_API_ADMIN_CONTENT_URL || 'http://localhost:3000/api/admin/content';
 
 // System API base (for roles, admins, permissions)
 const ADMIN_SYSTEM_BASE =
-  process.env.EXPO_PUBLIC_API_ADMIN_SYSTEM_URL || '';
+  process.env.EXPO_PUBLIC_API_ADMIN_SYSTEM_URL || 'http://localhost:3000/api/admin/system';
 
 // Client API base (for lessons, tests, user endpoints)
 const CLIENT_BASE =
-  process.env.EXPO_PUBLIC_API_CLIENT_TEST_URL?.replace('/test', '') || 'http://192.168.1.12:3000/api/client';
+  process.env.EXPO_PUBLIC_API_CLIENT_TEST_URL?.replace('/test', '') || 'http://localhost:3000/api/client';
 
 function joinUrl(base: string, path: string) {
   if (!base) return path; 
