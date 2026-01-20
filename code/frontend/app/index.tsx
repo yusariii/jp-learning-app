@@ -162,7 +162,6 @@ export default function HomePage() {
           </View>
         </View>
 
-        {/* Continue Learning Banner */}
         {currentLesson && (
           <TouchableOpacity 
             style={[styles.section, { paddingHorizontal: 16 }]}
@@ -194,7 +193,6 @@ export default function HomePage() {
           </TouchableOpacity>
         )}
 
-        {/* Admin Button (if needed) */}
         {user?.role === 'admin' && (
           <TouchableOpacity
             style={[styles.adminBtn, { backgroundColor: theme.color.surfaceAlt }]}
